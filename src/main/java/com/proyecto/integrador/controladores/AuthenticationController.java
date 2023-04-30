@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.integrador.configuraciones.JwtUtils;
-import com.proyecto.integrador.entidades.JwtRequest;
-import com.proyecto.integrador.entidades.JwtResponse;
+import com.proyecto.integrador.dto.JwtRequest;
+import com.proyecto.integrador.dto.JwtResponse;
 import com.proyecto.integrador.entidades.Usuario;
 import com.proyecto.integrador.servicios.impl.UserDetailsServiceImpl;
 

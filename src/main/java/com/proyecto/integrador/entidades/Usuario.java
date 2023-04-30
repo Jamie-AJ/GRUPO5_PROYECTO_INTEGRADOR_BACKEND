@@ -35,12 +35,11 @@ public class Usuario implements UserDetails{
 	private String username;
 	private String password;
 	private String foto;
-	private int idTipoUsu;
 	private int idCuentaBancaria;
 	private Date fecha;
 	private int idHisInver;
-	private int dni;
-	private int ruc;
+	private String dni;
+	private String ruc;
 	private String razonSocial;
 	private String descripcion;
 	private int idSubasta;
@@ -59,7 +58,7 @@ public class Usuario implements UserDetails{
 
 	public Usuario(long id, String nombre, String apellidoPa, String apellidoMa, String telefono, String correo,
 			String username, String password, String foto, int idTipoUsu, int idCuentaBancaria, Date fecha,
-			int idHisInver, int dni, int ruc, String razonSocial, String descripcion, int idSubasta, boolean enable,
+			int idHisInver, String dni, String ruc, String razonSocial, String descripcion, int idSubasta, boolean enable,
 			Set<UsuarioRol> usuarioRoles) {
 		super();
 		this.id = id;
@@ -71,7 +70,6 @@ public class Usuario implements UserDetails{
 		this.username = username;
 		this.password = password;
 		this.foto = foto;
-		this.idTipoUsu = idTipoUsu;
 		this.idCuentaBancaria = idCuentaBancaria;
 		this.fecha = fecha;
 		this.idHisInver = idHisInver;
@@ -156,13 +154,6 @@ public class Usuario implements UserDetails{
 		this.foto = foto;
 	}
 
-	public int getIdTipoUsu() {
-		return idTipoUsu;
-	}
-
-	public void setIdTipoUsu(int idTipoUsu) {
-		this.idTipoUsu = idTipoUsu;
-	}
 
 	public int getIdCuentaBancaria() {
 		return idCuentaBancaria;
@@ -188,19 +179,19 @@ public class Usuario implements UserDetails{
 		this.idHisInver = idHisInver;
 	}
 
-	public int getDni() {
+	public String getDni() {
 		return dni;
 	}
 
-	public void setDni(int dni) {
+	public void setDni(String dni) {
 		this.dni = dni;
 	}
 
-	public int getRuc() {
+	public String getRuc() {
 		return ruc;
 	}
 
-	public void setRuc(int ruc) {
+	public void setRuc(String ruc) {
 		this.ruc = ruc;
 	}
 

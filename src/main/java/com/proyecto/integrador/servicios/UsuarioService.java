@@ -11,5 +11,7 @@ public interface UsuarioService {
 	public Usuario obtenerUsuario(String username);
 	
 	public void eliminarUsuario(Long usuarioId);
+	boolean ExisteporUsuario(String username);
+	boolean ExisteporCorreo(String correo);
 
 }

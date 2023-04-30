@@ -7,4 +7,6 @@ import com.proyecto.integrador.entidades.Usuario;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
 	
 	public Usuario findByUsername(String username);
+	boolean existsByUsername(String username); 
+	boolean existsByCorreo(String correo);
 }
