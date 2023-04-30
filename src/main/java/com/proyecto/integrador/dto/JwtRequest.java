@@ -1,4 +1,4 @@
-package com.proyecto.integrador.entidades;
+package com.proyecto.integrador.dto;
 
 public class JwtRequest {
 	private String username;

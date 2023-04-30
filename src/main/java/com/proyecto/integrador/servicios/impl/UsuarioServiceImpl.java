@@ -47,4 +47,16 @@ public class UsuarioServiceImpl implements UsuarioService{
 		usuarioRepository.deleteById(usuarioId);
 		
 	}
+
+	@Override
+	public boolean ExisteporUsuario(String username) {
+		// TODO Auto-generated method stub
+		return usuarioRepository.existsByUsername(username);
+	}
+
+	@Override
+	public boolean ExisteporCorreo(String correo) {
+		// TODO Auto-generated method stub
+		return usuarioRepository.existsByCorreo(correo);
+	}
 }
