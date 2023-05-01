@@ -1,7 +1,6 @@
 package com.proyecto.integrador.entidades;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,7 +35,7 @@ public class Usuario implements UserDetails{
 	private String password;
 	private String foto;
 	private int idCuentaBancaria;
-	private Date fecha;
+	private String fecha;
 	private int idHisInver;
 	private String dni;
 	private String ruc;
@@ -57,7 +56,7 @@ public class Usuario implements UserDetails{
 	}
 
 	public Usuario(long id, String nombre, String apellidoPa, String apellidoMa, String telefono, String correo,
-			String username, String password, String foto, int idTipoUsu, int idCuentaBancaria, Date fecha,
+			String username, String password, String foto, int idTipoUsu, int idCuentaBancaria, String fecha,
 			int idHisInver, String dni, String ruc, String razonSocial, String descripcion, int idSubasta, boolean enable,
 			Set<UsuarioRol> usuarioRoles) {
 		super();
@@ -163,11 +162,11 @@ public class Usuario implements UserDetails{
 		this.idCuentaBancaria = idCuentaBancaria;
 	}
 
-	public Date getFecha() {
+	public String getFecha() {
 		return fecha;
 	}
 
-	public void setFecha(Date fecha) {
+	public void setFecha(String fecha) {
 		this.fecha = fecha;
 	}
 
