@@ -1,5 +1,6 @@
 package com.proyecto.integrador.servicios.impl;
 
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,5 +59,16 @@ public class UsuarioServiceImpl implements UsuarioService{
 	public boolean ExisteporCorreo(String correo) {
 		// TODO Auto-generated method stub
 		return usuarioRepository.existsByCorreo(correo);
+	}
+
+	@Override
+	public Optional<Usuario> listaUsuarioPorId(long id) {
+		// TODO Auto-generated method stub
+		return usuarioRepository.findById(id);
+	}
+	//Por Bruno
+	@Override
+	public Usuario rolUsuario(long id) {
+		return usuarioRepository.usuarioPorRol(id);
 	}
 }

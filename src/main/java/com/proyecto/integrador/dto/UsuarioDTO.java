@@ -37,7 +37,7 @@ private long id;
 	
 	private int idCuentaBancaria;
 	
-	private Date fecha;
+	private String fecha;
 	
 	private int idHisInver;
 	
@@ -123,10 +123,10 @@ private long id;
 	public void setIdCuentaBancaria(int idCuentaBancaria) {
 		this.idCuentaBancaria = idCuentaBancaria;
 	}
-	public Date getFecha() {
+	public String getFecha() {
 		return fecha;
 	}
-	public void setFecha(Date fecha) {
+	public void setFecha(String fecha) {
 		this.fecha = fecha;
 	}
 	public int getIdHisInver() {

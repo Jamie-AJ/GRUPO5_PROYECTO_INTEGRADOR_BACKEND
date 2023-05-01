@@ -18,10 +18,6 @@ public class UsuarioRol {
 	
 	@ManyToOne
 	private Rol rol;
-
-	
-	
-	
 	
 	public UsuarioRol() {
 		super();
