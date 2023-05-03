@@ -5,7 +5,7 @@ public class Validaciones {
 			//El texto solo permite caracteres 
 			public static final String TEXT = "^[A-Za-z\\s]+$"; 
 			
-			//El telefono debe contener 9 digitos iniciar con 9 y cualquier digito
+			//El telefono debe contener 9 digitos iniciar con 9 y cualquier digitos
 			public static final String PHONE = "^9[\\d]{8}$"; 
 			
 			//Valida el email

@@ -37,14 +37,9 @@ public class SistemaFactoringBackendApplication implements CommandLineRunner{
 			usuario.setPassword("12345");
 			usuario.setFoto("foto.png");
 			usuario.setIdTipoUsu(1);
-			usuario.setIdCuentaBancaria(1);
 			usuario.setFecha(null);
-			usuario.setIdHisInver(1);
-			usuario.setDni(73831172);
-			usuario.setRuc(1);
-			usuario.setRazonSocial("a");
-			usuario.setDescripcion("a");
-			usuario.setIdSubasta(1);
+			usuario.setDni("77454558");
+
 				
 			Rol rol = new Rol();
 			rol.setIdTipoUsu(1L);

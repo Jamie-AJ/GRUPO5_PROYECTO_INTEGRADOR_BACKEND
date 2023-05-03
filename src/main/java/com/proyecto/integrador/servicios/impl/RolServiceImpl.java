@@ -1,5 +1,7 @@
 package com.proyecto.integrador.servicios.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +20,4 @@ public class RolServiceImpl implements RolService {
 		Rol rol = repositorio.findById(id).orElse(null);
 		return rol;
 	}
-	
-	
-	
-	
-	
-
 }

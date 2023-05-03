@@ -2,6 +2,7 @@ package com.proyecto.integrador.controladores;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import java.util.stream.Stream;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,11 +33,14 @@ import com.proyecto.integrador.entidades.Usuario;
 import com.proyecto.integrador.entidades.UsuarioRol;
 import com.proyecto.integrador.servicios.RolService;
 import com.proyecto.integrador.servicios.UsuarioService;
+import com.proyecto.integrador.utils.AppSettings;
 
 @RestController
-@RequestMapping("/usuarios")
-@CrossOrigin("*")
+@RequestMapping("/api")
+@CrossOrigin(origins = AppSettings.URL_CROSS_ORIGIN)
 public class UsuarioController {
+	
+	
 	@Autowired
 	private UsuarioService usuarioService;
 
@@ -45,69 +50,68 @@ public class UsuarioController {
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-	@PostMapping("/")
+	@PostMapping("/registrar")
+	@ResponseBody
 	public ResponseEntity<?> registrar(@RequestBody @Valid UsuarioDTO usuario) throws Exception {
 
-		// Mostrar mensaje de error
-		// si el username ya esta en uso
-		if (usuarioService.ExisteporUsuario(usuario.getUsername())) {
-			return new ResponseEntity<>("Ese nombre de usuario ya existe", HttpStatus.BAD_REQUEST);
+		HashMap<String,Object> response = new HashMap<>();
+		try {
+			// Mostrar mensaje de error
+			// si el username ya esta en uso
+			if (usuarioService.ExisteporUsuario(usuario.getUsername())) {
+				return new ResponseEntity<>("Ese nombre de usuario ya existe", HttpStatus.BAD_REQUEST);
+			}
+			// si el email ya esta en uso
+			if (usuarioService.ExisteporCorreo(usuario.getCorreo())) {
+				return new ResponseEntity<>("Ese email de usuario ya existe", HttpStatus.BAD_REQUEST);
+			}
+
+			// Se recomienda realizar validaciones
+			// algunos atributos no sean nulos
+
+			/*
+			 * Al registrar usuario
+			 */
+
+			Usuario NuevoUsuario = new Usuario();
+			NuevoUsuario.setNombre(usuario.getNombre());
+			NuevoUsuario.setApellidoPa(usuario.getApellidoPa());
+			NuevoUsuario.setApellidoMa(usuario.getApellidoMa());
+			NuevoUsuario.setTelefono(usuario.getTelefono());
+			NuevoUsuario.setCorreo(usuario.getCorreo());
+			NuevoUsuario.setUsername(usuario.getUsername());
+			NuevoUsuario.setPassword(bCryptPasswordEncoder.encode(usuario.getPassword()));
+			NuevoUsuario.setDni(usuario.getDni());
+			// Datos registrados automaticamente
+			NuevoUsuario.setFoto("default.png");
+			NuevoUsuario.setFecha(new Date());
+			NuevoUsuario.setEnable("Activo");
+
+			// Agregamos el rol del usuario
+			Set<UsuarioRol> usuarioRoles = new HashSet<>();
+			Rol rol = rolService.buscarporId(usuario.getIdTipoUsu());
+
+			UsuarioRol usuarioRol = new UsuarioRol();
+			usuarioRol.setUsuario(NuevoUsuario);
+			usuarioRol.setRol(rol);
+			usuarioRoles.add(usuarioRol);
+			usuarioService.guardarUsuario(NuevoUsuario, usuarioRoles);
+		
+			response.put("mensaje","El usuario ha sido registrado con éxito");
+			return new ResponseEntity<HashMap<String, Object>>(response, HttpStatus.CREATED);
+		}catch(DataAccessException  e) {
+			response.put("mensaje", "Error al registrar el empleado");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+            return new ResponseEntity<HashMap<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		// si el email ya esta en uso
-		if (usuarioService.ExisteporCorreo(usuario.getCorreo())) {
-			return new ResponseEntity<>("Ese email de usuario ya existe", HttpStatus.BAD_REQUEST);
-		}
+		
+	// metodo para guardar el usuario
 
-		// Se recomienda realizar validaciones
-		// algunos atributos no sean nulos
-
-		/*
-		 * Al registrar usuario
-		 */
-
-		Usuario NuevoUsuario = new Usuario();
-		NuevoUsuario.setNombre(usuario.getNombre());
-		NuevoUsuario.setApellidoPa(usuario.getApellidoPa());
-		NuevoUsuario.setApellidoMa(usuario.getApellidoMa());
-		NuevoUsuario.setTelefono(usuario.getTelefono());
-		NuevoUsuario.setCorreo(usuario.getCorreo());
-		NuevoUsuario.setUsername(usuario.getUsername());
-		NuevoUsuario.setPassword(bCryptPasswordEncoder.encode(usuario.getPassword()));
-		NuevoUsuario.setIdCuentaBancaria(usuario.getIdCuentaBancaria());
-		NuevoUsuario.setFecha(usuario.getFecha());
-		NuevoUsuario.setIdHisInver(usuario.getIdHisInver());
-		NuevoUsuario.setDni(usuario.getDni());
-		NuevoUsuario.setRuc(usuario.getRuc());
-		NuevoUsuario.setRazonSocial(usuario.getRazonSocial());
-		NuevoUsuario.setDescripcion(usuario.getDescripcion());
-		NuevoUsuario.setIdSubasta(usuario.getIdSubasta());
-
-		// Datos registrados automaticamente
-		NuevoUsuario.setFoto("default.png");
-        Date date = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-        String dateString = formatter.format(date);
-        System.out.println(dateString);
-		NuevoUsuario.setFecha(dateString);
-		NuevoUsuario.setEnable(true);
-
-		// Agregamos el rol del usuario
-		Set<UsuarioRol> usuarioRoles = new HashSet<>();
-		Rol rol = rolService.buscarporId(usuario.getIdTipoUsu());
-
-		UsuarioRol usuarioRol = new UsuarioRol();
-		usuarioRol.setUsuario(NuevoUsuario);
-		usuarioRol.setRol(rol);
-		usuarioRoles.add(usuarioRol);
-
-		// metodo para guardar el usuario
-
-		usuarioService.guardarUsuario(NuevoUsuario, usuarioRoles);
-		return new ResponseEntity<>("Agregado con exito", HttpStatus.CREATED);
+		//return new ResponseEntity<>("Agregado con exito", HttpStatus.OK);
 
 	}
 	//Hecho por Bruno
-	@PutMapping("/")
+	@PutMapping("/actualizar")
 	@ResponseBody
 	public ResponseEntity<?> actualizar(@RequestBody @Valid UsuarioDTO usuario) {
 		try {
@@ -139,18 +143,9 @@ public class UsuarioController {
 			NuevoUsuario.setCorreo(usuario.getCorreo());
 			NuevoUsuario.setUsername(usuario.getUsername());
 			NuevoUsuario.setPassword(bCryptPasswordEncoder.encode(usuario.getPassword()));
-			NuevoUsuario.setIdCuentaBancaria(usuario.getIdCuentaBancaria());
-			NuevoUsuario.setIdHisInver(usuario.getIdHisInver());
 			NuevoUsuario.setDni(usuario.getDni());
-			NuevoUsuario.setRuc(usuario.getRuc());
-			NuevoUsuario.setRazonSocial(usuario.getRazonSocial());
-			NuevoUsuario.setDescripcion(usuario.getDescripcion());
-			NuevoUsuario.setIdSubasta(usuario.getIdSubasta());
 			
 			NuevoUsuario.setFoto(usuario.getFoto());
-			NuevoUsuario.setFecha(usuario.getFecha());
-			NuevoUsuario.setEnable(usuario.isEnable());
-
 			// Agregamos el rol del usuario
 			Set<UsuarioRol> usuarioRoles = new HashSet<>();
 			Rol rol = rolService.buscarporId(usuario.getIdTipoUsu());

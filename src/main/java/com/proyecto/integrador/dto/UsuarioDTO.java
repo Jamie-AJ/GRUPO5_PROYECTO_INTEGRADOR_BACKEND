@@ -10,52 +10,39 @@ public class UsuarioDTO {
 	
 private long id;
 	
-	@Pattern (regexp = Validaciones.TEXT, message = "el nombre es invalido")
+	/*@Pattern (regexp = Validaciones.TEXT, message = "el nombre es invalido")*/
 	private String nombre;
 	
-	@Pattern (regexp = Validaciones.TEXT, message = "el apellido es invalido")
+	/*@Pattern (regexp = Validaciones.TEXT, message = "el apellido es invalido")*/
 	private String apellidoPa;
-	
-	@Pattern (regexp = Validaciones.TEXT, message = "el apellido es invalido")
+	/*
+	@Pattern (regexp = Validaciones.TEXT, message = "el apellido es invalido")*/
 	private String apellidoMa;
 	
-	@Pattern (regexp = Validaciones.PHONE, message = "el telefono no es correcto")
+	/*@Pattern (regexp = Validaciones.PHONE, message = "el telefono no es correcto")*/
 	private String telefono;
 	
-	@Pattern (regexp = Validaciones.EMAIL, message = "el correo es invalido")
+	/*@Pattern (regexp = Validaciones.EMAIL, message = "el correo es invalido")*/
 	private String correo;
 	
-	@Pattern (regexp = Validaciones.TEXT, message = "el username es invalido")
+	/*@Pattern (regexp = Validaciones.TEXT, message = "el username es invalido")*/
 	private String username;
 	
-	@Pattern (regexp = Validaciones.PASSWORD, message = "la contraseña debe tener minimo 8 caracteres, contar con al menos un caracter especial y al menos un numero")
+	/*@Pattern (regexp = Validaciones.PASSWORD, message = "la contraseña debe tener minimo 8 caracteres, contar con al menos un caracter especial y al menos un numero")*/
 	private String password;
 	
 	private String foto;
 	
 	private Long idTipoUsu;
 	
-	private int idCuentaBancaria;
 	
 	private String fecha;
 	
-	private int idHisInver;
-	
-	@Pattern (regexp = Validaciones.DNI, message = "el dni no es correcto")
+	/*@Pattern (regexp = Validaciones.DNI, message = "el dni no es correcto")*/
 	private String dni;
 	
-	@Pattern (regexp = Validaciones.RUC, message = "el ruc debe empezar con 10/20 y debe tener 11 digitos")
-	private String ruc;
 	
-	@Pattern (regexp = Validaciones.TEXT, message = "la razon social debe contener solo caracteres")
-	private String razonSocial;
-	
-	@Pattern (regexp = Validaciones.TEXT, message = "la descripcion debe contener solo caracteres")
-	private String descripcion;
-	
-	private int idSubasta;
-	
-	private boolean enable = true;
+	private String enable;
 
 	public long getId() {
 		return id;
@@ -117,23 +104,11 @@ private long id;
 	public void setIdTipoUsu(Long idTipoUsu) {
 		this.idTipoUsu = idTipoUsu;
 	}
-	public int getIdCuentaBancaria() {
-		return idCuentaBancaria;
-	}
-	public void setIdCuentaBancaria(int idCuentaBancaria) {
-		this.idCuentaBancaria = idCuentaBancaria;
-	}
 	public String getFecha() {
 		return fecha;
 	}
 	public void setFecha(String fecha) {
 		this.fecha = fecha;
-	}
-	public int getIdHisInver() {
-		return idHisInver;
-	}
-	public void setIdHisInver(int idHisInver) {
-		this.idHisInver = idHisInver;
 	}
 	public String getDni() {
 		return dni;
@@ -141,34 +116,10 @@ private long id;
 	public void setDni(String dni) {
 		this.dni = dni;
 	}
-	public String getRuc() {
-		return ruc;
-	}
-	public void setRuc(String ruc) {
-		this.ruc = ruc;
-	}
-	public String getRazonSocial() {
-		return razonSocial;
-	}
-	public void setRazonSocial(String razonSocial) {
-		this.razonSocial = razonSocial;
-	}
-	public String getDescripcion() {
-		return descripcion;
-	}
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
-	public int getIdSubasta() {
-		return idSubasta;
-	}
-	public void setIdSubasta(int idSubasta) {
-		this.idSubasta = idSubasta;
-	}
-	public boolean isEnable() {
+	public String isEnable() {
 		return enable;
 	}
-	public void setEnable(boolean enable) {
+	public void setEnable(String enable) {
 		this.enable = enable;
 	}
 	
