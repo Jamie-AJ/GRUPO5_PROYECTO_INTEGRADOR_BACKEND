@@ -20,6 +20,7 @@ import com.proyecto.integrador.servicios.impl.UserDetailsServiceImpl;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class MySecurityConfig extends WebSecurityConfigurerAdapter {
+	
 	@Autowired
 	private JwtAuthenticationEntryPoint unauthorizedHandler;
 	
@@ -54,7 +55,7 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
 				.cors()
 				.disable()
 				.authorizeRequests()
-				.antMatchers("/generate-token","/usuarios/").permitAll()
+				.antMatchers("/generate-token","/api/**").permitAll()
 				.antMatchers(HttpMethod.OPTIONS).permitAll()
 				.anyRequest().authenticated()
 				.and()

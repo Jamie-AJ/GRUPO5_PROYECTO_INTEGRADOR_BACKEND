@@ -1,5 +1,6 @@
 package com.proyecto.integrador.entidades;
 
+import java.util.Date;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,15 +35,9 @@ public class Usuario implements UserDetails{
 	private String username;
 	private String password;
 	private String foto;
-	private int idCuentaBancaria;
-	private String fecha;
-	private int idHisInver;
-	private String dni;
-	private String ruc;
-	private String razonSocial;
-	private String descripcion;
-	private int idSubasta;
-	private boolean enable = true;
+	private Date fecha;
+	private String dni;;
+	private String enable;
 	
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "usuario")
 	@JsonIgnore
@@ -55,9 +50,10 @@ public class Usuario implements UserDetails{
 		super();
 	}
 
+
+
 	public Usuario(long id, String nombre, String apellidoPa, String apellidoMa, String telefono, String correo,
-			String username, String password, String foto, int idTipoUsu, int idCuentaBancaria, String fecha,
-			int idHisInver, String dni, String ruc, String razonSocial, String descripcion, int idSubasta, boolean enable,
+			String username, String password, String foto,int idTipoUsu, Date fecha, String dni, String enable,
 			Set<UsuarioRol> usuarioRoles) {
 		super();
 		this.id = id;
@@ -69,162 +65,157 @@ public class Usuario implements UserDetails{
 		this.username = username;
 		this.password = password;
 		this.foto = foto;
-		this.idCuentaBancaria = idCuentaBancaria;
 		this.fecha = fecha;
-		this.idHisInver = idHisInver;
 		this.dni = dni;
-		this.ruc = ruc;
-		this.razonSocial = razonSocial;
-		this.descripcion = descripcion;
-		this.idSubasta = idSubasta;
 		this.enable = enable;
 		this.usuarioRoles = usuarioRoles;
 	}
+
+
 
 	public long getId() {
 		return id;
 	}
 
+
+
 	public void setId(long id) {
 		this.id = id;
 	}
+
+
 
 	public String getNombre() {
 		return nombre;
 	}
 
+
+
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
+
+
 
 	public String getApellidoPa() {
 		return apellidoPa;
 	}
 
+
+
 	public void setApellidoPa(String apellidoPa) {
 		this.apellidoPa = apellidoPa;
 	}
+
+
 
 	public String getApellidoMa() {
 		return apellidoMa;
 	}
 
+
+
 	public void setApellidoMa(String apellidoMa) {
 		this.apellidoMa = apellidoMa;
 	}
+
+
 
 	public String getTelefono() {
 		return telefono;
 	}
 
+
+
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
+
+
 
 	public String getCorreo() {
 		return correo;
 	}
 
+
+
 	public void setCorreo(String correo) {
 		this.correo = correo;
 	}
+
+
 
 	public String getUsername() {
 		return username;
 	}
 
+
+
 	public void setUsername(String username) {
 		this.username = username;
 	}
+
+
 
 	public String getPassword() {
 		return password;
 	}
 
+
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+
+
 	public String getFoto() {
 		return foto;
 	}
+
+
 
 	public void setFoto(String foto) {
 		this.foto = foto;
 	}
 
 
-	public int getIdCuentaBancaria() {
-		return idCuentaBancaria;
-	}
 
-	public void setIdCuentaBancaria(int idCuentaBancaria) {
-		this.idCuentaBancaria = idCuentaBancaria;
-	}
-
-	public String getFecha() {
+	public Date getFecha() {
 		return fecha;
 	}
 
-	public void setFecha(String fecha) {
-		this.fecha = fecha;
+
+
+	public void setFecha(Date date) {
+		this.fecha = date;
 	}
 
-	public int getIdHisInver() {
-		return idHisInver;
-	}
 
-	public void setIdHisInver(int idHisInver) {
-		this.idHisInver = idHisInver;
-	}
 
 	public String getDni() {
 		return dni;
 	}
 
+
+
 	public void setDni(String dni) {
 		this.dni = dni;
 	}
 
-	public String getRuc() {
-		return ruc;
-	}
 
-	public void setRuc(String ruc) {
-		this.ruc = ruc;
-	}
 
-	public String getRazonSocial() {
-		return razonSocial;
-	}
-
-	public void setRazonSocial(String razonSocial) {
-		this.razonSocial = razonSocial;
-	}
-
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
-
-	public int getIdSubasta() {
-		return idSubasta;
-	}
-
-	public void setIdSubasta(int idSubasta) {
-		this.idSubasta = idSubasta;
-	}
-
-	public boolean isEnable() {
+	public String getEnable() {
 		return enable;
 	}
 
-	public void setEnable(boolean enable) {
+
+
+	public void setEnable(String enable) {
 		this.enable = enable;
 	}
+
+
 
 	public Set<UsuarioRol> getUsuarioRoles() {
 		return usuarioRoles;
@@ -266,7 +257,11 @@ public class Usuario implements UserDetails{
 		// TODO Auto-generated method stub
 		return true;
 	}
-	
+
+	public void setIdTipoUsu(int i) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	
 }

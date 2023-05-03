@@ -1,5 +1,6 @@
 package com.proyecto.integrador.entidades;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tipoUsuario")
-public class Rol {
+public class Rol implements Serializable{
 
 	@Id
 	private Long idTipoUsu;
@@ -21,9 +22,6 @@ public class Rol {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "rol")
 	private Set<UsuarioRol> usuarioRoles = new HashSet<>();
 
-	
-	
-	
 	public Rol() {
 		super();
 	}
