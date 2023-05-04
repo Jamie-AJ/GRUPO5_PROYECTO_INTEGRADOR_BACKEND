@@ -100,7 +100,7 @@ public class UsuarioController {
 			response.put("mensaje","El usuario ha sido registrado con éxito");
 			return new ResponseEntity<HashMap<String, Object>>(response, HttpStatus.CREATED);
 		}catch(DataAccessException  e) {
-			response.put("mensaje", "Error al registrar el empleado");
+			response.put("mensaje", "Error al registrar el usuario");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
             return new ResponseEntity<HashMap<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
