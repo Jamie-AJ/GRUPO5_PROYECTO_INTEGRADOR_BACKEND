@@ -49,7 +49,25 @@ public class UsuarioController {
 
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
-
+	
+	@GetMapping("/buscar/{id}")
+	public ResponseEntity<?> buscarPorId(@PathVariable("id") long id){
+		HashMap<String,Object> response = new HashMap<>();
+		try {
+			Optional<Usuario> usuarioId = usuarioService.listaUsuarioPorId(id);
+			if(usuarioId.isEmpty()) {
+				response.put("mensaje","El usuario con el ID: " + id + " no existe en la base de datos");
+                return new ResponseEntity<HashMap<String, Object>>(response, HttpStatus.NOT_FOUND);
+			}else {
+				return ResponseEntity.ok(response);
+			}
+		}catch(DataAccessException e){
+            response.put("mensaje","Error al realizar la consulta en la base de datos");
+            response.put("error",e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+            return new ResponseEntity<HashMap<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+		
+	}
 	@PostMapping("/registrar")
 	@ResponseBody
 	public ResponseEntity<?> registrar(@RequestBody @Valid UsuarioDTO usuario) throws Exception {
@@ -112,7 +130,6 @@ public class UsuarioController {
 	}
 	//Hecho por Bruno
 	@PutMapping("/actualizar")
-	@ResponseBody
 	public ResponseEntity<?> actualizar(@RequestBody @Valid UsuarioDTO usuario) {
 		try {
 			Optional<Usuario> optinal = usuarioService.listaUsuarioPorId(usuario.getId());

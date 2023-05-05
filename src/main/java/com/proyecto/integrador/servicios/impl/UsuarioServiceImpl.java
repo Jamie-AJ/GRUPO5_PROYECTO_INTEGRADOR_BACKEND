@@ -39,10 +39,8 @@ public class UsuarioServiceImpl implements UsuarioService{
 
 	@Override
 	public Usuario obtenerUsuario(String username) {
-		
 		return usuarioRepository.findByUsername(username);
 	}
-
 	@Override
 	public void eliminarUsuario(Long usuarioId) {
 		usuarioRepository.deleteById(usuarioId);
@@ -70,5 +68,10 @@ public class UsuarioServiceImpl implements UsuarioService{
 	@Override
 	public Usuario rolUsuario(long id) {
 		return usuarioRepository.usuarioPorRol(id);
+	}
+
+	@Override
+	public Usuario buscarEmpleadoPorId(long idUsuario) {
+		return usuarioRepository.findById(idUsuario).orElse(null);
 	}
 }

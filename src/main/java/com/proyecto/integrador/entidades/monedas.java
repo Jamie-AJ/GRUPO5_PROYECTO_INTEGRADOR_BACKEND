@@ -10,14 +10,15 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "monedas")
 public class monedas {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="idTipoMoneda")
 	private int idMonedas;
-	@Column(name="nomMoneda")
+
 	private String nomMonedas;
-	@Column(name="valor")
+
 	private String valorMoneda;
+	
 	public int getIdMonedas() {
 		return idMonedas;
 	}

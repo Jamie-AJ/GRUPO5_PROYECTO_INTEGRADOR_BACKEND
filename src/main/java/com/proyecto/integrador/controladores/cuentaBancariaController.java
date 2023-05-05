@@ -6,9 +6,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,45 +20,54 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import com.proyecto.integrador.entidades.cuentaBancaria;
+import com.proyecto.integrador.servicios.UsuarioService;
 import com.proyecto.integrador.servicios.cuentaBancariaService;
+import com.proyecto.integrador.utils.AppSettings;
 
 @RestController
-@RequestMapping("Rest/cuentaBancaria")
-@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/api")
+@CrossOrigin(origins =AppSettings.URL_CROSS_ORIGIN)
 public class cuentaBancariaController {
 	
 	@Autowired
+	private UsuarioService usuarioService;
+	@Autowired
 	private cuentaBancariaService cuentabancaria;
 	
-	@GetMapping
+	@GetMapping("/listarCuentaBancaria")
 	@ResponseBody
 	public ResponseEntity<List<cuentaBancaria>> listaCuentaBancaria(){
 	List<cuentaBancaria> lista=cuentabancaria.listaCuentaBancariaTodos();	
 	return  ResponseEntity.ok(lista);
 		}
-	@GetMapping
+	
+	@PostMapping("/registrarCuentaBancaria")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> insertaCuentaBancaria(@RequestBody cuentaBancaria obj){
-	Map<String, Object> salida= new  HashMap<>();
+	public ResponseEntity<HashMap<String, Object>> insertaCuentaBancaria(@RequestBody cuentaBancaria obj){
+	HashMap<String, Object> salida= new  HashMap<>();
 	try {
 		cuentaBancaria objsalida=cuentabancaria.insertaActualizaCuentaBancaria(obj);
 		if (objsalida==null) {
 			salida.put("mensaje", "No se registro");
+			salida.put("usuario", obj);
+            return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.BAD_REQUEST);
 			
 		} else {
-			salida.put("mensaje", " se registro la cuenta:   "+ obj.getIdCuentaBancaria());
+			salida.put("mensaje", " Tú cuenta se registro exitosamente");
+			salida.put("cuentaBancaria",obj);
+			return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.OK);
 
 		}
 		
-	} catch (Exception e) {
-			e.printStackTrace();
-			salida.put("mensaje", "No se registro");
-	}
+	} catch (DataAccessException e) {
+        salida.put("mensaje", "Error al registrar el empleado");
+        salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage())); 
+        return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		
-		return ResponseEntity.ok(salida);	
 	}
 	
-	@PutMapping
+	@PutMapping("/actualizarCuentaBancaria")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> actualizaCuentaBancaria(@RequestBody cuentaBancaria obj){
 	Map<String, Object> salida= new  HashMap<>();

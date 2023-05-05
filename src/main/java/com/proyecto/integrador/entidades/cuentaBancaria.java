@@ -1,5 +1,7 @@
 package com.proyecto.integrador.entidades;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,16 +19,42 @@ public class cuentaBancaria {
 	private int idCuentaBancaria;
 	private String nroCuenta;
 	private String nroCuentaCci;
-	private int idBanco;
-	private int idTipoMoneda;
+	private String cvv;
+	private Date mes;
+	private Date year;
 	
 	@ManyToOne
-	@JoinColumn(name="idBanco")
+	@JoinColumn(name="idBancos")
 	private Bancos bancos;
 	
 	@ManyToOne
-	@JoinColumn(name="idTipoMoneda")
+	@JoinColumn(name="idMonedas")
 	private monedas monedas;
+	
+	@ManyToOne
+	@JoinColumn
+	private Usuario usuario;
+	
+	
+
+	public cuentaBancaria() {
+		super();
+		
+	}
+
+	public cuentaBancaria(int idCuentaBancaria, String nroCuenta, String nroCuentaCci, String cvv,Date mes,Date year, Bancos bancos,
+			com.proyecto.integrador.entidades.monedas monedas, Usuario usuario) {
+		super();
+		this.idCuentaBancaria = idCuentaBancaria;
+		this.nroCuenta = nroCuenta;
+		this.nroCuentaCci = nroCuentaCci;
+		this.cvv = cvv;
+		this.mes = mes;
+		this.year = year;
+		this.bancos = bancos;
+		this.monedas = monedas;
+		this.usuario = usuario;
+	}
 
 	public int getIdCuentaBancaria() {
 		return idCuentaBancaria;
@@ -52,20 +80,29 @@ public class cuentaBancaria {
 		this.nroCuentaCci = nroCuentaCci;
 	}
 
-	public int getIdBanco() {
-		return idBanco;
+	public String getCvv() {
+		return cvv;
 	}
 
-	public void setIdBanco(int idBanco) {
-		this.idBanco = idBanco;
+	public void setCvv(String cvv) {
+		this.cvv = cvv;
 	}
 
-	public int getIdTipoMoneda() {
-		return idTipoMoneda;
+	
+	public Date getMes() {
+		return mes;
 	}
 
-	public void setIdTipoMoneda(int idTipoMoneda) {
-		this.idTipoMoneda = idTipoMoneda;
+	public void setMes(Date mes) {
+		this.mes = mes;
+	}
+
+	public Date getYear() {
+		return year;
+	}
+
+	public void setYear(Date year) {
+		this.year = year;
 	}
 
 	public Bancos getBancos() {
@@ -84,24 +121,15 @@ public class cuentaBancaria {
 		this.monedas = monedas;
 	}
 
-	public cuentaBancaria(int idCuentaBancaria, String nroCuenta, String nroCuentaCci, int idBanco, int idTipoMoneda,
-			Bancos bancos, com.proyecto.integrador.entidades.monedas monedas) {
-		super();
-		this.idCuentaBancaria = idCuentaBancaria;
-		this.nroCuenta = nroCuenta;
-		this.nroCuentaCci = nroCuentaCci;
-		this.idBanco = idBanco;
-		this.idTipoMoneda = idTipoMoneda;
-		this.bancos = bancos;
-		this.monedas = monedas;
+	public Usuario getUsuario() {
+		return usuario;
 	}
 
-	public cuentaBancaria() {
-		super();
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
-	
-	
-	
+
+
 	
 
 }
