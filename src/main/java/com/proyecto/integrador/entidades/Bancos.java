@@ -12,10 +12,11 @@ import javax.persistence.Table;
 public class Bancos {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="idBanco")
+
 	private int idBancos;
-	@Column(name="nomBanco")
+
 	private String nomBancos;
+	
 	public int getIdBancos() {
 		return idBancos;
 	}

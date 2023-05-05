@@ -15,8 +15,9 @@ public class cuentaBancariaServiceImpl implements cuentaBancariaService {
 	
 	@Autowired
 	private cuentaBancariaRepository repositorio;
+	
 	@Override
-	public cuentaBancaria insertaActualizaCuentaBancaria(cuentaBancaria  obj) {
+	public cuentaBancaria insertaActualizaCuentaBancaria(cuentaBancaria obj) {
 		return repositorio.save(obj);
 	}
 	@Override
