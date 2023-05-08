@@ -11,10 +11,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -39,9 +42,10 @@ public class Usuario implements UserDetails{
 	private String dni;;
 	private String enable;
 	
-	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "usuario")
-	@JsonIgnore
-	private Set<UsuarioRol> usuarioRoles = new HashSet<>();
+	@ManyToOne
+	@JoinColumn(name="idTipoUsu")
+	private Rol rol;
+	
 
 	
 	
@@ -53,8 +57,8 @@ public class Usuario implements UserDetails{
 
 
 	public Usuario(long id, String nombre, String apellidoPa, String apellidoMa, String telefono, String correo,
-			String username, String password, String foto,int idTipoUsu, Date fecha, String dni, String enable,
-			Set<UsuarioRol> usuarioRoles) {
+			String username, String password, String foto, Date fecha, String dni, String enable, Rol rol ) {
+			 
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -68,7 +72,20 @@ public class Usuario implements UserDetails{
 		this.fecha = fecha;
 		this.dni = dni;
 		this.enable = enable;
-		this.usuarioRoles = usuarioRoles;
+		this.rol = rol;
+	
+	}
+
+
+
+	public Rol getRol() {
+		return rol;
+	}
+
+
+
+	public void setRol(Rol rol) {
+		this.rol = rol;
 	}
 
 
@@ -215,24 +232,23 @@ public class Usuario implements UserDetails{
 		this.enable = enable;
 	}
 
-
-
-	public Set<UsuarioRol> getUsuarioRoles() {
-		return usuarioRoles;
-	}
-
-	public void setUsuarioRoles(Set<UsuarioRol> usuarioRoles) {
-		this.usuarioRoles = usuarioRoles;
-	}
-
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Set<Authority> autoridades = new HashSet<>();
-		this.usuarioRoles.forEach(usuarioRol -> {
-			autoridades.add(new Authority(usuarioRol.getRol().getTipo()));
-		});
-		return autoridades;
+	    Set<GrantedAuthority> authorities = new HashSet<>();
+	    authorities.add(new SimpleGrantedAuthority(rol.getTipo()));
+	    return authorities;
 	}
+
+
+
+//	@Override
+//	public Collection<? extends GrantedAuthority> getAuthorities() {
+//		Set<Authority> autoridades = new HashSet<>();
+//		this.usuarioRoles.forEach(usuarioRol -> {
+//			autoridades.add(new Authority(usuarioRol.getRol().getTipo()));
+//		});
+//		return autoridades;
+//	}
 
 	@Override
 	public boolean isAccountNonExpired() {
@@ -258,10 +274,7 @@ public class Usuario implements UserDetails{
 		return true;
 	}
 
-	public void setIdTipoUsu(int i) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	
 }

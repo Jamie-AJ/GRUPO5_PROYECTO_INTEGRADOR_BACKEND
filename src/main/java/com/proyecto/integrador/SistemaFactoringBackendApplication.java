@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.proyecto.integrador.entidades.Rol;
 import com.proyecto.integrador.entidades.Usuario;
-import com.proyecto.integrador.entidades.UsuarioRol;
+
 import com.proyecto.integrador.servicios.UsuarioService;
 
 @SpringBootApplication
