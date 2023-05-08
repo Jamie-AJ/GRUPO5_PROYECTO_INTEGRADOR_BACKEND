@@ -1,5 +1,6 @@
 package com.proyecto.integrador.servicios.impl;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -7,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proyecto.integrador.entidades.Usuario;
-import com.proyecto.integrador.entidades.UsuarioRol;
 import com.proyecto.integrador.repositorio.RolRepository;
 import com.proyecto.integrador.repositorio.UsuarioRepository;
 import com.proyecto.integrador.servicios.UsuarioService;
@@ -21,21 +21,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 	@Autowired
 	private RolRepository rolRepository;
 
-	@Override
-	public Usuario guardarUsuario(Usuario usuario, Set<UsuarioRol> usuarioRoles) throws Exception {
-		Usuario usuarioLocal = usuarioRepository.findByUsername(usuario.getUsername());
-		if(usuarioLocal != null) {
-			System.out.println("El usuario ya existe");
-			throw new Exception("El usuario ya esta presente");
-		}else {
-			for(UsuarioRol usuarioRol:usuarioRoles) {
-				rolRepository.save(usuarioRol.getRol());
-			}
-			usuario.getUsuarioRoles().addAll(usuarioRoles);
-			usuarioLocal = usuarioRepository.save(usuario);
-		}
-		return usuarioLocal;
-	}
+	
 
 	@Override
 	public Usuario obtenerUsuario(String username) {
@@ -71,7 +57,17 @@ public class UsuarioServiceImpl implements UsuarioService{
 	}
 
 	@Override
-	public Usuario buscarEmpleadoPorId(long idUsuario) {
+	public Usuario buscarUsuarioPorId(long idUsuario) {
 		return usuarioRepository.findById(idUsuario).orElse(null);
+	}
+	@Override
+	public List<Usuario> listaUsuarios() {
+		// TODO Auto-generated method stub
+		return usuarioRepository.findAll();
+	}
+	@Override
+	public Usuario insertaActualizaUsuario(Usuario obj) {
+		// TODO Auto-generated method stub
+		return usuarioRepository.save(obj);
 	}
 }

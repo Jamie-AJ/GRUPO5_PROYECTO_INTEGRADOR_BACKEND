@@ -11,26 +11,27 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "tipoUsuario")
+@JsonIgnoreProperties({"tipo"})
 public class Rol implements Serializable{
 
 	@Id
 	private Long idTipoUsu;
 	private String tipo;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "rol")
-	private Set<UsuarioRol> usuarioRoles = new HashSet<>();
-
+	
 	public Rol() {
 		super();
 	}
 
-	public Rol(Long idTipoUsu, String tipo, Set<UsuarioRol> usuarioRoles) {
+	public Rol(Long idTipoUsu, String tipo) {
 		super();
 		this.idTipoUsu = idTipoUsu;
 		this.tipo = tipo;
-		this.usuarioRoles = usuarioRoles;
+	
 	}
 
 	public Long getIdTipoUsu() {
@@ -49,13 +50,7 @@ public class Rol implements Serializable{
 		this.tipo = tipo;
 	}
 
-	public Set<UsuarioRol> getUsuarioRoles() {
-		return usuarioRoles;
-	}
-
-	public void setUsuarioRoles(Set<UsuarioRol> usuarioRoles) {
-		this.usuarioRoles = usuarioRoles;
-	}
+	
 	
 	
 }
