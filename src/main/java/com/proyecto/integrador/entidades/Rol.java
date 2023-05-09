@@ -1,14 +1,9 @@
 package com.proyecto.integrador.entidades;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -17,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "tipoUsuario")
 @JsonIgnoreProperties({"tipo"})
 public class Rol implements Serializable{
-
+	private static final long serialVersionUID = 1L;
 	@Id
 	private Long idTipoUsu;
 	private String tipo;

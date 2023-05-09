@@ -1,18 +1,12 @@
 package com.proyecto.integrador.controladores;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Stream;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,10 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import com.proyecto.integrador.entidades.Rol;
 import com.proyecto.integrador.entidades.Usuario;
-
 import com.proyecto.integrador.servicios.RolService;
 import com.proyecto.integrador.servicios.UsuarioService;
 import com.proyecto.integrador.utils.AppSettings;
@@ -39,8 +31,7 @@ import com.proyecto.integrador.utils.AppSettings;
 @RequestMapping("/api")
 @CrossOrigin(origins = AppSettings.URL_CROSS_ORIGIN)
 public class UsuarioController {
-	
-	
+
 	@Autowired
 	private UsuarioService usuarioService;
 
@@ -49,7 +40,7 @@ public class UsuarioController {
 
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
-	
+
 	@GetMapping("/buscar/{id}")
 	@ResponseBody
 	public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
@@ -66,7 +57,7 @@ public class UsuarioController {
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	// listado de usuarios
 
 	@GetMapping("/listarusuarios")
@@ -75,48 +66,51 @@ public class UsuarioController {
 		List<Usuario> lista = usuarioService.listaUsuarios();
 		return ResponseEntity.ok(lista);
 	}
-	
+
 	// realizado por Hilario
 	@PostMapping("/registrar")
 	@ResponseBody
 	public ResponseEntity<?> registrar(@RequestBody @Valid Usuario usuario) throws Exception {
+		HashMap<String, Object> response = new HashMap<>();
+		try {
+			// Mostrar mensaje de error
+			// si el username ya esta en uso
+			int existeUsername = usuarioService.ExisteporUsuario(usuario.getUsername(), usuario.getId());
+			if (existeUsername != 0) {
+				return new ResponseEntity<>("Ese usuario ya existe", HttpStatus.BAD_REQUEST);
+			}
+			// si el email ya esta en uso
+			int existeCorreo = usuarioService.ExisteporCorreo(usuario.getCorreo(), usuario.getId());
+			if (existeCorreo != 0) {
+				return new ResponseEntity<>("Ese email de usuario ya existe", HttpStatus.BAD_REQUEST);
+			}
+			// si el dni ya esta en uso
+			int existeDni = usuarioService.ExisteporDni(usuario.getDni(), usuario.getId());
+			if (existeDni != 0) {
+				return new ResponseEntity<>("El Dni de usuario ya existe", HttpStatus.BAD_REQUEST);
+			}
+			// Obtener el rol por id
+			Rol rol = rolService.buscarporId(usuario.getRol().getIdTipoUsu());
 
-	    HashMap<String,Object> response = new HashMap<>();
-	    try {
-	        // Mostrar mensaje de error
-	        // si el username ya esta en uso
-	        if (usuarioService.ExisteporUsuario(usuario.getUsername())) {
-	            return new ResponseEntity<>("Ese usuario ya existe", HttpStatus.BAD_REQUEST);
-	        }
-	        // si el email ya esta en uso
-	        if (usuarioService.ExisteporCorreo(usuario.getCorreo())) {
-	            return new ResponseEntity<>("Ese email de usuario ya existe", HttpStatus.BAD_REQUEST);
-	        }
+			System.out.println("Rol obtenido: " + rol);
+			usuario.setRol(rol);
 
-	        // Obtener el rol por id
-	        Rol rol = rolService.buscarporId(usuario.getRol().getIdTipoUsu());
-	       
-	      
-	    
-	        System.out.println("Rol obtenido: " + rol);
-	        usuario.setRol(rol);
+			usuario.setPassword(bCryptPasswordEncoder.encode(usuario.getPassword()));
+			// Datos registrados automaticamente
+			usuario.setFoto("default.png");
+			usuario.setFecha(new Date());
+			usuario.setEnable("Activo");
 
-	        usuario.setPassword(bCryptPasswordEncoder.encode(usuario.getPassword()));
-	        // Datos registrados automaticamente
-	        usuario.setFoto("default.png");
-	        usuario.setFecha(new Date());
-	        usuario.setEnable("Activo");
+			// Guardar el usuario en la base de datos
+			usuarioService.insertaActualizaUsuario(usuario);
 
-	        // Guardar el usuario en la base de datos
-	        usuarioService.insertaActualizaUsuario(usuario);
+			response.put("mensaje", "Usuario registrado exitosamente");
+			return ResponseEntity.ok(response);
 
-	        response.put("mensaje", "Usuario registrado exitosamente");
-	        return ResponseEntity.ok(response);
-
-	    } catch (Exception e) {
-	        response.put("mensaje", "Hubo un error al registrar al usuario: " + e.getMessage());
-	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
+		} catch (Exception e) {
+			response.put("mensaje", "Hubo un error al registrar al usuario: " + e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	// realizado por Hilario
@@ -134,11 +128,29 @@ public class UsuarioController {
 				response.put("mensaje", "No se puede actualizar, el usuario no existe");
 				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 			}
+			// si el username ya esta en uso
+			int existeUsername = usuarioService.ExisteporUsuario(usuarioActualizado.getUsername(),
+					usuarioActualizado.getId());
+			if (existeUsername != 0) {
+				return new ResponseEntity<>("Ese usuario ya existe", HttpStatus.BAD_REQUEST);
+			}
+			// si el email ya esta en uso
+			int existeCorreo = usuarioService.ExisteporCorreo(usuarioActualizado.getCorreo(),
+					usuarioActualizado.getId());
+			if (existeCorreo != 0) {
+				return new ResponseEntity<>("Ese email de usuario ya existe", HttpStatus.BAD_REQUEST);
+			}
+			// si el dni ya esta en uso
+			int existeDni = usuarioService.ExisteporDni(usuarioActualizado.getDni(), usuarioActualizado.getId());
+			if (existeDni != 0) {
+				return new ResponseEntity<>("El Dni de usuario ya existe", HttpStatus.BAD_REQUEST);
+			}
 
 			// Restricciones para actualizar
 			usuarioActualizado.setUsername(usuarioExistente.getUsername()); // No se puede actualizar el username
 			usuarioActualizado.setPassword(usuarioExistente.getPassword()); // No se puede actualizar el password
 			usuarioActualizado.setRol(usuarioExistente.getRol()); // No se puede actualizar el rol
+			usuarioActualizado.setFecha(usuarioExistente.getFecha()); // No se puede actualizar la fecha
 			usuarioActualizado.setCorreo(usuarioExistente.getCorreo()); // No se puede actualizar el correo
 
 			// Actualizar el usuario
@@ -166,7 +178,6 @@ public class UsuarioController {
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
 
 ////Hecho por Bruno
 //@PutMapping("/actualizar")
@@ -235,5 +246,4 @@ public class UsuarioController {
 		return usuarioService.obtenerUsuario(username);
 	}
 
-	
 }
