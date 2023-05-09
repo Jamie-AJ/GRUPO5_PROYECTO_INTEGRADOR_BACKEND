@@ -2,23 +2,14 @@ package com.proyecto.integrador;
 
 
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.proyecto.integrador.entidades.Rol;
-import com.proyecto.integrador.entidades.Usuario;
-
-import com.proyecto.integrador.servicios.UsuarioService;
-
 @SpringBootApplication
 public class SistemaFactoringBackendApplication implements CommandLineRunner{
-	@Autowired
-	private UsuarioService usuarioService;
+	/*@Autowired
+	private UsuarioService usuarioService;*/
 	
 	public static void main(String[] args) {
 		SpringApplication.run(SistemaFactoringBackendApplication.class, args);

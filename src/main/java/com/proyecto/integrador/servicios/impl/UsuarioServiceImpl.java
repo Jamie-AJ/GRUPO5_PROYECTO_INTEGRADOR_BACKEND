@@ -2,13 +2,11 @@ package com.proyecto.integrador.servicios.impl;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proyecto.integrador.entidades.Usuario;
-import com.proyecto.integrador.repositorio.RolRepository;
 import com.proyecto.integrador.repositorio.UsuarioRepository;
 import com.proyecto.integrador.servicios.UsuarioService;
 
@@ -17,11 +15,6 @@ public class UsuarioServiceImpl implements UsuarioService{
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
-	
-	@Autowired
-	private RolRepository rolRepository;
-
-	
 
 	@Override
 	public Usuario obtenerUsuario(String username) {
@@ -34,15 +27,13 @@ public class UsuarioServiceImpl implements UsuarioService{
 	}
 
 	@Override
-	public boolean ExisteporUsuario(String username) {
-		// TODO Auto-generated method stub
-		return usuarioRepository.existsByUsername(username);
+	public int ExisteporUsuario(String username,long idUsu) {
+		return usuarioRepository.existeUsername(username,idUsu);
 	}
 
 	@Override
-	public boolean ExisteporCorreo(String correo) {
-		// TODO Auto-generated method stub
-		return usuarioRepository.existsByCorreo(correo);
+	public int ExisteporCorreo(String correo, long idUsu) {
+		return usuarioRepository.existeCorreo(correo, idUsu);
 	}
 
 	@Override
@@ -50,11 +41,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 		// TODO Auto-generated method stub
 		return usuarioRepository.findById(id);
 	}
-	//Por Bruno
-	@Override
-	public Usuario rolUsuario(long id) {
-		return usuarioRepository.usuarioPorRol(id);
-	}
+
 
 	@Override
 	public Usuario buscarUsuarioPorId(long idUsuario) {
@@ -69,5 +56,9 @@ public class UsuarioServiceImpl implements UsuarioService{
 	public Usuario insertaActualizaUsuario(Usuario obj) {
 		// TODO Auto-generated method stub
 		return usuarioRepository.save(obj);
+	}
+	@Override
+	public int ExisteporDni(String dni, long idUsu) {
+		return usuarioRepository.existeDni(dni, idUsu);
 	}
 }
