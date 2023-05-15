@@ -90,10 +90,8 @@ public class UsuarioController {
 				return new ResponseEntity<>("El Dni de usuario ya existe", HttpStatus.BAD_REQUEST);
 			}
 			// Obtener el rol por id
-			Rol rol = rolService.buscarporId(usuario.getRol().getIdTipoUsu());
-
-			System.out.println("Rol obtenido: " + rol);
-			usuario.setRol(rol);
+			Rol rol = rolService.buscarporId(usuario.getIdTipoUsu());
+			usuario.setTiporol(rol);
 
 			usuario.setPassword(bCryptPasswordEncoder.encode(usuario.getPassword()));
 			// Datos registrados automaticamente
@@ -149,7 +147,7 @@ public class UsuarioController {
 			// Restricciones para actualizar
 			usuarioActualizado.setUsername(usuarioExistente.getUsername()); // No se puede actualizar el username
 			usuarioActualizado.setPassword(usuarioExistente.getPassword()); // No se puede actualizar el password
-			usuarioActualizado.setRol(usuarioExistente.getRol()); // No se puede actualizar el rol
+			usuarioActualizado.setIdTipoUsu(usuarioExistente.getIdTipoUsu()); // No se puede actualizar el rol
 			usuarioActualizado.setFecha(usuarioExistente.getFecha()); // No se puede actualizar la fecha
 			usuarioActualizado.setCorreo(usuarioExistente.getCorreo()); // No se puede actualizar el correo
 
