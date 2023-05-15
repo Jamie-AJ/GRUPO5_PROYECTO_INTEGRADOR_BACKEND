@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "cuentasbancarias")
-public class cuentaBancaria {
+public class CuentaBancaria {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +22,7 @@ public class cuentaBancaria {
 	private String cvv;
 	private Date mes;
 	private Date year;
+	private Double saldo;
 	
 	@ManyToOne
 	@JoinColumn(name="idBancos")
@@ -37,12 +38,12 @@ public class cuentaBancaria {
 	
 	
 
-	public cuentaBancaria() {
+	public CuentaBancaria() {
 		super();
 		
 	}
 
-	public cuentaBancaria(int idCuentaBancaria, String nroCuenta, String nroCuentaCci, String cvv,Date mes,Date year, Bancos bancos,
+	public CuentaBancaria(int idCuentaBancaria, String nroCuenta, String nroCuentaCci, String cvv,Date mes,Date year,Double saldo, Bancos bancos,
 			com.proyecto.integrador.entidades.monedas monedas, Usuario usuario) {
 		super();
 		this.idCuentaBancaria = idCuentaBancaria;
@@ -51,9 +52,18 @@ public class cuentaBancaria {
 		this.cvv = cvv;
 		this.mes = mes;
 		this.year = year;
+		this.saldo = saldo;
 		this.bancos = bancos;
 		this.monedas = monedas;
 		this.usuario = usuario;
+	}
+
+	public Double getSaldo() {
+		return saldo;
+	}
+
+	public void setSaldo(Double saldo) {
+		this.saldo = saldo;
 	}
 
 	public int getIdCuentaBancaria() {
