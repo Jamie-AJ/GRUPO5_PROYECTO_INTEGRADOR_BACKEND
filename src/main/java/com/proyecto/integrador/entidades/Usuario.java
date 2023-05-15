@@ -38,13 +38,16 @@ public class Usuario implements UserDetails{
 	private String enable;
 	
 	@ManyToOne
-	@JoinColumn(name="idTipoUsu")
-	private Rol rol;
+	@JoinColumn(name="idTipoUsu", insertable = false, updatable = false)
+	private Rol tiporol;
+	private long idTipoUsu;
 	
 
 	
 	
 	
+
+
 	public Usuario() {
 		super();
 	}
@@ -52,7 +55,7 @@ public class Usuario implements UserDetails{
 
 
 	public Usuario(long id, String nombre, String apellidoPa, String apellidoMa, String telefono, String correo,
-			String username, String password, String foto, Date fecha, String dni, String enable, Rol rol ) {
+			String username, String password, String foto, Date fecha, String dni, String enable, Rol tiporol, long idTipoUsu ) {
 			 
 		super();
 		this.id = id;
@@ -67,22 +70,37 @@ public class Usuario implements UserDetails{
 		this.fecha = fecha;
 		this.dni = dni;
 		this.enable = enable;
-		this.rol = rol;
+		this.tiporol = tiporol;
+		this.idTipoUsu = idTipoUsu;
 	
 	}
 
 
 
-	public Rol getRol() {
-		return rol;
+	
+
+
+	public Rol getTiporol() {
+		return tiporol;
 	}
 
 
 
-	public void setRol(Rol rol) {
-		this.rol = rol;
+	public void setTiporol(Rol tiporol) {
+		this.tiporol = tiporol;
 	}
 
+
+
+	public long getIdTipoUsu() {
+		return idTipoUsu;
+	}
+
+
+
+	public void setIdTipoUsu(long idTipoUsu) {
+		this.idTipoUsu = idTipoUsu;
+	}
 
 
 	public long getId() {
@@ -230,7 +248,7 @@ public class Usuario implements UserDetails{
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 	    Set<GrantedAuthority> authorities = new HashSet<>();
-	    authorities.add(new SimpleGrantedAuthority(rol.getTipo()));
+	    authorities.add(new SimpleGrantedAuthority(tiporol.getTipo()));
 	    return authorities;
 	}
 
