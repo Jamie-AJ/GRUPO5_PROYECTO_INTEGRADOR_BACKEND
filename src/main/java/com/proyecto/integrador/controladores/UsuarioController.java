@@ -178,72 +178,11 @@ public class UsuarioController {
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
-////Hecho por Bruno
-//@PutMapping("/actualizar")
-//public ResponseEntity<?> actualizar(@RequestBody @Valid UsuarioDTO usuario) {
-//	try {
-//		Optional<Usuario> optinal = usuarioService.listaUsuarioPorId(usuario.getId());
-//		if(optinal.isPresent()) {
-//		// Mostrar mensaje de error
-//		// si el username ya esta en uso
-//		if (usuarioService.ExisteporUsuario(usuario.getUsername())) {
-//			return new ResponseEntity<>("El nombre de usuario ya existe", HttpStatus.BAD_REQUEST);
-//		}
-//		// si el email ya esta en uso
-//		if (usuarioService.ExisteporCorreo(usuario.getCorreo())) {
-//			return new ResponseEntity<>("El email de usuario ya existe", HttpStatus.BAD_REQUEST);
-//		}
-//
-//		// Se recomienda realizar validaciones
-//		// algunos atributos no sean nulos
-//
-//		/*
-//		 * Al registrar usuario
-//		 */
-//
-//		Usuario NuevoUsuario = new Usuario();
-//		NuevoUsuario.setId(usuario.getId()); 
-//		NuevoUsuario.setNombre(usuario.getNombre());
-//		NuevoUsuario.setApellidoPa(usuario.getApellidoPa());
-//		NuevoUsuario.setApellidoMa(usuario.getApellidoMa());
-//		NuevoUsuario.setTelefono(usuario.getTelefono());
-//		NuevoUsuario.setCorreo(usuario.getCorreo());
-//		NuevoUsuario.setUsername(usuario.getUsername());
-//		NuevoUsuario.setPassword(bCryptPasswordEncoder.encode(usuario.getPassword()));
-//		NuevoUsuario.setDni(usuario.getDni());
-//		
-//		NuevoUsuario.setFoto(usuario.getFoto());
-//		// Agregamos el rol del usuario
-//		Set<UsuarioRol> usuarioRoles = new HashSet<>();
-//		Rol rol = rolService.buscarporId(usuario.getIdTipoUsu());
-//		UsuarioRol usuarioRol = new UsuarioRol();
-//		Usuario usuarioRolAct = usuarioService.rolUsuario(usuario.getId());
-//        Stream<Object> usuRolId = Stream.of(usuarioRolAct).map(usu -> usu.getUsuarioRoles()).flatMap(r -> r.stream()
-//        		.map(ru -> ru.getUsuarioRolId()));
-//        List<Object> lista = usuRolId.toList();
-//        long id = (long) lista.get(0);
-//		usuarioRol.setUsuarioRolId(id);
-//		usuarioRol.setUsuario(NuevoUsuario);
-//		usuarioRol.setRol(rol);
-//		usuarioRoles.add(usuarioRol);
-//
-//		// metodo para guardar el usuario
-//
-//		usuarioService.guardarUsuario(NuevoUsuario, usuarioRoles);
-//		}else{
-//			return new ResponseEntity<>("No existe el usuario con id: "+usuario.getId(), HttpStatus.BAD_REQUEST);
-//		}
-//	} catch (Exception e) {
-//		e.printStackTrace();
-//	}
-//	return new ResponseEntity<>("Actualizado con exito", HttpStatus.CREATED);
-//}
-
+	
 	@GetMapping("/{username}")
 	public Usuario obtenerUsuario(@PathVariable("username") String username) {
 
 		return usuarioService.obtenerUsuario(username);
 	}
-
+	
 }

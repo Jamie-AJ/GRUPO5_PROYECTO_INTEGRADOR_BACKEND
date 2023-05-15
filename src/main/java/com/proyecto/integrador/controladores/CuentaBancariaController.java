@@ -17,31 +17,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.proyecto.integrador.entidades.cuentaBancaria;
-import com.proyecto.integrador.servicios.cuentaBancariaService;
+import com.proyecto.integrador.entidades.CuentaBancaria;
+import com.proyecto.integrador.servicios.CuentaBancariaService;
 import com.proyecto.integrador.utils.AppSettings;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = AppSettings.URL_CROSS_ORIGIN)
-public class cuentaBancariaController {
+public class CuentaBancariaController {
 
 	@Autowired
-	private cuentaBancariaService cuentabancaria;
+	private CuentaBancariaService cuentabancaria;
 
 	@GetMapping("/listarCuentaBancaria")
 	@ResponseBody
-	public ResponseEntity<List<cuentaBancaria>> listaCuentaBancaria() {
-		List<cuentaBancaria> lista = cuentabancaria.listaCuentaBancariaTodos();
+	public ResponseEntity<List<CuentaBancaria>> listaCuentaBancaria() {
+		List<CuentaBancaria> lista = cuentabancaria.listaCuentaBancariaTodos();
 		return ResponseEntity.ok(lista);
 	}
 
 	@PostMapping("/registrarCuentaBancaria")
 	@ResponseBody
-	public ResponseEntity<?> insertaCuentaBancaria(@RequestBody cuentaBancaria obj) {
+	public ResponseEntity<?> insertaCuentaBancaria(@RequestBody CuentaBancaria obj) {
 		HashMap<String, Object> salida = new HashMap<>();
 		try {
-			cuentaBancaria objsalida = cuentabancaria.insertaActualizaCuentaBancaria(obj);
+			CuentaBancaria nuevaCuenta = obj;
+			nuevaCuenta.setSaldo(0.0);
+			CuentaBancaria objsalida = cuentabancaria.insertaActualizaCuentaBancaria(nuevaCuenta);
 			if (objsalida == null) {
 				salida.put("mensaje", "No se registro");
 				salida.put("usuario", obj);
@@ -58,12 +60,12 @@ public class cuentaBancariaController {
 
 	@PutMapping("/actualizarCuentaBancaria")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> actualizaCuentaBancaria(@RequestBody cuentaBancaria obj) {
+	public ResponseEntity<Map<String, Object>> actualizaCuentaBancaria(@RequestBody CuentaBancaria obj) {
 		Map<String, Object> salida = new HashMap<>();
 		try {
-			Optional<cuentaBancaria> optional = cuentabancaria.listaCuentaBancariaxId(obj.getIdCuentaBancaria());
+			Optional<CuentaBancaria> optional = cuentabancaria.listaCuentaBancariaxId(obj.getIdCuentaBancaria());
 			if (optional.isPresent()) {
-				cuentaBancaria objsalida = cuentabancaria.insertaActualizaCuentaBancaria(obj);
+				CuentaBancaria objsalida = cuentabancaria.insertaActualizaCuentaBancaria(obj);
 				if (objsalida == null) {
 					salida.put("mensaje", "No se actualizo");
 
