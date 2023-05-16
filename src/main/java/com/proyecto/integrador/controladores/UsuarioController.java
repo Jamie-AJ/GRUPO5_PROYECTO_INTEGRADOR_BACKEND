@@ -77,17 +77,20 @@ public class UsuarioController {
 			// si el username ya esta en uso
 			int existeUsername = usuarioService.ExisteporUsuario(usuario.getUsername(), usuario.getId());
 			if (existeUsername != 0) {
+				response.put("mensaje","El usuario ya se enuentra registrado");
 				return new ResponseEntity<>("Ese usuario ya existe", HttpStatus.BAD_REQUEST);
 			}
 			// si el email ya esta en uso
 			int existeCorreo = usuarioService.ExisteporCorreo(usuario.getCorreo(), usuario.getId());
 			if (existeCorreo != 0) {
-				return new ResponseEntity<>("Ese email de usuario ya existe", HttpStatus.BAD_REQUEST);
+				response.put("mensaje", "El email ya existe");
+				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 			}
 			// si el dni ya esta en uso
 			int existeDni = usuarioService.ExisteporDni(usuario.getDni(), usuario.getId());
 			if (existeDni != 0) {
-				return new ResponseEntity<>("El Dni de usuario ya existe", HttpStatus.BAD_REQUEST);
+				response.put("mensaje", "el DNI ya se encuetnra registrado");
+				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 			}
 			// Obtener el rol por id
 			Rol rol = rolService.buscarporId(usuario.getRol().getIdTipoUsu());
