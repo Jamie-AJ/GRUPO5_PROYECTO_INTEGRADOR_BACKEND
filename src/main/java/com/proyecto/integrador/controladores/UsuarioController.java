@@ -112,37 +112,26 @@ public class UsuarioController {
 	}
 
 	// realizado por Hilario
-	@PutMapping("/actualizar")
+	@PutMapping("/actualizar/{id}")
 	@ResponseBody
-	public ResponseEntity<?> actualizar(@RequestBody @Valid Usuario usuarioActualizado) {
-
+	public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody @Valid Usuario usuarioActualizado)  {
 		HashMap<String, Object> response = new HashMap<>();
 		try {
 			// Buscar el usuario por su id
-			Usuario usuarioExistente = usuarioService.buscarUsuarioPorId(usuarioActualizado.getId());
+			Usuario usuarioExistente = usuarioService.buscarUsuarioPorId(id);
 
 			// Verificar si el usuario existe
 			if (usuarioExistente == null) {
 				response.put("mensaje", "No se puede actualizar, el usuario no existe");
 				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 			}
-			// si el username ya esta en uso
-			int existeUsername = usuarioService.ExisteporUsuario(usuarioActualizado.getUsername(),
-					usuarioActualizado.getId());
-			if (existeUsername != 0) {
-				return new ResponseEntity<>("Ese usuario ya existe", HttpStatus.BAD_REQUEST);
-			}
-			// si el email ya esta en uso
-			int existeCorreo = usuarioService.ExisteporCorreo(usuarioActualizado.getCorreo(),
-					usuarioActualizado.getId());
-			if (existeCorreo != 0) {
-				return new ResponseEntity<>("Ese email de usuario ya existe", HttpStatus.BAD_REQUEST);
-			}
-			// si el dni ya esta en uso
-			int existeDni = usuarioService.ExisteporDni(usuarioActualizado.getDni(), usuarioActualizado.getId());
-			if (existeDni != 0) {
-				return new ResponseEntity<>("El Dni de usuario ya existe", HttpStatus.BAD_REQUEST);
-			}
+
+			// Actualizar los campos del usuario existente con los valores del usuario
+			
+			usuarioExistente.setNombre(usuarioActualizado.getNombre());
+			usuarioExistente.setApellidoPa(usuarioActualizado.getApellidoPa());
+			usuarioExistente.setApellidoMa(usuarioActualizado.getApellidoMa());
+			usuarioExistente.setTelefono(usuarioActualizado.getTelefono());
 
 			// Restricciones para actualizar
 			usuarioActualizado.setUsername(usuarioExistente.getUsername()); // No se puede actualizar el username
@@ -150,9 +139,10 @@ public class UsuarioController {
 			usuarioActualizado.setIdTipoUsu(usuarioExistente.getIdTipoUsu()); // No se puede actualizar el rol
 			usuarioActualizado.setFecha(usuarioExistente.getFecha()); // No se puede actualizar la fecha
 			usuarioActualizado.setCorreo(usuarioExistente.getCorreo()); // No se puede actualizar el correo
+			usuarioActualizado.setDni(usuarioExistente.getDni()); // No se puede actualizar el dni
 
-			// Actualizar el usuario
-			usuarioService.insertaActualizaUsuario(usuarioActualizado);
+			// Guardar los cambios en la base de datos
+	        usuarioService.insertaActualizaUsuario(usuarioExistente);
 
 			response.put("mensaje", "Usuario actualizado exitosamente");
 			return ResponseEntity.ok(response);
