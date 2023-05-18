@@ -20,4 +20,5 @@ public interface UsuarioService {
 	public abstract Usuario buscarUsuarioPorId(long idUsuario);
 	public abstract List<Usuario> listaUsuarios();
 	public abstract Usuario insertaActualizaUsuario(Usuario obj);
+	
 }
