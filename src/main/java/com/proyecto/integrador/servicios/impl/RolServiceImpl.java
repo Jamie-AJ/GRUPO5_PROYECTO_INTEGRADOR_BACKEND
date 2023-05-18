@@ -1,5 +1,7 @@
 package com.proyecto.integrador.servicios.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,5 +19,11 @@ public class RolServiceImpl implements RolService {
 	public Rol buscarporId(Long id) {
 		Rol rol = repositorio.findById(id).orElse(null);
 		return rol;
+	}
+	
+	@Override
+	public List<Rol> listarRoles() {
+		// TODO Auto-generated method stub
+		return repositorio.findAll();
 	}
 }

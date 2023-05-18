@@ -61,4 +61,14 @@ public class UsuarioServiceImpl implements UsuarioService{
 	public int ExisteporDni(String dni, long idUsu) {
 		return usuarioRepository.existeDni(dni, idUsu);
 	}
+	@Override
+	public Optional<Usuario> buscarPorDni(String dni) {
+		// TODO Auto-generated method stub
+		return usuarioRepository.findByDni(dni);
+	}
+	@Override
+	public Optional<Usuario> buscarPorCorreo(String correo) {
+		// TODO Auto-generated method stub
+		return usuarioRepository.findByCorreo(correo);
+	}
 }

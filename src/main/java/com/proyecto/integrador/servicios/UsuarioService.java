@@ -15,6 +15,8 @@ public interface UsuarioService {
 	int ExisteporUsuario(String username, long idUsu);
 	int ExisteporCorreo(String correo, long idUsu);
 	int ExisteporDni(String dni, long idUsu);
+	public abstract Optional<Usuario> buscarPorDni(String dni);
+	public abstract Optional<Usuario> buscarPorCorreo(String correo);
 	public abstract Usuario buscarUsuarioPorId(long idUsuario);
 	public abstract List<Usuario> listaUsuarios();
 	public abstract Usuario insertaActualizaUsuario(Usuario obj);
