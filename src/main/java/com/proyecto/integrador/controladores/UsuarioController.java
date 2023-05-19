@@ -137,38 +137,21 @@ public class UsuarioController {
 				response.put("mensaje", "No se puede actualizar, el usuario no existe en la base de datos");
 				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 			}
-			// si el username ya esta en uso
-			int existeUsername = usuarioService.ExisteporUsuario(usuarioActualizado.getUsername(),
-					usuarioActualizado.getId());
-			if (existeUsername != 0) {
-				return new ResponseEntity<>("Ese usuario ya existe", HttpStatus.BAD_REQUEST);
-			}
-			// si el email ya esta en uso
-			/*int existeCorreo = usuarioService.ExisteporCorreo(usuarioActualizado.getCorreo(),
-					usuarioActualizado.getId());
-			if (existeCorreo != 0) {
-				return new ResponseEntity<>("Ese email de usuario ya existe", HttpStatus.BAD_REQUEST);
-			}*/
-			
-			// si el dni ya esta en uso
-			/*int existeDni = usuarioService.ExisteporDni(usuarioActualizado.getDni(), usuarioActualizado.getId());
-			if (existeDni != 0) {
-				return new ResponseEntity<>("El Dni de usuario ya existe", HttpStatus.BAD_REQUEST);
-			}*/
 			
 			usuarioExistente.setNombre(usuarioActualizado.getNombre());
 			usuarioExistente.setApellidoPa(usuarioActualizado.getApellidoPa());
 			usuarioExistente.setApellidoMa(usuarioActualizado.getApellidoMa());
 			usuarioExistente.setTelefono(usuarioActualizado.getTelefono());
-			usuarioExistente.setDni(usuarioActualizado.getDni());
-			usuarioExistente.setCorreo(usuarioActualizado.getCorreo());
+			//usuarioExistente.setDni(usuarioActualizado.getDni());
+			//usuarioExistente.setCorreo(usuarioActualizado.getCorreo());
 			usuarioExistente.setFecha(new Date());
 			
 			// Restricciones para actualizar
 			usuarioActualizado.setUsername(usuarioExistente.getUsername()); // No se puede actualizar el username
 			usuarioActualizado.setPassword(usuarioExistente.getPassword()); // No se puede actualizar el password
 			usuarioActualizado.setIdTipoUsu(usuarioExistente.getIdTipoUsu()); // No se puede actualizar el rol
-
+			usuarioActualizado.setDni(usuarioExistente.getDni());
+			usuarioActualizado.setCorreo(usuarioExistente.getCorreo());
 
 			// Actualizar el usuario
 			usuarioService.insertaActualizaUsuario(usuarioExistente);
