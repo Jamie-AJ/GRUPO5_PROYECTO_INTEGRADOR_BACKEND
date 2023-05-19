@@ -38,7 +38,6 @@ public class UsuarioServiceImpl implements UsuarioService{
 
 	@Override
 	public Optional<Usuario> listaUsuarioPorId(long id) {
-		// TODO Auto-generated method stub
 		return usuarioRepository.findById(id);
 	}
 
@@ -49,12 +48,10 @@ public class UsuarioServiceImpl implements UsuarioService{
 	}
 	@Override
 	public List<Usuario> listaUsuarios() {
-		// TODO Auto-generated method stub
 		return usuarioRepository.findAll();
 	}
 	@Override
 	public Usuario insertaActualizaUsuario(Usuario obj) {
-		// TODO Auto-generated method stub
 		return usuarioRepository.save(obj);
 	}
 	@Override
@@ -63,12 +60,10 @@ public class UsuarioServiceImpl implements UsuarioService{
 	}
 	@Override
 	public Optional<Usuario> buscarPorDni(String dni) {
-		// TODO Auto-generated method stub
 		return usuarioRepository.findByDni(dni);
 	}
 	@Override
 	public Optional<Usuario> buscarPorCorreo(String correo) {
-		// TODO Auto-generated method stub
 		return usuarioRepository.findByCorreo(correo);
 	}
 }
