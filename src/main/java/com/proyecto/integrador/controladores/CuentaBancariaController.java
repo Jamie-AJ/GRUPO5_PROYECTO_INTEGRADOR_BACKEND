@@ -35,7 +35,7 @@ public class CuentaBancariaController {
 		List<CuentaBancaria> lista = cuentabancaria.listaCuentaBancariaTodos();
 		return ResponseEntity.ok(lista);
 	}
-
+	//ANTHONY
 	@PostMapping("/registrarCuentaBancaria")
 	@ResponseBody
 	public ResponseEntity<?> insertaCuentaBancaria(@RequestBody CuentaBancaria obj) {
@@ -52,7 +52,7 @@ public class CuentaBancariaController {
 				salida.put("cuentaBancaria", obj);
 			}
 		} catch (DataAccessException e) {
-			salida.put("mensaje", "Error al registrar el empleado");
+			salida.put("mensaje", "Error al registrar el cuenta bancaria");
 			salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 		}
 		return ResponseEntity.ok(salida);
@@ -68,17 +68,12 @@ public class CuentaBancariaController {
 				CuentaBancaria objsalida = cuentabancaria.insertaActualizaCuentaBancaria(obj);
 				if (objsalida == null) {
 					salida.put("mensaje", "No se actualizo");
-
 				} else {
 					salida.put("mensaje", " se actualizo la cuenta:   " + obj.getIdCuentaBancaria());
-
 				}
-
 			} else {
 				salida.put("mensaje", "el id no existe");
-
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			salida.put("mensaje", "No se actualizo");
@@ -86,5 +81,4 @@ public class CuentaBancariaController {
 
 		return ResponseEntity.ok(salida);
 	}
-
 }
