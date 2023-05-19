@@ -7,13 +7,11 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.hibernate.exception.DataException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.proyecto.integrador.entidades.Cartera;
 import com.proyecto.integrador.entidades.Rol;
 import com.proyecto.integrador.entidades.Usuario;
+import com.proyecto.integrador.servicios.CarteraService;
 import com.proyecto.integrador.servicios.RolService;
 import com.proyecto.integrador.servicios.UsuarioService;
 import com.proyecto.integrador.utils.AppSettings;
@@ -42,6 +42,8 @@ public class UsuarioController {
 	@Autowired
 	private RolService rolService;
 
+	@Autowired
+	private CarteraService carteraService;
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -101,9 +103,14 @@ public class UsuarioController {
 					Rol rol = rolService.buscarporId(usuario.getIdTipoUsu());
 					usuario.setTiporol(rol);
 					Usuario objUsuario = usuarioService.insertaActualizaUsuario(usuario);
-					if (objUsuario != null) {
+					Cartera cartera = new Cartera();
+					cartera.setSaldo(0);
+					cartera.setIdUsu(objUsuario.getId());
+					Cartera objCartera = carteraService.insertaActualizaCartera(cartera);
+					if (objUsuario != null && objCartera != null) {
 						salida.put("mensaje", "Has sido registrado exitosamente");
-						salida.put("empleado", usuario);
+						salida.put("empleado", objUsuario);
+						salida.put("cartera", objCartera);
 						return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CREATED);
 					} else {
 						salida.put("mensaje", "Error al registrar el usuario");
@@ -124,99 +131,98 @@ public class UsuarioController {
 	}
 
 	// realizado por Hilario
-		@PutMapping("/actualizar")
-		@ResponseBody
-		public ResponseEntity<?> actualizar(@RequestBody @Valid Usuario usuarioActualizado) {
-
-			HashMap<String, Object> response = new HashMap<>();
-			try {
-				// Buscar el usuario por su id
-				Usuario usuarioExistente = usuarioService.buscarUsuarioPorId(usuarioActualizado.getId());
-
-				// Verificar si el usuario existe
-				if (usuarioExistente == null) {
-					response.put("mensaje", "No se puede actualizar, el usuario no existe");
-					return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-				}
-				// si el username ya esta en uso
-				int existeUsername = usuarioService.ExisteporUsuario(usuarioActualizado.getUsername(),
-						usuarioActualizado.getId());
-				if (existeUsername != 0) {
-					return new ResponseEntity<>("Ese usuario ya existe", HttpStatus.BAD_REQUEST);
-				}
-				// si el email ya esta en uso
-				int existeCorreo = usuarioService.ExisteporCorreo(usuarioActualizado.getCorreo(),
-						usuarioActualizado.getId());
-				if (existeCorreo != 0) {
-					return new ResponseEntity<>("Ese email de usuario ya existe", HttpStatus.BAD_REQUEST);
-				}
-				// si el dni ya esta en uso
-				int existeDni = usuarioService.ExisteporDni(usuarioActualizado.getDni(), usuarioActualizado.getId());
-				if (existeDni != 0) {
-					return new ResponseEntity<>("El Dni de usuario ya existe", HttpStatus.BAD_REQUEST);
-				}
-
-				// Restricciones para actualizar
-				usuarioActualizado.setUsername(usuarioExistente.getUsername()); // No se puede actualizar el username
-				usuarioActualizado.setPassword(usuarioExistente.getPassword()); // No se puede actualizar el password
-				usuarioActualizado.setIdTipoUsu(usuarioExistente.getIdTipoUsu()); // No se puede actualizar el rol
-				usuarioActualizado.setFecha(usuarioExistente.getFecha()); // No se puede actualizar la fecha
-				usuarioActualizado.setEnable(usuarioExistente.getEnable());
-				usuarioActualizado.setFoto(usuarioExistente.getFoto());
-				
-				
-				// Actualizar el usuario
-				usuarioService.insertaActualizaUsuario(usuarioActualizado);
-
-				response.put("mensaje", "Usuario actualizado exitosamente");
-				return ResponseEntity.ok(response);
-
-			} catch (Exception e) {
-				response.put("mensaje", "Hubo un error al actualizar al usuario: " + e.getMessage());
-				return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		}
-		
-	/*@PutMapping("/actualizar/{id}")
+	@PutMapping("/actualizar")
 	@ResponseBody
-	public ResponseEntity<?> actualizar(@PathVariable long id, @RequestBody @Valid Usuario usuarioActualizado) {
+	public ResponseEntity<?> actualizar(@RequestBody @Valid Usuario usuarioActualizado) {
+
 		HashMap<String, Object> response = new HashMap<>();
 		try {
 			// Buscar el usuario por su id
-			Usuario usuarioExistente = usuarioService.buscarUsuarioPorId(id);
+			Usuario usuarioExistente = usuarioService.buscarUsuarioPorId(usuarioActualizado.getId());
 
 			// Verificar si el usuario existe
 			if (usuarioExistente == null) {
-				response.put("mensaje", "No se puede actualizar, el usuario no existe en la base de datos");
+				response.put("mensaje", "No se puede actualizar, el usuario no existe");
 				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 			}
-			
-			usuarioExistente.setNombre(usuarioActualizado.getNombre());
-			usuarioExistente.setApellidoPa(usuarioActualizado.getApellidoPa());
-			usuarioExistente.setApellidoMa(usuarioActualizado.getApellidoMa());
-			usuarioExistente.setTelefono(usuarioActualizado.getTelefono());
-			usuarioExistente.setDni(usuarioActualizado.getDni());
-			usuarioExistente.setCorreo(usuarioActualizado.getCorreo());
-			usuarioExistente.setFecha(new Date());
-			
+			// si el username ya esta en uso
+			int existeUsername = usuarioService.ExisteporUsuario(usuarioActualizado.getUsername(),
+					usuarioActualizado.getId());
+			if (existeUsername != 0) {
+				return new ResponseEntity<>("Ese usuario ya existe", HttpStatus.BAD_REQUEST);
+			}
+			// si el email ya esta en uso
+			int existeCorreo = usuarioService.ExisteporCorreo(usuarioActualizado.getCorreo(),
+					usuarioActualizado.getId());
+			if (existeCorreo != 0) {
+				return new ResponseEntity<>("Ese email de usuario ya existe", HttpStatus.BAD_REQUEST);
+			}
+			// si el dni ya esta en uso
+			int existeDni = usuarioService.ExisteporDni(usuarioActualizado.getDni(), usuarioActualizado.getId());
+			if (existeDni != 0) {
+				return new ResponseEntity<>("El Dni de usuario ya existe", HttpStatus.BAD_REQUEST);
+			}
+
 			// Restricciones para actualizar
 			usuarioActualizado.setUsername(usuarioExistente.getUsername()); // No se puede actualizar el username
 			usuarioActualizado.setPassword(usuarioExistente.getPassword()); // No se puede actualizar el password
 			usuarioActualizado.setIdTipoUsu(usuarioExistente.getIdTipoUsu()); // No se puede actualizar el rol
-			usuarioActualizado.setDni(usuarioExistente.getDni());
-			usuarioActualizado.setCorreo(usuarioExistente.getCorreo());
+			usuarioActualizado.setFecha(usuarioExistente.getFecha()); // No se puede actualizar la fecha
+			usuarioActualizado.setEnable(usuarioExistente.getEnable());
+			usuarioActualizado.setFoto(usuarioExistente.getFoto());
 
 			// Actualizar el usuario
-			usuarioService.insertaActualizaUsuario(usuarioExistente);
+			usuarioService.insertaActualizaUsuario(usuarioActualizado);
 
 			response.put("mensaje", "Usuario actualizado exitosamente");
 			return ResponseEntity.ok(response);
 
-		} catch (DataAccessException e) {
+		} catch (Exception e) {
 			response.put("mensaje", "Hubo un error al actualizar al usuario: " + e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	}*/
+	}
+
+	/*
+	 * @PutMapping("/actualizar/{id}")
+	 * 
+	 * @ResponseBody public ResponseEntity<?> actualizar(@PathVariable long
+	 * id, @RequestBody @Valid Usuario usuarioActualizado) { HashMap<String, Object>
+	 * response = new HashMap<>(); try { // Buscar el usuario por su id Usuario
+	 * usuarioExistente = usuarioService.buscarUsuarioPorId(id);
+	 * 
+	 * // Verificar si el usuario existe if (usuarioExistente == null) {
+	 * response.put("mensaje",
+	 * "No se puede actualizar, el usuario no existe en la base de datos"); return
+	 * new ResponseEntity<>(response, HttpStatus.NOT_FOUND); }
+	 * 
+	 * usuarioExistente.setNombre(usuarioActualizado.getNombre());
+	 * usuarioExistente.setApellidoPa(usuarioActualizado.getApellidoPa());
+	 * usuarioExistente.setApellidoMa(usuarioActualizado.getApellidoMa());
+	 * usuarioExistente.setTelefono(usuarioActualizado.getTelefono());
+	 * usuarioExistente.setDni(usuarioActualizado.getDni());
+	 * usuarioExistente.setCorreo(usuarioActualizado.getCorreo());
+	 * usuarioExistente.setFecha(new Date());
+	 * 
+	 * // Restricciones para actualizar
+	 * usuarioActualizado.setUsername(usuarioExistente.getUsername()); // No se
+	 * puede actualizar el username
+	 * usuarioActualizado.setPassword(usuarioExistente.getPassword()); // No se
+	 * puede actualizar el password
+	 * usuarioActualizado.setIdTipoUsu(usuarioExistente.getIdTipoUsu()); // No se
+	 * puede actualizar el rol usuarioActualizado.setDni(usuarioExistente.getDni());
+	 * usuarioActualizado.setCorreo(usuarioExistente.getCorreo());
+	 * 
+	 * // Actualizar el usuario
+	 * usuarioService.insertaActualizaUsuario(usuarioExistente);
+	 * 
+	 * response.put("mensaje", "Usuario actualizado exitosamente"); return
+	 * ResponseEntity.ok(response);
+	 * 
+	 * } catch (DataAccessException e) { response.put("mensaje",
+	 * "Hubo un error al actualizar al usuario: " + e.getMessage()); return new
+	 * ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); } }
+	 */
 
 	@DeleteMapping("/eliminar/{id}")
 	@ResponseBody

@@ -30,8 +30,12 @@ public class CuentaBancariaServiceImpl implements CuentaBancariaService {
 		return repositorio.findById(idCuentabancaria);
 	}
 	@Override
-	public CuentaBancaria buscarxId(int id) {
-		return repositorio.findById(id).orElse(null);
+	public Optional<CuentaBancaria> buscarxId(int id) {
+		return repositorio.findById(id);
+	}
+	@Override
+	public List<CuentaBancaria> listaCuentaBancariaxIdUsuAct(long id) {
+		return repositorio.listaCuentasBancariaXUsuAcT(id);
 	}
 	
 	

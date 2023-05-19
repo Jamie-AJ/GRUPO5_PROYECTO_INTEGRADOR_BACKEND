@@ -1,7 +1,5 @@
 package com.proyecto.integrador.entidades;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,31 +18,31 @@ public class CuentaBancaria {
 	private String nroCuenta;
 	private String nroCuentaCci;
 	private String cvv;
-	private Date mes;
-	private Date year;
+	private String mes;
+	private String year;
 	private Double saldo;
-	
+	private String enable;
 	@ManyToOne
-	@JoinColumn(name="idBancos")
+	@JoinColumn(name="idBancos", insertable = false, updatable = false)
 	private Bancos bancos;
+	private int idBancos;
 	
 	@ManyToOne
-	@JoinColumn(name="idMonedas")
+	@JoinColumn(name="idMonedas", insertable = false, updatable = false)
 	private monedas monedas;
-	
+	private int idMonedas;
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="usuarioId", insertable = false, updatable = false)
 	private Usuario usuario;
+	private long usuarioId;
 	
-	
-
 	public CuentaBancaria() {
 		super();
-		
 	}
 
-	public CuentaBancaria(int idCuentaBancaria, String nroCuenta, String nroCuentaCci, String cvv,Date mes,Date year,Double saldo, Bancos bancos,
-			com.proyecto.integrador.entidades.monedas monedas, Usuario usuario) {
+	public CuentaBancaria(int idCuentaBancaria, String nroCuenta, String nroCuentaCci, String cvv, String mes,
+			String year, Double saldo, String enable, Bancos bancos, int idBancos,
+			com.proyecto.integrador.entidades.monedas monedas, int idMonedas, Usuario usuario, long usuarioId) {
 		super();
 		this.idCuentaBancaria = idCuentaBancaria;
 		this.nroCuenta = nroCuenta;
@@ -53,17 +51,13 @@ public class CuentaBancaria {
 		this.mes = mes;
 		this.year = year;
 		this.saldo = saldo;
+		this.enable = enable;
 		this.bancos = bancos;
+		this.idBancos = idBancos;
 		this.monedas = monedas;
+		this.idMonedas = idMonedas;
 		this.usuario = usuario;
-	}
-
-	public Double getSaldo() {
-		return saldo;
-	}
-
-	public void setSaldo(Double saldo) {
-		this.saldo = saldo;
+		this.usuarioId = usuarioId;
 	}
 
 	public int getIdCuentaBancaria() {
@@ -98,21 +92,36 @@ public class CuentaBancaria {
 		this.cvv = cvv;
 	}
 
-	
-	public Date getMes() {
+	public String getMes() {
 		return mes;
 	}
 
-	public void setMes(Date mes) {
+	public void setMes(String mes) {
 		this.mes = mes;
 	}
 
-	public Date getYear() {
+	public String getYear() {
 		return year;
 	}
 
-	public void setYear(Date year) {
+	public void setYear(String year) {
 		this.year = year;
+	}
+
+	public Double getSaldo() {
+		return saldo;
+	}
+
+	public void setSaldo(Double saldo) {
+		this.saldo = saldo;
+	}
+
+	public String isEnable() {
+		return enable;
+	}
+
+	public void setEnable(String enable) {
+		this.enable = enable;
 	}
 
 	public Bancos getBancos() {
@@ -123,12 +132,28 @@ public class CuentaBancaria {
 		this.bancos = bancos;
 	}
 
+	public int getIdBancos() {
+		return idBancos;
+	}
+
+	public void setIdBancos(int idBancos) {
+		this.idBancos = idBancos;
+	}
+
 	public monedas getMonedas() {
 		return monedas;
 	}
 
 	public void setMonedas(monedas monedas) {
 		this.monedas = monedas;
+	}
+
+	public int getIdMonedas() {
+		return idMonedas;
+	}
+
+	public void setIdMonedas(int idMonedas) {
+		this.idMonedas = idMonedas;
 	}
 
 	public Usuario getUsuario() {
@@ -139,7 +164,11 @@ public class CuentaBancaria {
 		this.usuario = usuario;
 	}
 
+	public long getUsuarioId() {
+		return usuarioId;
+	}
 
-	
-
+	public void setUsuarioId(long usuarioId) {
+		this.usuarioId = usuarioId;
+	}
 }
