@@ -1,5 +1,7 @@
 package com.proyecto.integrador.entidades;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,8 +10,13 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "monedas")
-public class monedas {
+public class Monedas implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idMonedas;
@@ -17,6 +24,8 @@ public class monedas {
 	private String nomMonedas;
 
 	private String valorMoneda;
+
+
 	
 	public int getIdMonedas() {
 		return idMonedas;
@@ -35,15 +44,6 @@ public class monedas {
 	}
 	public void setValorMoneda(String valorMoneda) {
 		this.valorMoneda = valorMoneda;
-	}
-	public monedas(int idMonedas, String nomMonedas, String valorMoneda) {
-		super();
-		this.idMonedas = idMonedas;
-		this.nomMonedas = nomMonedas;
-		this.valorMoneda = valorMoneda;
-	}
-	public monedas() {
-		super();
 	}
 	
 	

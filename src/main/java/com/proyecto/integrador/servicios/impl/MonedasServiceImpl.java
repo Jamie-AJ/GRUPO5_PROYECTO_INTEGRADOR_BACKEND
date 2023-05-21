@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proyecto.integrador.entidades.monedas;
+import com.proyecto.integrador.entidades.Monedas;
 import com.proyecto.integrador.repositorio.MonedaRepository;
 import com.proyecto.integrador.servicios.MonedasService;
 
@@ -16,7 +16,7 @@ public class MonedasServiceImpl implements MonedasService{
 	MonedaRepository monedaRepository;
 
 	@Override
-	public List<monedas> listarMonedas() {
+	public List<Monedas> listarMonedas() {
 		return monedaRepository.findAllMonedas();
 	}
 

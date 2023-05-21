@@ -1,16 +1,27 @@
 package com.proyecto.integrador.entidades;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "cuentasbancarias")
-public class CuentaBancaria {
+public class CuentaBancaria implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,15 +33,20 @@ public class CuentaBancaria {
 	private String year;
 	private Double saldo;
 	private String enable;
-	@ManyToOne
-	@JoinColumn(name="idBancos", insertable = false, updatable = false)
-	private Bancos bancos;
-	private int idBancos;
+	@Temporal(TemporalType.DATE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/Lima")
+	private Date  fechaRegistro;
 	
-	@ManyToOne
-	@JoinColumn(name="idMonedas", insertable = false, updatable = false)
-	private monedas monedas;
-	private int idMonedas;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="idBancos")
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	private Bancos bancos;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="idMonedas")
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	private Monedas monedas;
+	
 	@ManyToOne
 	@JoinColumn(name="usuarioId", insertable = false, updatable = false)
 	private Usuario usuario;
@@ -38,11 +54,12 @@ public class CuentaBancaria {
 	
 	public CuentaBancaria() {
 		super();
+
 	}
 
-	public CuentaBancaria(int idCuentaBancaria, String nroCuenta, String nroCuentaCci, String cvv, String mes,
-			String year, Double saldo, String enable, Bancos bancos, int idBancos,
-			com.proyecto.integrador.entidades.monedas monedas, int idMonedas, Usuario usuario, long usuarioId) {
+	public CuentaBancaria(int idCuentaBancaria, String nroCuenta, String nroCuentaCci, String cvv, String mes, String year,
+			Double saldo, String enable, Date fechaRegistro, Bancos bancos, Monedas monedas,
+			Usuario usuario, long usuarioId) {
 		super();
 		this.idCuentaBancaria = idCuentaBancaria;
 		this.nroCuenta = nroCuenta;
@@ -52,10 +69,9 @@ public class CuentaBancaria {
 		this.year = year;
 		this.saldo = saldo;
 		this.enable = enable;
+		this.fechaRegistro = fechaRegistro;
 		this.bancos = bancos;
-		this.idBancos = idBancos;
 		this.monedas = monedas;
-		this.idMonedas = idMonedas;
 		this.usuario = usuario;
 		this.usuarioId = usuarioId;
 	}
@@ -72,10 +88,7 @@ public class CuentaBancaria {
 		return nroCuenta;
 	}
 
-	public void setNroCuenta(String nroCuenta) {
-		this.nroCuenta = nroCuenta;
-	}
-
+	
 	public String getNroCuentaCci() {
 		return nroCuentaCci;
 	}
@@ -84,6 +97,9 @@ public class CuentaBancaria {
 		this.nroCuentaCci = nroCuentaCci;
 	}
 
+	public void setNroCuenta(String nroCuenta) {
+		this.nroCuenta = nroCuenta;
+	}
 	public String getCvv() {
 		return cvv;
 	}
@@ -116,7 +132,7 @@ public class CuentaBancaria {
 		this.saldo = saldo;
 	}
 
-	public String isEnable() {
+	public String getEnable() {
 		return enable;
 	}
 
@@ -124,6 +140,13 @@ public class CuentaBancaria {
 		this.enable = enable;
 	}
 
+	public Date getFechaRegistro() {
+		return fechaRegistro;
+	}
+
+	public void setFechaRegistro(Date fechaRegistro) {
+		this.fechaRegistro = fechaRegistro;
+	}
 	public Bancos getBancos() {
 		return bancos;
 	}
@@ -132,28 +155,13 @@ public class CuentaBancaria {
 		this.bancos = bancos;
 	}
 
-	public int getIdBancos() {
-		return idBancos;
-	}
 
-	public void setIdBancos(int idBancos) {
-		this.idBancos = idBancos;
-	}
-
-	public monedas getMonedas() {
+	public Monedas getMonedas() {
 		return monedas;
 	}
 
-	public void setMonedas(monedas monedas) {
+	public void setMonedas(Monedas monedas) {
 		this.monedas = monedas;
-	}
-
-	public int getIdMonedas() {
-		return idMonedas;
-	}
-
-	public void setIdMonedas(int idMonedas) {
-		this.idMonedas = idMonedas;
 	}
 
 	public Usuario getUsuario() {
@@ -171,4 +179,6 @@ public class CuentaBancaria {
 	public void setUsuarioId(long usuarioId) {
 		this.usuarioId = usuarioId;
 	}
+	
+	
 }

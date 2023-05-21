@@ -1,5 +1,6 @@
 package com.proyecto.integrador.controladores;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,11 +84,15 @@ public class CuentaBancariaController {
 		try {
 			long idUsuAct = (long) session.getAttribute("idUsuActual");
 			obj.setUsuarioId(idUsuAct);
+			obj.setIdCuentaBancaria(0);
 			obj.setEnable("Activo");
+			obj.setFechaRegistro(new Date());
+			obj.setSaldo(45000.00);
 			CuentaBancaria objsalida = cuentabancariaService.insertaActualizaCuentaBancaria(obj);
 			if (objsalida == null) {
 				salida.put("mensaje", "No se registro");
 				salida.put("usuario", obj);
+				return new ResponseEntity<>(salida,HttpStatus.BAD_REQUEST);
 			} else {
 				salida.put("mensaje", " Tú cuenta se registro exitosamente");
 				salida.put("cuentaBancaria", obj);
@@ -95,6 +100,7 @@ public class CuentaBancariaController {
 		} catch (DataAccessException e) {
 			salida.put("mensaje", "Error al registrar el cuenta bancaria");
 			salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<>(salida,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return ResponseEntity.ok(salida);
 	}
@@ -109,7 +115,7 @@ public class CuentaBancariaController {
 			if (optional.isPresent()) {
 				long idUsuAct = (long) session.getAttribute("idUsuActual");
 				obj.setUsuarioId(idUsuAct);
-				obj.setEnable(optional.get().isEnable());
+				obj.setEnable("Activo");
 				CuentaBancaria objsalida = cuentabancariaService.insertaActualizaCuentaBancaria(obj);
 				if (objsalida == null) {
 					salida.put("mensaje", "No se actualizo");
@@ -128,7 +134,7 @@ public class CuentaBancariaController {
 	}
 	@DeleteMapping("user/eliminarCuentaBancaria/{id}")
 	@ResponseBody
-	public ResponseEntity<?> eliminarUsuario(@PathVariable int id,HttpSession session) {
+	public ResponseEntity<?> eliminarUsuario(@PathVariable int id, HttpSession session) {
 		HashMap<String, Object> response = new HashMap<>();
 		try {
 			long idUsuAct = (long) session.getAttribute("idUsuActual");
@@ -140,16 +146,18 @@ public class CuentaBancariaController {
 				cuentaEliminada.get().setEnable("No Activo");
 				CuentaBancaria objsalida = cuentabancariaService.insertaActualizaCuentaBancaria(cuentaEliminada.get());
 				if (objsalida == null) {
-					response.put("mensaje", "No se elimino");
+					response.put("mensaje", "No se elimino correctamente la cuenta bancaria");
+					return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 				} else {
-					response.put("mensaje", "Se elimino la cuenta:   " + id);
+					response.put("mensaje", "Se elimino la cuenta");
 				}
 			} else {
 				response.put("mensaje", "La Cuenta Bancaria con codigo " + id + " no existe");
 				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 			}
-		} catch (Exception e) {
-			response.put("mensaje", "Hubo un error al eliminar al usuario: " + e.getMessage());
+		} catch (DataAccessException e) {
+			response.put("mensaje", "Hubo un error al eliminar la cuenta bancaria");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return ResponseEntity.ok(response);

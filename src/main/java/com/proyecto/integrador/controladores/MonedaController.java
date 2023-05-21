@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.proyecto.integrador.entidades.monedas;
+import com.proyecto.integrador.entidades.Monedas;
 import com.proyecto.integrador.servicios.MonedasService;
 import com.proyecto.integrador.utils.AppSettings;
 
@@ -25,8 +25,8 @@ public class MonedaController {
 	
 	@GetMapping("/listarMonedas")
 	@ResponseBody
-	public ResponseEntity<List<monedas>> listarMonedas(){
-		List<monedas> lista = monedaService.listarMonedas();
+	public ResponseEntity<List<Monedas>> listarMonedas(){
+		List<Monedas> lista = monedaService.listarMonedas();
 		return ResponseEntity.ok(lista);
 	}
 	
