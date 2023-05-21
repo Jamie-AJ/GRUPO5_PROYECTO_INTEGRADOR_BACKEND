@@ -66,4 +66,9 @@ public class UsuarioServiceImpl implements UsuarioService{
 	public Optional<Usuario> buscarPorCorreo(String correo) {
 		return usuarioRepository.findByCorreo(correo);
 	}
+	@Override
+	public List<Usuario> listaDiffNotEnable(String noActivo) {
+		// TODO Auto-generated method stub
+		return usuarioRepository.findByEnableNot(noActivo);
+	}
 }

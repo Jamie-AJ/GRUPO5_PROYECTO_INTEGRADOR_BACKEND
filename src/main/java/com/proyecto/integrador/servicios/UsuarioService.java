@@ -3,6 +3,7 @@ package com.proyecto.integrador.servicios;
 import java.util.List;
 import java.util.Optional;
 
+
 import com.proyecto.integrador.entidades.Usuario;
 
 public interface UsuarioService {
@@ -27,4 +28,6 @@ public interface UsuarioService {
 	public abstract List<Usuario> listaUsuarios();
 
 	public abstract Usuario insertaActualizaUsuario(Usuario obj);
+	
+	public abstract List<Usuario> listaDiffNotEnable(String noActivo);
 }

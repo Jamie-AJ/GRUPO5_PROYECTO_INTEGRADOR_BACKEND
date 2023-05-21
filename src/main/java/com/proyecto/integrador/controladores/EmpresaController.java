@@ -71,7 +71,7 @@ public class EmpresaController {
 						Optional<Empresa> existeRZ = empresaService.listExistexRazonSocial(empresa.getRazonSocial(),
 								empresa.getIdEmpresa());
 						if (existeRZ.isPresent()) {
-							salida.put("mensaje", "El Numero de cuenta bancaria ya existe");
+							salida.put("mensaje", "La Razon social ya existe");
 							return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
 						} else {
 							empresa.setFechRegistro(new Date());
