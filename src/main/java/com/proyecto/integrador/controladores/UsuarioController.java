@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.integrador.entidades.Cartera;
+
 import com.proyecto.integrador.entidades.Rol;
 import com.proyecto.integrador.entidades.Usuario;
 import com.proyecto.integrador.servicios.CarteraService;
@@ -64,6 +65,15 @@ public class UsuarioController {
 		}
 	}
 
+	//lista usuarios activos
+	@GetMapping("active/listaUsuario")
+	@ResponseBody
+	public ResponseEntity<List<Usuario>> listaUsuarioAct() {
+		List<Usuario> lista = usuarioService.listaDiffNotEnable("No activo");
+		return ResponseEntity.ok(lista);
+	}
+
+	
 	// listar roles
 	@GetMapping("/listarRoles")
 	@ResponseBody
@@ -183,59 +193,28 @@ public class UsuarioController {
 		}
 	}
 
-	/*
-	 * @PutMapping("/actualizar/{id}")
-	 * 
-	 * @ResponseBody public ResponseEntity<?> actualizar(@PathVariable long
-	 * id, @RequestBody @Valid Usuario usuarioActualizado) { HashMap<String, Object>
-	 * response = new HashMap<>(); try { // Buscar el usuario por su id Usuario
-	 * usuarioExistente = usuarioService.buscarUsuarioPorId(id);
-	 * 
-	 * // Verificar si el usuario existe if (usuarioExistente == null) {
-	 * response.put("mensaje",
-	 * "No se puede actualizar, el usuario no existe en la base de datos"); return
-	 * new ResponseEntity<>(response, HttpStatus.NOT_FOUND); }
-	 * 
-	 * usuarioExistente.setNombre(usuarioActualizado.getNombre());
-	 * usuarioExistente.setApellidoPa(usuarioActualizado.getApellidoPa());
-	 * usuarioExistente.setApellidoMa(usuarioActualizado.getApellidoMa());
-	 * usuarioExistente.setTelefono(usuarioActualizado.getTelefono());
-	 * usuarioExistente.setDni(usuarioActualizado.getDni());
-	 * usuarioExistente.setCorreo(usuarioActualizado.getCorreo());
-	 * usuarioExistente.setFecha(new Date());
-	 * 
-	 * // Restricciones para actualizar
-	 * usuarioActualizado.setUsername(usuarioExistente.getUsername()); // No se
-	 * puede actualizar el username
-	 * usuarioActualizado.setPassword(usuarioExistente.getPassword()); // No se
-	 * puede actualizar el password
-	 * usuarioActualizado.setIdTipoUsu(usuarioExistente.getIdTipoUsu()); // No se
-	 * puede actualizar el rol usuarioActualizado.setDni(usuarioExistente.getDni());
-	 * usuarioActualizado.setCorreo(usuarioExistente.getCorreo());
-	 * 
-	 * // Actualizar el usuario
-	 * usuarioService.insertaActualizaUsuario(usuarioExistente);
-	 * 
-	 * response.put("mensaje", "Usuario actualizado exitosamente"); return
-	 * ResponseEntity.ok(response);
-	 * 
-	 * } catch (DataAccessException e) { response.put("mensaje",
-	 * "Hubo un error al actualizar al usuario: " + e.getMessage()); return new
-	 * ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); } }
-	 */
 
 	@DeleteMapping("/eliminar/{id}")
 	@ResponseBody
 	public ResponseEntity<?> eliminarUsuario(@PathVariable Long id) {
 		HashMap<String, Object> response = new HashMap<>();
 		try {
-			usuarioService.eliminarUsuario(id);
-			response.put("mensaje", "Usuario eliminado exitosamente");
-			return ResponseEntity.ok(response);
+			Optional<Usuario> existeUsu = usuarioService.listaUsuarioPorId(id);
+			if (existeUsu.isEmpty()) {
+				response.put("mensaje", "Usuario eliminado exitosamente");
+				return new ResponseEntity<HashMap<String, Object>>(response, HttpStatus.CONFLICT);
+			} else {
+				Usuario elimUsuario = existeUsu.get();
+				elimUsuario.setEnable("No Activo");
+				usuarioService.insertaActualizaUsuario(elimUsuario);
+				response.put("mensaje", "Se elimino exitosamente el usuario");
+				return ResponseEntity.ok(response);
+			}
 		} catch (Exception e) {
-			response.put("mensaje", "Hubo un error al eliminar al usuario: " + e.getMessage());
+			response.put("mensaje", "Hubo un error al eliminar el usuario: " + e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	
 	}
 
 	@GetMapping("/{username}")
