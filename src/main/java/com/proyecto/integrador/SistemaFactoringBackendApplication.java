@@ -2,14 +2,28 @@ package com.proyecto.integrador;
 
 
 
+//import java.util.Date;
+//import java.util.HashSet;
+//import java.util.Set;
+
+//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+//import com.proyecto.integrador.entidades.Rol;
+//import com.proyecto.integrador.entidades.Usuario;
+//import com.proyecto.integrador.servicios.UsuarioService;
 
 @SpringBootApplication
 public class SistemaFactoringBackendApplication implements CommandLineRunner{
-	/*@Autowired
-	private UsuarioService usuarioService;*/
+	//@Autowired
+	//private UsuarioService usuarioService;
+	
+	//@Autowired
+	//private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
 	
 	public static void main(String[] args) {
 		SpringApplication.run(SistemaFactoringBackendApplication.class, args);
@@ -25,25 +39,20 @@ public class SistemaFactoringBackendApplication implements CommandLineRunner{
 			usuario.setTelefono("938311721");
 			usuario.setCorreo("apolaya@gmail.com");
 			usuario.setUsername("jamie");
-			usuario.setPassword("12345");
+			usuario.setPassword(bCryptPasswordEncoder.encode("12345"));
 			usuario.setFoto("foto.png");
-			usuario.setIdTipoUsu(1);
-			usuario.setFecha(null);
+			usuario.setFecha(new Date());
 			usuario.setDni("77454558");
+			usuario.setEnable("Activo");
+			usuario.setIdTipoUsu(2);
 
-				
+			Set<Rol> roles = new HashSet<>();
 			Rol rol = new Rol();
-			rol.setIdTipoUsu(1L);
+			rol.setIdTipoUsu(2L);
 			rol.setTipo("ADMIN");
+			roles.add(rol);
 			
-			
-			Set<UsuarioRol> usuarioRoles = new HashSet<>();
-			UsuarioRol usuarioRol = new UsuarioRol();
-			usuarioRol.setRol(rol);
-			usuarioRol.setUsuario(usuario);
-			usuarioRoles.add(usuarioRol);
-			
-			Usuario usuarioGuardado = usuarioService.guardarUsuario(usuario, usuarioRoles);
+			Usuario usuarioGuardado = usuarioService.insertaActualizaUsuario(usuario);
 			System.out.println(usuarioGuardado.getUsername());
 			
 		} catch (Exception e) {
