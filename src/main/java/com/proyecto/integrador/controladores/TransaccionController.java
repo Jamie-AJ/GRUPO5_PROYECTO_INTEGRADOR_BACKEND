@@ -79,9 +79,9 @@ public class TransaccionController {
 		}
 	}
 
-	@PostMapping("/movimientos")
+	@PostMapping("/deposito")
 	@ResponseBody
-	public ResponseEntity<?> depostarCuenta(@RequestBody Transacciones transaccion, HttpSession session) {
+	public ResponseEntity<?> depositarCuenta(@RequestBody Transacciones transaccion, HttpSession session) {
 		HashMap<String, Object> response = new HashMap<>();
 		try {
 			long idUsuAct = (long) session.getAttribute("idUsuActual");
@@ -97,39 +97,71 @@ public class TransaccionController {
 				Optional<CuentaBancaria> optional = cuentaBancariaService.buscarxId(IdCuentaB);
 				CuentaBancaria cuenta = optional.get();
 				double saldoActualCB = cuenta.getSaldo();
-				if (transaccion.getIdTipoTransaccion() == 1) {
-					if (saldoActualCB < transaccion.getMonto()) {
-						response.put("mensaje", "No cuenta con saldo suficiente en su cuenta Bancaria!");
-						return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-					} else {
-						// deposito
-						double nuevoSaldoCB = saldoActualCB - transaccion.getMonto();
-						cuenta.setSaldo(nuevoSaldoCB);
-						cuentaBancariaService.insertaActualizaCuentaBancaria(cuenta);
-						double nuevoSaldoCartera = saldoActualCartera + transaccion.getMonto();
-						cartera.setSaldo(nuevoSaldoCartera);
-						carteraService.insertaActualizaCartera(cartera);
-					}
-				} else if (transaccion.getIdTipoTransaccion() == 2) {
-					if (saldoActualCartera < transaccion.getMonto()) {
-						response.put("mensaje", "No cuenta con saldo suficiente en su cartera!");
-						return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-					} else {
-						// retiro
-						double nuevoSaldoCB = saldoActualCB + transaccion.getMonto();
-						cuenta.setSaldo(nuevoSaldoCB);
-						cuentaBancariaService.insertaActualizaCuentaBancaria(cuenta);
-						double nuevoSaldoCartera = saldoActualCartera - transaccion.getMonto();
-						cartera.setSaldo(nuevoSaldoCartera);
-						carteraService.insertaActualizaCartera(cartera);
-					}
+				if (saldoActualCB < transaccion.getMonto()) {
+					response.put("mensaje", "No cuenta con saldo suficiente en su cuenta Bancaria!");
+					return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+				} else {
+					// deposito
+					double nuevoSaldoCB = saldoActualCB - transaccion.getMonto();
+					cuenta.setSaldo(nuevoSaldoCB);
+					cuentaBancariaService.insertaActualizaCuentaBancaria(cuenta);
+					double nuevoSaldoCartera = saldoActualCartera + transaccion.getMonto();
+					cartera.setSaldo(nuevoSaldoCartera);
+					carteraService.insertaActualizaCartera(cartera);
 				}
 				// Guardar la transaccion
+				transaccion.setIdTipoTransaccion(1);
 				transaccion.setFecha(new Date());
 				transaccionService.insertaTransaccion(transaccion);
-				response.put("mensaje", "Transaccion realizada con exito");
+				response.put("mensaje", "Deposito realizado con exito");
 				return ResponseEntity.ok(response);
-			}else {
+			} else {
+				response.put("mensaje", "La cuenta bancaria con Id: " + IdCuentaB + " no existe");
+				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			response.put("mensaje", "Hubo un error al realizar la transaccion: " + e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@PostMapping("/retiro")
+	@ResponseBody
+	public ResponseEntity<?> retirarCuenta(@RequestBody Transacciones transaccion, HttpSession session) {
+		HashMap<String, Object> response = new HashMap<>();
+		try {
+			long idUsuAct = (long) session.getAttribute("idUsuActual");
+			List<CuentaBancaria> lista = cuentaBancariaService.listaCuentaBancariaxIdUsuAct(idUsuAct);
+			int IdCuentaB = transaccion.getIdCuentaBancaria();
+			// Buscar coincidencias con Stream
+			boolean existe = lista.stream().anyMatch(cuenta -> cuenta.getIdCuentaBancaria() == IdCuentaB);
+			if (existe) {
+				// Buscar cartera del usuario actual
+				Cartera cartera = carteraService.buscarCartera(idUsuAct);
+				double saldoActualCartera = cartera.getSaldo();
+				// Buscar cuenta bancaria
+				Optional<CuentaBancaria> optional = cuentaBancariaService.buscarxId(IdCuentaB);
+				CuentaBancaria cuenta = optional.get();
+				double saldoActualCB = cuenta.getSaldo();
+				if (saldoActualCartera < transaccion.getMonto()) {
+					response.put("mensaje", "No cuenta con saldo suficiente en su cartera!");
+					return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+				} else {
+					// retiro
+					double nuevoSaldoCB = saldoActualCB + transaccion.getMonto();
+					cuenta.setSaldo(nuevoSaldoCB);
+					cuentaBancariaService.insertaActualizaCuentaBancaria(cuenta);
+					double nuevoSaldoCartera = saldoActualCartera - transaccion.getMonto();
+					cartera.setSaldo(nuevoSaldoCartera);
+					carteraService.insertaActualizaCartera(cartera);
+				}
+				// Guardar la transaccion
+				transaccion.setIdTipoTransaccion(2);
+				transaccion.setFecha(new Date());
+				transaccionService.insertaTransaccion(transaccion);
+				response.put("mensaje", "Retiro realizado con exito");
+				return ResponseEntity.ok(response);
+			} else {
 				response.put("mensaje", "La cuenta bancaria con Id: " + IdCuentaB + " no existe");
 				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 			}
