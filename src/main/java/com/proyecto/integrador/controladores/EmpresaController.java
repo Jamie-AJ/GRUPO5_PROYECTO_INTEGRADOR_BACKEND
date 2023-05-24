@@ -61,13 +61,13 @@ public class EmpresaController {
 				if (existeRuc.isPresent()) {
 					salida.put("mensaje", "El Ruc ya existe");
 					return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
-				} else {
+				} /*else {
 					Optional<Empresa> existeNCB = empresaService
 							.listExistexNroCuentaBancaria(empresa.getNroCuentaBancaria(), empresa.getIdEmpresa());
 					if (existeNCB.isPresent()) {
 						salida.put("mensaje", "El Numero de cuenta bancaria ya existe");
 						return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
-					} else {
+					}*/ else {
 						Optional<Empresa> existeRZ = empresaService.listExistexRazonSocial(empresa.getRazonSocial(),
 								empresa.getIdEmpresa());
 						if (existeRZ.isPresent()) {
@@ -88,7 +88,7 @@ public class EmpresaController {
 						}
 					}
 				}
-			}
+			/*/}*/
 		} catch (DataAccessException e) {
 			salida.put("mensaje", "Error al registrar empresa");
 			salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
@@ -118,13 +118,13 @@ public class EmpresaController {
 					if (existeRuc.isPresent()) {
 						salida.put("mensaje", "El Ruc ya existe");
 						return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
-					} else {
+					} /*else {
 						Optional<Empresa> existeNCB = empresaService
 								.listExistexNroCuentaBancaria(empresa.getNroCuentaBancaria(), empresa.getIdEmpresa());
 						if (existeNCB.isPresent()) {
 							salida.put("mensaje", "El Numero de cuenta bancaria ya existe");
 							return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
-						} else {
+						}*/ else {
 							Optional<Empresa> existeRZ = empresaService.listExistexRazonSocial(empresa.getRazonSocial(),
 									empresa.getIdEmpresa());
 							if (existeRZ.isPresent()) {
@@ -147,7 +147,7 @@ public class EmpresaController {
 						}
 					}
 				}
-			}
+			/*}*/
 		} catch (DataAccessException e) {
 			salida.put("mensaje", "Error al registrar empresa");
 			salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
