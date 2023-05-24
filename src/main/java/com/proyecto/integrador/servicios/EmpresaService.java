@@ -14,11 +14,11 @@ public interface EmpresaService {
 
 	public abstract Optional<Empresa> listExistexCorreo(String correo, int idEmpresa);
 	
-	public abstract Optional<Empresa> listExistexRuc(int ruc, int idEmpresa);
+	public abstract Optional<Empresa> listExistexRuc(String ruc, int idEmpresa);
 	
-	public abstract Optional<Empresa> listExistexNroCuentaBancaria(String numCB, int idEmpresa);
+	//public abstract Optional<Empresa> listExistexNroCuentaBancaria(String numCB, int idEmpresa);
 	
-	public abstract Optional<Empresa> listExistexRazonSocial(int razonS, int idEmpresa);
+	public abstract Optional<Empresa> listExistexRazonSocial(String razonS, int idEmpresa);
 
 	public abstract List<Empresa> listaDiffNotEnable(String noActivo);
 

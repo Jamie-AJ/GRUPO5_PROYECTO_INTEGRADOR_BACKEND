@@ -7,6 +7,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "empresas")
@@ -15,21 +19,25 @@ public class Empresa {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idEmpresa;
 	private String nomEmpresa;
-	private int ruc;
-	private int razonSocial;
+	private String ruc;
+	private String razonSocial;
+	@Temporal(TemporalType.DATE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd" , timezone = "America/Lima")
 	private Date fechaDeInicioActv;
 	private String direccion;
 	private String telefono;
 	private String correo;
-	private String nroCuentaBancaria;
+	//private String nroCuentaBancaria;
 	private String sector;
+	@Temporal(TemporalType.DATE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd" , timezone = "America/Lima")
 	private Date fechRegistro;
 	private String enable;
 	public Empresa() {
 		super();
 	}
-	public Empresa(int idEmpresa, String nomEmpresa, int ruc, int razonSocial, Date fechaDeInicioActv, String direccion,
-			String telefono, String correo, String nroCuentaBancaria, String sector, Date fechRegistro, String enable) {
+	public Empresa(int idEmpresa, String nomEmpresa, String ruc, String razonSocial, Date fechaDeInicioActv, String direccion,
+			String telefono, String correo/*,String nroCuentaBancaria*/, String sector, Date fechRegistro, String enable) {
 		super();
 		this.idEmpresa = idEmpresa;
 		this.nomEmpresa = nomEmpresa;
@@ -39,7 +47,7 @@ public class Empresa {
 		this.direccion = direccion;
 		this.telefono = telefono;
 		this.correo = correo;
-		this.nroCuentaBancaria = nroCuentaBancaria;
+		//this.nroCuentaBancaria = nroCuentaBancaria;
 		this.sector = sector;
 		this.fechRegistro = fechRegistro;
 		this.enable = enable;
@@ -56,16 +64,16 @@ public class Empresa {
 	public void setNomEmpresa(String nomEmpresa) {
 		this.nomEmpresa = nomEmpresa;
 	}
-	public int getRuc() {
+	public String getRuc() {
 		return ruc;
 	}
-	public void setRuc(int ruc) {
+	public void setRuc(String ruc) {
 		this.ruc = ruc;
 	}
-	public int getRazonSocial() {
+	public String getRazonSocial() {
 		return razonSocial;
 	}
-	public void setRazonSocial(int razonSocial) {
+	public void setRazonSocial(String razonSocial) {
 		this.razonSocial = razonSocial;
 	}
 	public Date getFechaDeInicioActv() {
@@ -92,12 +100,12 @@ public class Empresa {
 	public void setCorreo(String correo) {
 		this.correo = correo;
 	}
-	public String getNroCuentaBancaria() {
+	/*public String getNroCuentaBancaria() {
 		return nroCuentaBancaria;
 	}
 	public void setNroCuentaBancaria(String nroCuentaBancaria) {
 		this.nroCuentaBancaria = nroCuentaBancaria;
-	}
+	}*/
 	public String getSector() {
 		return sector;
 	}
