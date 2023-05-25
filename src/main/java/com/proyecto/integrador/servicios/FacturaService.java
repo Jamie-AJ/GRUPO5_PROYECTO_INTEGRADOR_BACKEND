@@ -17,4 +17,6 @@ public interface FacturaService {
 	public abstract List<Factura> listaDifNotEnable(String noActivo);
 	
 	List<Factura> listarFacturasPorEmpresa(Empresa empresa);
+	
+	public abstract int obtenerUltimoNumeroFactura();
 }

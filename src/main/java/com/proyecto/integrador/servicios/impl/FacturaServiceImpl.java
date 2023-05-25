@@ -47,4 +47,23 @@ public class FacturaServiceImpl implements FacturaService {
 		return repositorio.findByEmpresa(empresa);
 	}
 
+	
+
+	@Override
+	public int obtenerUltimoNumeroFactura() {
+		 int ultimoNumeroFactura = 0;
+	        List<Factura> facturas = repositorio.findAll();
+	        for (Factura factura : facturas) {
+	            String numeroFactura = factura.getCodFactura();
+	            String numero = numeroFactura.substring(numeroFactura.indexOf('-') + 1);
+	            int numeroInt = Integer.parseInt(numero);
+	            if (numeroInt > ultimoNumeroFactura) {
+	                ultimoNumeroFactura = numeroInt;
+	            }
+	        }
+	        return ultimoNumeroFactura;
+	}
+
+
+
 }

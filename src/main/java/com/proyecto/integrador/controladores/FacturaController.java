@@ -80,6 +80,8 @@ public class FacturaController {
 	}
 	
 	
+	
+	
 	@PostMapping("/registrarFactura")
 	@ResponseBody
 	public ResponseEntity<?> registrarFactura(@RequestBody Factura factura) {
@@ -96,6 +98,11 @@ public class FacturaController {
             salida.put("mensaje", "No se encontró la empresa con el id: " + factura.getIdEmpresa());
             return new ResponseEntity<>(salida, HttpStatus.NOT_FOUND);
         }
+        // Obtener el último número de factura
+        int ultimoNumeroFactura = facturaService.obtenerUltimoNumeroFactura();
+        String nuevoNumeroFactura = "F-" + String.format("%03d", ultimoNumeroFactura + 1);
+        factura.setCodFactura(nuevoNumeroFactura); // Asignar el nuevo número de factura
+     
         
         Empresa empresa = empresaOptional.get();
         factura.setEmpresas(empresa); // Establecer la empresa en la factura
@@ -135,6 +142,7 @@ public class FacturaController {
 	         // Actualizar los campos necesarios de la factura existente
 	            facturaExistente.setMonto(factura.getMonto());
 	            facturaExistente.setFechaPago(factura.getFechaPago());
+	            facturaExistente.setDescripcion(factura.getDescripcion());
 	            
 	            Factura facturaActualizada = facturaService.insertarActualizarFactura(facturaExistente);
 	            
