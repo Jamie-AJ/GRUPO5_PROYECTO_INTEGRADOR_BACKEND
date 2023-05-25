@@ -9,11 +9,17 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.proyecto.integrador.entidades.Bancos;
 import com.proyecto.integrador.entidades.Cartera;
+import com.proyecto.integrador.entidades.Monedas;
+import com.proyecto.integrador.entidades.Riesgo;
 import com.proyecto.integrador.entidades.Rol;
 import com.proyecto.integrador.entidades.TipoTransaccion;
 import com.proyecto.integrador.entidades.Usuario;
+import com.proyecto.integrador.servicios.BancosService;
 import com.proyecto.integrador.servicios.CarteraService;
+import com.proyecto.integrador.servicios.MonedasService;
+import com.proyecto.integrador.servicios.RiesgoService;
 import com.proyecto.integrador.servicios.RolService;
 import com.proyecto.integrador.servicios.TipoTransaccionService;
 import com.proyecto.integrador.servicios.UsuarioService;
@@ -28,6 +34,12 @@ public class SistemaFactoringBackendApplication implements CommandLineRunner {
 	private RolService rolService;
 	@Autowired
 	private TipoTransaccionService tipoTransService;
+	@Autowired
+	private BancosService bancosService;
+	@Autowired
+	private MonedasService monedasService;
+	@Autowired
+	private RiesgoService riesgoService;
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -83,6 +95,42 @@ public class SistemaFactoringBackendApplication implements CommandLineRunner {
 				tipoReti.setTipo("Retiro");
 				tipoTransService.insertarTipoTransaccion(tipoReti);
 				System.out.println("Tipos registrado con exito!");
+			}
+			Optional<Bancos> existeBanco = bancosService.buscarxId(1);
+			if (existeBanco.isEmpty()) {
+				String[] nombresBancos = { "BBVA", "BCP", "Scotiabank" };
+				for (int i = 0; i < nombresBancos.length; i++) {
+					Bancos banco = new Bancos();
+					banco.setNomBancos(nombresBancos[i]);
+					bancosService.insertarBancos(banco);
+					System.out.println("Se registro el banco: "+ banco.getNomBancos());
+				}
+				
+			}
+			Optional<Monedas> existeMoneda = monedasService.buscarxId(1);
+			if (existeMoneda.isEmpty()) {
+				String[] nombresMonedas = { "PEN", "USD" };
+				String[] valoresMonedas = { "S/.", "$" };
+				for (int i = 0; i < nombresMonedas.length; i++) {
+					Monedas moneda = new Monedas();
+					moneda.setNomMonedas(nombresMonedas[i]);
+					moneda.setValorMoneda(valoresMonedas[i]);
+					monedasService.insertarMonedas(moneda);
+					System.out.println("Se registro la moneda: "+ moneda.getNomMonedas());
+				}
+			}
+			Optional<Riesgo> existeRiesgo = riesgoService.buscarRiesgoxId(1);
+			if (existeRiesgo.isEmpty()) {
+				String[] rangoRiesgo = { "A", "B", "C" };
+				String[] descrpRiesgo = { "El riesgo de inversion es nulo!", "El riesgo de inversion es CASI nulo!",
+						"El riesgo de inversion algo elevado" };
+				for (int i = 0; i < rangoRiesgo.length; i++) {
+					Riesgo riesgo = new Riesgo();
+					riesgo.setRango(rangoRiesgo[i]);
+					riesgo.setDescripcion(descrpRiesgo[i]);
+					riesgoService.insetarRiesgo(riesgo);
+					System.out.println("Se registro el riesgo: "+ riesgo.getRango());
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

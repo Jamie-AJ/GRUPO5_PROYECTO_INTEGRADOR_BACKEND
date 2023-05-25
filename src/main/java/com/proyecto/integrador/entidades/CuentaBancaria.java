@@ -33,6 +33,7 @@ public class CuentaBancaria implements Serializable {
 	private String year;
 	private Double saldo;
 	private String enable;
+	
 	@Temporal(TemporalType.DATE)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/Lima")
 	private Date  fechaRegistro;
