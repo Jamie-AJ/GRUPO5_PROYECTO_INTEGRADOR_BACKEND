@@ -18,7 +18,7 @@ public class Factura {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idFactura;
-	private int monto;
+	private double monto;
 	private Date fechaEmision;
 	private Date fechaPago;
 	private String enable;
@@ -30,7 +30,7 @@ public class Factura {
 	private int idEmpresa;
 	
 	
-	public Factura(int idFactura, int monto, Date fechaEmision, Date fechaPago, String enable,
+	public Factura(int idFactura, double monto, Date fechaEmision, Date fechaPago, String enable,
 			Empresa empresa, int idEmpresa) {
 		super();
 		this.idFactura = idFactura;
@@ -56,10 +56,10 @@ public class Factura {
 	public void setIdFactura(int idFactura) {
 		this.idFactura = idFactura;
 	}
-	public int getMonto() {
+	public double getMonto() {
 		return monto;
 	}
-	public void setMonto(int monto) {
+	public void setMonto(double monto) {
 		this.monto = monto;
 	}
 	public Date getFechaEmision() {
