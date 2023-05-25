@@ -44,14 +44,6 @@ public class Rol implements Serializable{
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
-	}
-
-	@Override
-	public String toString() {
-		return "Rol [idTipoUsu=" + idTipoUsu + ", tipo=" + tipo + "]";
-	}
-
-	
-	
-	
+	}	
 }
+

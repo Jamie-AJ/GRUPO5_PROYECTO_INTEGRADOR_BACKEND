@@ -1,6 +1,7 @@
 package com.proyecto.integrador.servicios.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,16 @@ public class MonedasServiceImpl implements MonedasService{
 	@Override
 	public List<Monedas> listarMonedas() {
 		return monedaRepository.findAllMonedas();
+	}
+
+	@Override
+	public Monedas insertarMonedas(Monedas monedas) {
+		return monedaRepository.save(monedas);
+	}
+
+	@Override
+	public Optional<Monedas> buscarxId(int id) {
+		return monedaRepository.findById(id);
 	}
 
 }
