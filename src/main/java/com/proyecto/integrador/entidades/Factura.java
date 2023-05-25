@@ -10,6 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "factura")
@@ -18,11 +22,17 @@ public class Factura {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idFactura;
+	
+	private String codFactura;
 	private double monto;
+	@Temporal(TemporalType.DATE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/Lima")
 	private Date fechaEmision;
+	@Temporal(TemporalType.DATE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/Lima")
 	private Date fechaPago;
 	private String enable;
-	
+	private String descripcion;
 	
 	@ManyToOne
 	@JoinColumn(name="idEmpresa", insertable = false, updatable = false)
@@ -30,16 +40,18 @@ public class Factura {
 	private int idEmpresa;
 	
 	
-	public Factura(int idFactura, double monto, Date fechaEmision, Date fechaPago, String enable,
-			Empresa empresa, int idEmpresa) {
+	public Factura(int idFactura,String codFactura, double monto, Date fechaEmision, Date fechaPago, String enable,
+			Empresa empresa, int idEmpresa, String descripcion) {
 		super();
 		this.idFactura = idFactura;
+		this.codFactura = codFactura;
 		this.monto = monto;
 		this.fechaEmision = fechaEmision;
 		this.fechaPago = fechaPago;
 		this.enable = enable;
 		this.empresa = empresa;
 		this.idEmpresa = idEmpresa;
+		this.descripcion = descripcion;
 			
 	}
 			
@@ -47,6 +59,17 @@ public class Factura {
 			
 	public Factura() {
 		super();
+	}
+	
+	
+	public String getCodFactura() {
+		return codFactura;
+	}
+
+
+
+	public void setCodFactura(String codFactura) {
+		this.codFactura = codFactura;
 	}
 	
 
@@ -92,6 +115,12 @@ public class Factura {
 	public void setIdEmpresa(int idEmpresa) {
 		this.idEmpresa = idEmpresa;
 	}
-	
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
 
 }
