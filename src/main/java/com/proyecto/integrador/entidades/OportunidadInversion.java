@@ -17,8 +17,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Entity
 @Table(name = "OportunidadInversion")
 public class OportunidadInversion {
-	
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idOportunidad;
@@ -199,4 +198,5 @@ public class OportunidadInversion {
 	public void setUsuarioId(long usuarioId) {
 		this.usuarioId = usuarioId;
 	}
+
 }

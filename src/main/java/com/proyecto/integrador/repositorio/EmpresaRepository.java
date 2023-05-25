@@ -9,11 +9,11 @@ import com.proyecto.integrador.entidades.Empresa;
 
 public interface EmpresaRepository extends JpaRepository<Empresa, Integer> {
 
-	Optional<Empresa> findByRucAndIdEmpresaNot(int ruc, int idEmpresa);
+	Optional<Empresa> findByRucAndIdEmpresaNot(String ruc, int idEmpresa);
 	
-	Optional<Empresa> findByRazonSocialAndIdEmpresaNot(int razonS, int idEmpresa);
+	Optional<Empresa> findByRazonSocialAndIdEmpresaNot(String razonS, int idEmpresa);
 	
-	Optional<Empresa> findByNroCuentaBancariaAndIdEmpresaNot(String numCB, int idEmpresa);
+	//Optional<Empresa> findByNroCuentaBancariaAndIdEmpresaNot(String numCB, int idEmpresa);
 	
 	Optional<Empresa> findByCorreoAndIdEmpresaNot(String correo, int idEmpresa);
 

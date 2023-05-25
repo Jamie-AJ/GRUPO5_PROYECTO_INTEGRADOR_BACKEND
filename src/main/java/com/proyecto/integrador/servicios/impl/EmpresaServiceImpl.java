@@ -41,17 +41,17 @@ public class EmpresaServiceImpl implements EmpresaService{
 	}
 
 	@Override
-	public Optional<Empresa> listExistexRuc(int ruc, int idEmpresa) {
+	public Optional<Empresa> listExistexRuc(String ruc, int idEmpresa) {
 		return repo.findByRucAndIdEmpresaNot(ruc, idEmpresa);
 	}
 
-	@Override
+	/*@Override
 	public Optional<Empresa> listExistexNroCuentaBancaria(String numCB, int idEmpresa) {
 		return repo.findByNroCuentaBancariaAndIdEmpresaNot(numCB, idEmpresa);
-	}
+	}*/
 
 	@Override
-	public Optional<Empresa> listExistexRazonSocial(int razonS, int idEmpresa) {
+	public Optional<Empresa> listExistexRazonSocial(String razonS, int idEmpresa) {
 		return repo.findByRazonSocialAndIdEmpresaNot(razonS, idEmpresa);
 	}
 	

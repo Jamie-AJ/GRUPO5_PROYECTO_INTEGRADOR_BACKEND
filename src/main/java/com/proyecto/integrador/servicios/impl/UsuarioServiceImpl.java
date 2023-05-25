@@ -68,7 +68,6 @@ public class UsuarioServiceImpl implements UsuarioService{
 	}
 	@Override
 	public List<Usuario> listaDiffNotEnable(String noActivo) {
-		// TODO Auto-generated method stub
 		return usuarioRepository.findByEnableNot(noActivo);
 	}
 }

@@ -6,7 +6,6 @@ import java.util.Optional;
 import com.proyecto.integrador.entidades.OportunidadInversion;
 
 public interface OportunidadInversionService {
-
 	public abstract OportunidadInversion insertaActualizaOportunidadInversion(OportunidadInversion obj);
 
 	public abstract List<OportunidadInversion> listaOportunidadInversionActivas(String noActivo);
@@ -14,8 +13,4 @@ public interface OportunidadInversionService {
 	public abstract List<OportunidadInversion> listaOportunidadInversionTodos();
 
 	public Optional<OportunidadInversion> buscarxIdOportunidadInversion(int idOpoInv);
-	
-
-	
-	
 }

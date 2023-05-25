@@ -6,14 +6,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proyecto.integrador.entidades.Riesgo;
 import com.proyecto.integrador.entidades.TipoTransaccion;
-import com.proyecto.integrador.entidades.Transacciones;
 import com.proyecto.integrador.repositorio.TipoTransaccionRepository;
 import com.proyecto.integrador.servicios.TipoTransaccionService;
 
 @Service
-public class TipoTransaccionServiceImpl implements TipoTransaccionService{
+public class TipoTransaccionServiceImpl implements TipoTransaccionService {
 	@Autowired
 	TipoTransaccionRepository tipoTransaccionRepository;
 
@@ -23,14 +21,13 @@ public class TipoTransaccionServiceImpl implements TipoTransaccionService{
 	}
 
 	@Override
-	public Optional<TipoTransaccion> buscarxId(int idRiesgo) {
-		return tipoTransaccionRepository.findById(idRiesgo);
+	public TipoTransaccion insertarTipoTransaccion(TipoTransaccion tipo) {
+		return tipoTransaccionRepository.save(tipo);
 	}
 
 	@Override
-	public TipoTransaccion insertarTipoTransaccion(TipoTransaccion obj) {
-		// TODO Auto-generated method stub
-		return TipoTransaccion.Save(obj);
+	public Optional<TipoTransaccion> buscarxId(long id) {
+		return tipoTransaccionRepository.findById(id);
 	}
 
 }

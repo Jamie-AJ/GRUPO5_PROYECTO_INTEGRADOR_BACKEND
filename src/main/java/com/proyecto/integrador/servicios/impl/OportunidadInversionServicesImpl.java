@@ -38,13 +38,5 @@ public class OportunidadInversionServicesImpl implements OportunidadInversionSer
 	public List<OportunidadInversion> listaOportunidadInversionTodos() {
 		return repositorio.findAll();
 	}
-
 	
-
-	
-
-	
-	
-	
-
 }

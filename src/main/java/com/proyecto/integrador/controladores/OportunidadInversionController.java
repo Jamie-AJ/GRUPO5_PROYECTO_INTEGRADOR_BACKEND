@@ -1,5 +1,6 @@
 package com.proyecto.integrador.controladores;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -8,157 +9,181 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.proyecto.integrador.SistemaFactoringBackendApplication;
-import com.proyecto.integrador.entidades.Bancos;
-import com.proyecto.integrador.entidades.Cartera;
-import com.proyecto.integrador.entidades.Monedas;
 import com.proyecto.integrador.entidades.OportunidadInversion;
-import com.proyecto.integrador.entidades.Riesgo;
-import com.proyecto.integrador.entidades.Rol;
-import com.proyecto.integrador.entidades.TipoTransaccion;
-import com.proyecto.integrador.entidades.Usuario;
-import com.proyecto.integrador.servicios.BancosService;
-import com.proyecto.integrador.servicios.CarteraService;
-import com.proyecto.integrador.servicios.MonedasService;
 import com.proyecto.integrador.servicios.OportunidadInversionService;
-import com.proyecto.integrador.servicios.RiesgoService;
-import com.proyecto.integrador.servicios.RolService;
-import com.proyecto.integrador.servicios.TipoTransaccionService;
-import com.proyecto.integrador.servicios.UsuarioService;
+
 import com.proyecto.integrador.utils.AppSettings;
 
-@SpringBootApplication
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = AppSettings.URL_CROSS_ORIGIN)
-public class OportunidadInversionController implements CommandLineRunner{
+public class OportunidadInversionController {
 
 	@Autowired
-	private UsuarioService usuarioService;
-	@Autowired
-	private CarteraService carteraService;
-	@Autowired
-	private RolService rolService;
-	@Autowired
-	private TipoTransaccionService tipoTransService;
-	@Autowired
-	private BancosService bancosService;
-	@Autowired
-	private MonedasService monedasService;
-	@Autowired
-	private RiesgoService riesgoService;
-	@Autowired
-	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	private OportunidadInversionService oportunidadInversionservice;
 
-	public static void main(String[] args) {
-		SpringApplication.run(SistemaFactoringBackendApplication.class, args);
+	@GetMapping("/user/listarOportunidadInversion")
+	@ResponseBody
+	public ResponseEntity<List<OportunidadInversion>> listaOportunidadInversionActive() {
+		List<OportunidadInversion> lista = oportunidadInversionservice.listaOportunidadInversionActivas("No Activo");
+		return ResponseEntity.ok(lista);
 	}
-
-	@Autowired
-	@Override
-	public void run(String... args) throws Exception {
+	@GetMapping("/listarOportunidadInversion")
+	@ResponseBody
+	public ResponseEntity<List<OportunidadInversion>> listaOportunidadInversion() {
+		List<OportunidadInversion> lista = oportunidadInversionservice.listaOportunidadInversionTodos();
+		return ResponseEntity.ok(lista);
+	}
+	@PostMapping("/insertaOportunidadInversion")
+	@ResponseBody
+	public ResponseEntity<?> insertaOportunidadInversion(@RequestBody OportunidadInversion obj, HttpSession session) {
+		HashMap<String, Object> salida = new HashMap<>();
 		try {
-			Rol rolExiste = rolService.buscarporId(1L);
-			if (rolExiste == null) {
-				// inversionista
-				Rol rolInv = new Rol();
-				rolInv.setTipo("INVERSIONISTA");
-				rolService.insertarRol(rolInv);
-				// admin
-				Rol rolAdmin = new Rol();
-				rolAdmin.setTipo("ADMIN");
-				rolService.insertarRol(rolAdmin);
-				System.out.println("Roles registrado con exito!");
+			long idUsuAct = (long) session.getAttribute("idUsuActual");
+
+			obj.setUsuarioId(idUsuAct);
+			obj.setEnable("Activo");
+			obj.setFechaRegistro(new Date());
+			obj.setMontoRecaudado(0.0);
+			// Crear una instancia de Calendar
+			Calendar calendar = Calendar.getInstance();
+
+			// Establecer la fecha original en el Calendar
+			calendar.setTime(obj.getFechaCaducidad());
+
+			// Restar 2 mes
+			calendar.add(Calendar.MONTH, -2);
+
+			// Obtener la fecha resultante
+			Date fechaPago = calendar.getTime();
+
+			obj.setFechaPago(fechaPago);
+
+			OportunidadInversion objsalida = oportunidadInversionservice.insertaActualizaOportunidadInversion(obj);
+			if (objsalida == null) {
+				salida.put("mensaje", "No se registro la oportunidad de inversion");
+				salida.put("oportunidadInversion", obj);
+				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
+			} else {
+				salida.put("mensaje", "La oportunidad de inversion se registro exitosamente!");
+				salida.put("OportunidadInversion", obj);
+				return ResponseEntity.ok(salida);
 			}
-			Usuario usuExiste = usuarioService.buscarUsuarioPorId(1);
-			if (usuExiste == null) {
-				Usuario usuario = new Usuario();
-				usuario.setNombre("Jeimy");
-				usuario.setApellidoPa("Apolaya");
-				usuario.setApellidoMa("Jurado");
-				usuario.setTelefono("938311721");
-				usuario.setCorreo("apolaya@gmail.com");
-				usuario.setUsername("jamie");
-				usuario.setPassword(bCryptPasswordEncoder.encode("12345"));
-				usuario.setFoto("foto.png");
-				usuario.setFecha(new Date());
-				usuario.setDni("77454558");
-				usuario.setEnable("Activo");
-				usuario.setIdTipoUsu(2L);
-				Usuario usuReg = usuarioService.insertaActualizaUsuario(usuario);
-				Cartera cartera = new Cartera();
-				cartera.setSaldo(10000000);
-				cartera.setIdUsu(usuReg.getId());
-				carteraService.insertaActualizaCartera(cartera);
-				System.out.println("USUARIO registrado con exito!");
-			}
-			Optional<TipoTransaccion> tipoTransExiste = tipoTransService.buscarxId(1);
-			if (tipoTransExiste.isEmpty()) {
-				// deposito
-				TipoTransaccion tipoDepo = new TipoTransaccion();
-				tipoDepo.setTipo("Deposito");
-				tipoTransService.insertarTipoTransaccion(tipoDepo);
-				// retiro
-				TipoTransaccion tipoReti = new TipoTransaccion();
-				tipoReti.setTipo("Retiro");
-				tipoTransService.insertarTipoTransaccion(tipoReti);
-				System.out.println("Tipos registrado con exito!");
-			}
-			Optional<Bancos> existeBanco = bancosService.buscarxId(1);
-			if (existeBanco.isEmpty()) {
-				String[] nombresBancos = { "BBVA", "BCP", "Scotiabank" };
-				for (int i = 0; i < nombresBancos.length; i++) {
-					Bancos banco = new Bancos();
-					banco.setNomBancos(nombresBancos[i]);
-					bancosService.insertarBancos(banco);
-					System.out.println("Se registro el banco: "+ banco.getNomBancos());
-				}
-				
-			}
-			Optional<Monedas> existeMoneda = monedasService.buscarxId(1);
-			if (existeMoneda.isEmpty()) {
-				String[] nombresMonedas = { "PEN", "USD" };
-				String[] valoresMonedas = { "S/.", "$" };
-				for (int i = 0; i < nombresMonedas.length; i++) {
-					Monedas moneda = new Monedas();
-					moneda.setNomMonedas(nombresMonedas[i]);
-					moneda.setValorMoneda(valoresMonedas[i]);
-					monedasService.insertarMonedas(moneda);
-					System.out.println("Se registro la moneda: "+ moneda.getNomMonedas());
-				}
-			}
-			Optional<Riesgo> existeRiesgo = riesgoService.buscarRiesgoxId(1);
-			if (existeRiesgo.isEmpty()) {
-				String[] rangoRiesgo = { "A", "B", "C" };
-				String[] descrpRiesgo = { "El riesgo de inversion es nulo!", "El riesgo de inversion es CASI nulo!",
-						"El riesgo de inversion algo elevado" };
-				for (int i = 0; i < rangoRiesgo.length; i++) {
-					Riesgo riesgo = new Riesgo();
-					riesgo.setRango(rangoRiesgo[i]);
-					riesgo.setDescripcion(descrpRiesgo[i]);
-					riesgoService.insetarRiesgo(riesgo);
-					System.out.println("Se registro el riesgo: "+ riesgo.getRango());
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (DataAccessException e) {
+			salida.put("mensaje", "Error al registrar el Oportunidad Inversion");
+			salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<>(salida, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
+	@PutMapping("/actualizarOportunidadInversion")
+	@ResponseBody
+	public ResponseEntity<?> actualizaOportunidadInversion(@RequestBody OportunidadInversion obj) {
+		HashMap<String, Object> salida = new HashMap<>();
+		try {
+			int idOportunidad = obj.getIdOportunidad();
+			Optional<OportunidadInversion> existeOportunidad = oportunidadInversionservice
+					.buscarxIdOportunidadInversion(idOportunidad);
+			if (existeOportunidad.isEmpty()) {
+				salida.put("mensaje", "No existe oportunidad con Id: " + idOportunidad);
+				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
+			} else {
+				OportunidadInversion objOportunidad = existeOportunidad.get();
+				obj.setIdOportunidad(objOportunidad.getIdOportunidad());
+				obj.setEnable(objOportunidad.getEnable());
+				obj.setFechaRegistro(objOportunidad.getFechaRegistro());
+				// Crear una instancia de Calendar
+				Calendar calendar = Calendar.getInstance();
+				// Establecer la fecha original en el Calendar
+				calendar.setTime(obj.getFechaCaducidad());
+				// Restar 2 mes
+				calendar.add(Calendar.MONTH, -2);
+				// Obtener la fecha resultante
+				Date fechaPago = calendar.getTime();
+				obj.setFechaPago(fechaPago);
+				obj.setMontoRecaudado(objOportunidad.getMontoRecaudado());
+				obj.setUsuarioId(objOportunidad.getUsuarioId());
+				OportunidadInversion objsalida = oportunidadInversionservice.insertaActualizaOportunidadInversion(obj);
+				if (objsalida == null) {
+					salida.put("mensaje", "No se actualizo la oportunidad de inversion");
+					salida.put("oportunidadInversion", obj);
+					return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
+				} else {
+					salida.put("mensaje", "La oportunidad de inversion se actualizo exitosamente!");
+					salida.put("OportunidadInversion", obj);
+					return ResponseEntity.ok(salida);
+				}
+			}
+		} catch (DataAccessException e) {
+			salida.put("mensaje", "Error al actualizar el Oportunidad Inversion");
+			salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<>(salida, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	@DeleteMapping("/eliminarOportunidadInversion/{id}")
+	@ResponseBody
+	public ResponseEntity<?> actualizaOportunidadInversion(@PathVariable int id) {
+		HashMap<String, Object> salida = new HashMap<>();
+		try {
+			Optional<OportunidadInversion> existeOportunidad = oportunidadInversionservice
+					.buscarxIdOportunidadInversion(id);
+			if (existeOportunidad.isEmpty()) {
+				salida.put("mensaje", "No existe oportunidad con Id: " + id);
+				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
+			} else {
+				OportunidadInversion objOportunidad = existeOportunidad.get();
+				objOportunidad.setEnable("No Activo");
+				OportunidadInversion objsalida = oportunidadInversionservice.insertaActualizaOportunidadInversion(objOportunidad);
+				if (objsalida == null) {
+					salida.put("mensaje", "No se elimino la oportunidad de inversion");
+					salida.put("oportunidadInversion", objOportunidad);
+					return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
+				} else {
+					salida.put("mensaje", "La oportunidad de inversion se elimino exitosamente!");
+					salida.put("OportunidadInversion", objOportunidad);
+					return ResponseEntity.ok(salida);
+				}
+			}
+		} catch (DataAccessException e) {
+			salida.put("mensaje", "Error al eliminar el Oportunidad Inversion");
+			salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<>(salida, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/detalleOportunidadInversion/{id}")
+	@ResponseBody
+	public ResponseEntity<?> detalleOportunidad(@PathVariable int id) {
+		HashMap<String, Object> salida = new HashMap<>();
+		try {
+			Optional<OportunidadInversion> existeOportunidad = oportunidadInversionservice
+					.buscarxIdOportunidadInversion(id);
+			if (existeOportunidad.isEmpty()) {
+				salida.put("mensaje", "No existe oportunidad con Id: " + id);
+				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
+			} else {
+				return ResponseEntity.ok(existeOportunidad.get());
+			}
+		} catch (DataAccessException e) {
+			salida.put("mensaje", "Error al registrar el Oportunidad Inversion");
+			salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<>(salida, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 }
+

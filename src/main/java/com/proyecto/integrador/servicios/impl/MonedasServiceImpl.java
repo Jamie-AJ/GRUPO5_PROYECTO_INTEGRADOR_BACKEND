@@ -13,8 +13,6 @@ import com.proyecto.integrador.servicios.MonedasService;
 @Service
 public class MonedasServiceImpl implements MonedasService{
 	
-
-	
 	@Autowired
 	MonedaRepository monedaRepository;
 
