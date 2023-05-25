@@ -26,4 +26,10 @@ public class RolServiceImpl implements RolService {
 		// TODO Auto-generated method stub
 		return repositorio.findAll();
 	}
+
+	@Override
+	public Rol insertarRol(Rol rol) {
+		// TODO Auto-generated method stub
+		return repositorio.save(rol);
+	}
 }

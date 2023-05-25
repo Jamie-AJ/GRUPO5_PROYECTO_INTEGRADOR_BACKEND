@@ -18,53 +18,26 @@ public class OportunidadInversionServicesImpl implements OportunidadInversionSer
 	
 	@Autowired
 	private OportunidadInversionRepository repositorio;
-	
+
 	@Override
-	public OportunidadInversion insertaOActualizaOportunidadInversion(OportunidadInversion obj) {
-	
+	public OportunidadInversion insertaActualizaOportunidadInversion(OportunidadInversion obj) {
 		return repositorio.save(obj);
 	}
 
 	@Override
+	public List<OportunidadInversion> listaOportunidadInversionActivas(String noActivo) {
+		return repositorio.findByEnableNot(noActivo);
+	}
+
+	@Override
+	public Optional<OportunidadInversion> buscarxIdOportunidadInversion(int idOpoInv) {
+		return repositorio.findById(idOpoInv);
+	}
+
+	@Override
 	public List<OportunidadInversion> listaOportunidadInversionTodos() {
-		
 		return repositorio.findAll();
 	}
-
-	@Override
-	public Optional<OportunidadInversion> listaOportunidadInversionxId(int idOportunidaInversion) {
-		
-		return repositorio.findById(idOportunidaInversion);
-	}
-
-	@Override
-	public Optional<OportunidadInversion> buscarxIdOportunidadInversion(int idUsu) {
-		
-		return repositorio.findById(idUsu);
-	}
-
-	@Override
-	public List<OportunidadInversion> listaOportunidadInversionxIdUsuAct(long idUsuario) {
-		
-		return repositorio.listaOportunidadInversionXUsuAcT(idUsuario);
-	}
-
-	@Override
-	public void eliminarOportunidadInversion(Long usuarioId) {
-		}
-
-	@Override
-	public Optional<OportunidadInversion> listaEmpresaxId(int idUsu) {
-		
-		return repositorio.findById(idUsu);
-	}
-
-	@Override
-	public Optional<OportunidadInversion> listaFacturaxId(int idUsu) {
-		
-		return repositorio.findById(idUsu);
-	}
-
 
 	
 

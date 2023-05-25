@@ -25,13 +25,16 @@ public class Transacciones {
 	@JoinColumn(name="idCuentaBancaria", insertable = false, updatable = false)
 	private CuentaBancaria cuentaBancaria;
 	private int idCuentaBancaria;
+	
 	@ManyToOne
 	@JoinColumn(name="idTipoTransaccion", insertable = false, updatable = false)
 	private TipoTransaccion tipoTransaccion;
 	private long idTipoTransaccion;
+	
 	@Temporal(TemporalType.DATE)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/Lima")
 	private Date fecha; 
+	
 	public Transacciones() {
 		super();
 	}
