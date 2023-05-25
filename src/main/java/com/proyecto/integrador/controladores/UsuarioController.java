@@ -65,7 +65,7 @@ public class UsuarioController {
 		}
 	}
 
-	//lista usuarios activos
+	// lista usuarios activos
 	@GetMapping("active/listaUsuario")
 	@ResponseBody
 	public ResponseEntity<List<Usuario>> listaUsuarioAct() {
@@ -73,7 +73,6 @@ public class UsuarioController {
 		return ResponseEntity.ok(lista);
 	}
 
-	
 	// listar roles
 	@GetMapping("/listarRoles")
 	@ResponseBody
@@ -97,40 +96,48 @@ public class UsuarioController {
 	public ResponseEntity<?> registrar(@RequestBody @Valid Usuario usuario) throws Exception {
 		HashMap<String, Object> salida = new HashMap<>();
 		try {
-			Optional<Usuario> objDni = usuarioService.buscarPorDni(usuario.getDni());
-			if (objDni.isEmpty()) {
-				Optional<Usuario> objCorreo = usuarioService.buscarPorCorreo(usuario.getCorreo());
-				if (objCorreo.isPresent()) {
-					salida.put("mensaje", "El correo ya existe");
-					return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
-				} else {
-					usuario.setFecha(new Date());
-					usuario.setEnable("Activo");
-					usuario.setFoto("default.png");
-					usuario.setId(0);
-					usuario.setPassword(bCryptPasswordEncoder.encode(usuario.getPassword()));
-					// Obtener el rol por id
-					Rol rol = rolService.buscarporId(usuario.getIdTipoUsu());
-					usuario.setTiporol(rol);
-					Usuario objUsuario = usuarioService.insertaActualizaUsuario(usuario);
-					Cartera cartera = new Cartera();
-					cartera.setSaldo(0);
-					cartera.setIdUsu(objUsuario.getId());
-					Cartera objCartera = carteraService.insertaActualizaCartera(cartera);
-					if (objUsuario != null && objCartera != null) {
-						salida.put("mensaje", "Has sido registrado exitosamente");
-						salida.put("empleado", objUsuario);
-						salida.put("cartera", objCartera);
-						return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CREATED);
-					} else {
-						salida.put("mensaje", "Error al registrar el usuario");
-						return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.BAD_REQUEST);
-					}
-				}
-
+			// si el username ya esta en uso
+			int existeUsername = usuarioService.ExisteporUsuario(usuario.getUsername(),
+					usuario.getId());
+			if (existeUsername != 0) {
+				return new ResponseEntity<>("Ese usuario ya existe", HttpStatus.BAD_REQUEST);
+			}
+			// si el email ya esta en uso
+			int existeCorreo = usuarioService.ExisteporCorreo(usuario.getCorreo(), usuario.getId());
+			if (existeCorreo != 0) {
+				return new ResponseEntity<>("Ese email de usuario ya existe", HttpStatus.BAD_REQUEST);
+			}
+			// si el dni ya esta en uso
+			int existeDni = usuarioService.ExisteporDni(usuario.getDni(), usuario.getId());
+			if (existeDni != 0) {
+				return new ResponseEntity<>("El Dni de usuario ya existe", HttpStatus.BAD_REQUEST);
 			} else {
-				salida.put("mensaje", "El empleado con el DNI: " + usuario.getDni() + " ya existe.");
-				return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
+				usuario.setFecha(new Date());
+				usuario.setEnable("Activo");
+				usuario.setFoto("default.png");
+				usuario.setId(0);
+				usuario.setPassword(bCryptPasswordEncoder.encode(usuario.getPassword()));
+				// Obtener el rol por id
+				Rol rol = rolService.buscarporId(usuario.getIdTipoUsu());
+				boolean esIgual = rol.getTipo().equals("ADMIN");
+				if(esIgual) {
+					usuario.setIdTipoUsu(1L);
+				}
+				usuario.setTiporol(rol);
+				Usuario objUsuario = usuarioService.insertaActualizaUsuario(usuario);
+				Cartera cartera = new Cartera();
+				cartera.setSaldo(0);
+				cartera.setIdUsu(objUsuario.getId());
+				Cartera objCartera = carteraService.insertaActualizaCartera(cartera);
+				if (objUsuario != null && objCartera != null) {
+					salida.put("mensaje", "Has sido registrado exitosamente");
+					salida.put("empleado", objUsuario);
+					salida.put("cartera", objCartera);
+					return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CREATED);
+				} else {
+					salida.put("mensaje", "Error al registrar el usuario");
+					return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.BAD_REQUEST);
+				}
 			}
 		} catch (DataAccessException e) {
 			salida.put("mensaje", "Error al registrar el empleado");
@@ -149,7 +156,6 @@ public class UsuarioController {
 		try {
 			// Buscar el usuario por su id
 			Usuario usuarioExistente = usuarioService.buscarUsuarioPorId(usuarioActualizado.getId());
-
 			// Verificar si el usuario existe
 			if (usuarioExistente == null) {
 				response.put("mensaje", "No se puede actualizar, el usuario no existe");
@@ -193,7 +199,6 @@ public class UsuarioController {
 		}
 	}
 
-
 	@DeleteMapping("/eliminar/{id}")
 	@ResponseBody
 	public ResponseEntity<?> eliminarUsuario(@PathVariable Long id) {
@@ -214,7 +219,7 @@ public class UsuarioController {
 			response.put("mensaje", "Hubo un error al eliminar el usuario: " + e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	
+
 	}
 
 	@GetMapping("/{username}")

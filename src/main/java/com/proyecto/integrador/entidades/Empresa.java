@@ -18,6 +18,7 @@ public class Empresa {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idEmpresa;
+	private String representanteLegal;
 	private String nomEmpresa;
 	private String ruc;
 	private String razonSocial;
@@ -36,10 +37,12 @@ public class Empresa {
 	public Empresa() {
 		super();
 	}
-	public Empresa(int idEmpresa, String nomEmpresa, String ruc, String razonSocial, Date fechaDeInicioActv, String direccion,
-			String telefono, String correo/*,String nroCuentaBancaria*/, String sector, Date fechRegistro, String enable) {
+	public Empresa(int idEmpresa, String representanteLegal, String nomEmpresa, String ruc, String razonSocial,
+			Date fechaDeInicioActv, String direccion, String telefono, String correo, String sector, Date fechRegistro,
+			String enable) {
 		super();
 		this.idEmpresa = idEmpresa;
+		this.representanteLegal = representanteLegal;
 		this.nomEmpresa = nomEmpresa;
 		this.ruc = ruc;
 		this.razonSocial = razonSocial;
@@ -47,7 +50,6 @@ public class Empresa {
 		this.direccion = direccion;
 		this.telefono = telefono;
 		this.correo = correo;
-		//this.nroCuentaBancaria = nroCuentaBancaria;
 		this.sector = sector;
 		this.fechRegistro = fechRegistro;
 		this.enable = enable;
@@ -57,6 +59,12 @@ public class Empresa {
 	}
 	public void setIdEmpresa(int idEmpresa) {
 		this.idEmpresa = idEmpresa;
+	}
+	public String getRepresentanteLegal() {
+		return representanteLegal;
+	}
+	public void setRepresentanteLegal(String representanteLegal) {
+		this.representanteLegal = representanteLegal;
 	}
 	public String getNomEmpresa() {
 		return nomEmpresa;
@@ -100,12 +108,6 @@ public class Empresa {
 	public void setCorreo(String correo) {
 		this.correo = correo;
 	}
-	/*public String getNroCuentaBancaria() {
-		return nroCuentaBancaria;
-	}
-	public void setNroCuentaBancaria(String nroCuentaBancaria) {
-		this.nroCuentaBancaria = nroCuentaBancaria;
-	}*/
 	public String getSector() {
 		return sector;
 	}
@@ -124,6 +126,7 @@ public class Empresa {
 	public void setEnable(String enable) {
 		this.enable = enable;
 	}
+	
 	
 	
 }

@@ -20,10 +20,14 @@ public class RolServiceImpl implements RolService {
 		Rol rol = repositorio.findById(id).orElse(null);
 		return rol;
 	}
-	
+
 	@Override
 	public List<Rol> listarRoles() {
-		// TODO Auto-generated method stub
 		return repositorio.findAll();
+	}
+
+	@Override
+	public Rol insertarRol(Rol rol) {
+		return repositorio.save(rol);
 	}
 }
