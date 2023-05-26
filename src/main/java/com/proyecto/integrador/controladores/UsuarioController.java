@@ -100,17 +100,20 @@ public class UsuarioController {
 			int existeUsername = usuarioService.ExisteporUsuario(usuario.getUsername(),
 					usuario.getId());
 			if (existeUsername != 0) {
-				return new ResponseEntity<>("Ese usuario ya existe", HttpStatus.BAD_REQUEST);
+				salida.put("Mensaje", "Ese username ya existe");
+				return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
 			}
 			// si el email ya esta en uso
 			int existeCorreo = usuarioService.ExisteporCorreo(usuario.getCorreo(), usuario.getId());
 			if (existeCorreo != 0) {
-				return new ResponseEntity<>("Ese email de usuario ya existe", HttpStatus.BAD_REQUEST);
+				salida.put("Mensaje", "Ese email de usuario ya existe");
+				return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
 			}
 			// si el dni ya esta en uso
 			int existeDni = usuarioService.ExisteporDni(usuario.getDni(), usuario.getId());
 			if (existeDni != 0) {
-				return new ResponseEntity<>("El Dni de usuario ya existe", HttpStatus.BAD_REQUEST);
+				salida.put("Mensaje", "Ese email de usuario ya existe");
+				return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
 			} else {
 				usuario.setFecha(new Date());
 				usuario.setEnable("Activo");
