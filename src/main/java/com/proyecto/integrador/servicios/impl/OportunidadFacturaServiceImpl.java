@@ -20,6 +20,11 @@ public class OportunidadFacturaServiceImpl implements OportunidadFacturaService{
 		
 		return repository.findAll();
 	}
+
+	@Override
+	public OportunidadFactura insertarOportunidaFactura(OportunidadFactura oFactrura) {
+		return repository.save(oFactrura);
+	}
 	
 	
 
