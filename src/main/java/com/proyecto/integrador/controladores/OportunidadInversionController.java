@@ -54,7 +54,6 @@ public class OportunidadInversionController {
 		HashMap<String, Object> salida = new HashMap<>();
 		try {
 			long idUsuAct = (long) session.getAttribute("idUsuActual");
-
 			obj.setIdidUsu(idUsuAct);
 			obj.setEnable("Activo");
 			obj.setFechaRegistro(new Date());
