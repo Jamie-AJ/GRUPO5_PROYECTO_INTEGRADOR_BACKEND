@@ -18,4 +18,6 @@ public interface EmpresaRepository extends JpaRepository<Empresa, Integer> {
 	Optional<Empresa> findByCorreoAndIdEmpresaNot(String correo, int idEmpresa);
 
 	List<Empresa> findByEnableNot(String noActivo);
+	
+	 List<Empresa> findByRazonSocialContainingAndEnableNot(String keyword,String noActivo);
 }

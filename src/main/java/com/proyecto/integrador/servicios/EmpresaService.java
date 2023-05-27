@@ -21,5 +21,7 @@ public interface EmpresaService {
 	public abstract Optional<Empresa> listExistexRazonSocial(String razonS, int idEmpresa);
 
 	public abstract List<Empresa> listaDiffNotEnable(String noActivo);
+	
+	public abstract List<Empresa> buscarxRazonSocialContainsActive(String keyword, String noActivo);
 
 }

@@ -31,6 +31,12 @@ public class EmpresaController {
 	@Autowired
 	private EmpresaService empresaService;
 
+	@GetMapping("active/buscarEmpresasContains/{keyWord}")
+	@ResponseBody
+	public ResponseEntity<List<Empresa>> buscarEmpresasActContains(@PathVariable String keyWord) {
+		List<Empresa> lista = empresaService.buscarxRazonSocialContainsActive(keyWord,"No activo");
+		return ResponseEntity.ok(lista);
+	}
 	@GetMapping("active/listaEmpresas")
 	@ResponseBody
 	public ResponseEntity<List<Empresa>> listaEmpresasAct() {
