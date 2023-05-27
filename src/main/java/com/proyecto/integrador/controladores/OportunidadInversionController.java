@@ -55,7 +55,7 @@ public class OportunidadInversionController {
 		try {
 			long idUsuAct = (long) session.getAttribute("idUsuActual");
 
-			obj.setUsuarioId(idUsuAct);
+			obj.setIdidUsu(idUsuAct);
 			obj.setEnable("Activo");
 			obj.setFechaRegistro(new Date());
 			obj.setMontoRecaudado(0.0);
@@ -116,7 +116,7 @@ public class OportunidadInversionController {
 				Date fechaPago = calendar.getTime();
 				obj.setFechaPago(fechaPago);
 				obj.setMontoRecaudado(objOportunidad.getMontoRecaudado());
-				obj.setUsuarioId(objOportunidad.getUsuarioId());
+				//obj.setUsuarioId(objOportunidad.getUsuarioId());
 				OportunidadInversion objsalida = oportunidadInversionservice.insertaActualizaOportunidadInversion(obj);
 				if (objsalida == null) {
 					salida.put("mensaje", "No se actualizo la oportunidad de inversion");

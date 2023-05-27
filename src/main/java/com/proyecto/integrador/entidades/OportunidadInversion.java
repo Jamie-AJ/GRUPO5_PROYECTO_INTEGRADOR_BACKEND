@@ -43,16 +43,10 @@ public class OportunidadInversion {
 	@JoinColumn(name = "idEmpresa", insertable = false, updatable = false)
 	private Empresa empresa;
 	private int idEmpresa;
-
 	@ManyToOne
-	@JoinColumn(name = "idFactura", insertable = false, updatable = false)
-	private Factura factura;
-	private int idFactura;
-
-	@ManyToOne
-	@JoinColumn(name = "usuarioId", insertable = false, updatable = false)
+	@JoinColumn(name = "idUsu", insertable = false, updatable = false)
 	private Usuario usuario;
-	private long usuarioId;
+	private long idUsu;
 
 	public OportunidadInversion() {
 		super();
@@ -60,7 +54,7 @@ public class OportunidadInversion {
 
 	public OportunidadInversion(int idOportunidad, double rendimiento, double tir, Double monto, Double montoRecaudado,
 			Date fechaCaducidad, Date fechaRegistro, String enable, Date fechaPago, Empresa empresa, int idEmpresa,
-			Factura factura, int idFactura, Usuario usuario, long usuarioId) {
+			Usuario usuario, long idUsu) {
 		super();
 		this.idOportunidad = idOportunidad;
 		this.rendimiento = rendimiento;
@@ -73,10 +67,8 @@ public class OportunidadInversion {
 		this.fechaPago = fechaPago;
 		this.empresa = empresa;
 		this.idEmpresa = idEmpresa;
-		this.factura = factura;
-		this.idFactura = idFactura;
 		this.usuario = usuario;
-		this.usuarioId = usuarioId;
+		this.idUsu = idUsu;
 	}
 
 	public int getIdOportunidad() {
@@ -167,22 +159,6 @@ public class OportunidadInversion {
 		this.idEmpresa = idEmpresa;
 	}
 
-	public Factura getFactura() {
-		return factura;
-	}
-
-	public void setFactura(Factura factura) {
-		this.factura = factura;
-	}
-
-	public int getIdFactura() {
-		return idFactura;
-	}
-
-	public void setIdFactura(int idFactura) {
-		this.idFactura = idFactura;
-	}
-
 	public Usuario getUsuario() {
 		return usuario;
 	}
@@ -191,12 +167,12 @@ public class OportunidadInversion {
 		this.usuario = usuario;
 	}
 
-	public long getUsuarioId() {
-		return usuarioId;
+	public long getIdidUsu() {
+		return idUsu;
 	}
 
-	public void setUsuarioId(long usuarioId) {
-		this.usuarioId = usuarioId;
+	public void setIdidUsu(long idUsu) {
+		this.idUsu = idUsu;
 	}
-
+	
 }
