@@ -64,7 +64,7 @@ public class FacturaController {
 	}
 
 	
-	@GetMapping("active/listaFactura")
+	@GetMapping("/active/listaFactura")
 	@ResponseBody
 	public ResponseEntity<List<Factura>> listaFacturasAct() {
 		List<Factura> lista = facturaService.listaDifNotEnable("No activo");
