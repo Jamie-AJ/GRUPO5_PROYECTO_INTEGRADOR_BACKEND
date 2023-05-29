@@ -54,5 +54,10 @@ public class EmpresaServiceImpl implements EmpresaService{
 	public Optional<Empresa> listExistexRazonSocial(String razonS, int idEmpresa) {
 		return repo.findByRazonSocialAndIdEmpresaNot(razonS, idEmpresa);
 	}
+
+	@Override
+	public List<Empresa> buscarxRazonSocialContainsActive(String keyword,String noActivo) {
+		return repo.findByRazonSocialContainingAndEnableNot(keyword,noActivo);
+	}
 	
 }

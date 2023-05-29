@@ -71,7 +71,7 @@ public class SistemaFactoringBackendApplication implements CommandLineRunner {
 				usuario.setTelefono("938311721");
 				usuario.setCorreo("apolaya@gmail.com");
 				usuario.setUsername("jamie");
-				usuario.setPassword(bCryptPasswordEncoder.encode("Jamie12345"));
+				usuario.setPassword(bCryptPasswordEncoder.encode("Admin123"));
 				usuario.setFoto("foto.png");
 				usuario.setFecha(new Date());
 				usuario.setDni("77454558");

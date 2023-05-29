@@ -17,16 +17,45 @@ public class OportunidadFactura {
 	private int idOportunidadFactura;
 	
 	@ManyToOne
+	@JoinColumn(name="idOportunidadInversion", insertable = false, updatable = false)
+	private OportunidadInversion oportunidadInversion;
+	private int idOportunidadInversion;
+	
+	@ManyToOne
 	@JoinColumn(name="idFactura", insertable = false, updatable = false)
 	private Factura factura;
 	private int idFactura;
 	
 	
+	public OportunidadFactura() {
+		super();
+	}
+	public OportunidadFactura(int idOportunidadFactura, OportunidadInversion oportunidadInversion, int idOportunidadInversion,
+			Factura factura, int idFactura) {
+		super();
+		this.idOportunidadFactura = idOportunidadFactura;
+		this.oportunidadInversion = oportunidadInversion;
+		this.idOportunidadInversion = idOportunidadInversion;
+		this.factura = factura;
+		this.idFactura = idFactura;
+	}
 	public int getIdOportunidadFactura() {
 		return idOportunidadFactura;
 	}
 	public void setIdOportunidadFactura(int idOportunidadFactura) {
 		this.idOportunidadFactura = idOportunidadFactura;
+	}
+	public OportunidadInversion getOportunidadInversion() {
+		return oportunidadInversion;
+	}
+	public void setOportunidadInversion(OportunidadInversion oportunidadInversion) {
+		this.oportunidadInversion = oportunidadInversion;
+	}
+	public int getIdOportunidadInversion() {
+		return idOportunidadInversion;
+	}
+	public void setIdOportunidadInversion(int idOportunidad) {
+		this.idOportunidadInversion = idOportunidad;
 	}
 	public Factura getFactura() {
 		return factura;
@@ -40,17 +69,5 @@ public class OportunidadFactura {
 	public void setIdFactura(int idFactura) {
 		this.idFactura = idFactura;
 	}
-	public OportunidadFactura(int idOportunidadFactura, Factura factura, int idFactura) {
-		super();
-		this.idOportunidadFactura = idOportunidadFactura;
-		this.factura = factura;
-		this.idFactura = idFactura;
-	}
-	public OportunidadFactura() {
-		super();
-	}
 	
-	
-	
-
 }
