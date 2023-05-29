@@ -1,5 +1,7 @@
 package com.proyecto.integrador.servicios.impl;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +25,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Override
 	@Transactional(readOnly = true)
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Usuario usuario = this.usuarioRepository.findByUsername(username);
-		if(usuario == null) {
+		Optional<Usuario> usuarioExiste = this.usuarioRepository.findByUsername(username);
+		if(usuarioExiste.isEmpty()) {
 			throw new UsernameNotFoundException("Usuario no Encontrado");
-			
 		}
+		Usuario usuario = usuarioExiste.get();
 		session.setAttribute("idUsuActual", usuario.getId());
         session.setAttribute("emailUsuActual", usuario.getCorreo());
         session.setAttribute("userNameActual", usuario.getUsername());

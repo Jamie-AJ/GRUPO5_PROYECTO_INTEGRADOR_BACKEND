@@ -62,8 +62,8 @@ public class SistemaFactoringBackendApplication implements CommandLineRunner {
 				rolService.insertarRol(rolAdmin);
 				System.out.println("Roles registrado con exito!");
 			}
-			Usuario usuExiste = usuarioService.buscarUsuarioPorId(1);
-			if (usuExiste == null) {
+			Optional<Usuario> usuExiste = usuarioService.buscarUsuarioPorId(1);
+			if (usuExiste.isEmpty()) {
 				Usuario usuario = new Usuario();
 				usuario.setNombre("Jeimy");
 				usuario.setApellidoPa("Apolaya");

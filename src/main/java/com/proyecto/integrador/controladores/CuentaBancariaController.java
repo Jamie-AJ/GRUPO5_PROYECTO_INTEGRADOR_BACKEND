@@ -34,7 +34,7 @@ public class CuentaBancariaController {
 
 	@Autowired
 	private CuentaBancariaService cuentabancariaService;
-
+//FALTA VALIDACION PARA EL NUMERO DE CUENTA BANCARIA NO SEAN IGUALES!!!!!!
 	@GetMapping("/detalleCuentaBancaria/{id}")
 	@ResponseBody
 	public ResponseEntity<?> buscarPorId(@PathVariable int id, HttpSession session) {

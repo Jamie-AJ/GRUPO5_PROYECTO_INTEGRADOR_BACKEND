@@ -2,11 +2,12 @@ package com.proyecto.integrador.controladores;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -31,26 +32,29 @@ public class EmpresaController {
 	@Autowired
 	private EmpresaService empresaService;
 
-	@GetMapping("active/buscarEmpresasContains/{keyWord}")
+	@GetMapping("/active/buscarEmpresasContains/{keyWord}")
 	@ResponseBody
-	public ResponseEntity<List<Empresa>> buscarEmpresasActContains(@PathVariable String keyWord) {
-		List<Empresa> lista = empresaService.buscarxRazonSocialContainsActive(keyWord,"No activo");
+	public ResponseEntity<Page<Empresa>> buscarEmpresasActContains(@PathVariable String keyWord, Pageable pageable) {
+		Page<Empresa> lista = empresaService.buscarxRazonSocialContainsActive(keyWord, AppSettings.NOT_ENABLE,
+				pageable);
 		return ResponseEntity.ok(lista);
 	}
-	@GetMapping("active/listaEmpresas")
+
+	@GetMapping("/active/listaEmpresas")
 	@ResponseBody
-	public ResponseEntity<List<Empresa>> listaEmpresasAct() {
-		List<Empresa> lista = empresaService.listaDiffNotEnable("No activo");
+	public ResponseEntity<Page<Empresa>> listaEmpresasAct(Pageable pageable) {
+		Page<Empresa> lista = empresaService.listaDiffNotEnable(AppSettings.NOT_ENABLE, pageable);
 		return ResponseEntity.ok(lista);
 	}
 
 	@GetMapping("/listaEmpresas")
 	@ResponseBody
-	public ResponseEntity<List<Empresa>> listaEmpresa() {
-		List<Empresa> lista = empresaService.listaEmpresa();
+	public ResponseEntity<Page<Empresa>> listaEmpresa(Pageable pageable) {
+		Page<Empresa> lista = empresaService.listaEmpresa(pageable);
 		return ResponseEntity.ok(lista);
 	}
 
+//
 	@PostMapping("/registrarEmpresa")
 	@ResponseBody
 	public ResponseEntity<?> registrarEmpresa(@RequestBody Empresa empresa) {
@@ -67,34 +71,34 @@ public class EmpresaController {
 				if (existeRuc.isPresent()) {
 					salida.put("mensaje", "El Ruc ya existe");
 					return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
-				} /*else {
-					Optional<Empresa> existeNCB = empresaService
-							.listExistexNroCuentaBancaria(empresa.getNroCuentaBancaria(), empresa.getIdEmpresa());
-					if (existeNCB.isPresent()) {
-						salida.put("mensaje", "El Numero de cuenta bancaria ya existe");
+				} /*
+					 * else { Optional<Empresa> existeNCB = empresaService
+					 * .listExistexNroCuentaBancaria(empresa.getNroCuentaBancaria(),
+					 * empresa.getIdEmpresa()); if (existeNCB.isPresent()) { salida.put("mensaje",
+					 * "El Numero de cuenta bancaria ya existe"); return new
+					 * ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT); }
+					 */ else {
+					Optional<Empresa> existeRZ = empresaService.listExistexRazonSocial(empresa.getRazonSocial(),
+							empresa.getIdEmpresa());
+					if (existeRZ.isPresent()) {
+						salida.put("mensaje", "La Razon social ya existe");
 						return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
-					}*/ else {
-						Optional<Empresa> existeRZ = empresaService.listExistexRazonSocial(empresa.getRazonSocial(),
-								empresa.getIdEmpresa());
-						if (existeRZ.isPresent()) {
-							salida.put("mensaje", "La Razon social ya existe");
-							return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
+					} else {
+						empresa.setFechRegistro(new Date());
+						empresa.setEnable("Activo");
+						Empresa objEmpresa = empresaService.insertarActualizarEmpresa(empresa);
+						if (objEmpresa != null) {
+							salida.put("mensaje", "Empresa registrada exitosamente");
+							salida.put("empresa", objEmpresa);
+							return ResponseEntity.ok(salida);
 						} else {
-							empresa.setFechRegistro(new Date());
-							empresa.setEnable("Activo");
-							Empresa objEmpresa = empresaService.insertarActualizarEmpresa(empresa);
-							if (objEmpresa != null) {
-								salida.put("mensaje", "Empresa registrada exitosamente");
-								salida.put("empresa", objEmpresa);
-								return ResponseEntity.ok(salida);
-							} else {
-								salida.put("mensaje", "Error al registrar la empresa");
-								return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.BAD_REQUEST);
-							}
+							salida.put("mensaje", "Error al registrar la empresa");
+							return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.BAD_REQUEST);
 						}
 					}
 				}
-			/*/}*/
+			}
+			/* /} */
 		} catch (DataAccessException e) {
 			salida.put("mensaje", "Error al registrar empresa");
 			salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
@@ -124,36 +128,36 @@ public class EmpresaController {
 					if (existeRuc.isPresent()) {
 						salida.put("mensaje", "El Ruc ya existe");
 						return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
-					} /*else {
-						Optional<Empresa> existeNCB = empresaService
-								.listExistexNroCuentaBancaria(empresa.getNroCuentaBancaria(), empresa.getIdEmpresa());
-						if (existeNCB.isPresent()) {
-							salida.put("mensaje", "El Numero de cuenta bancaria ya existe");
+					} /*
+						 * else { Optional<Empresa> existeNCB = empresaService
+						 * .listExistexNroCuentaBancaria(empresa.getNroCuentaBancaria(),
+						 * empresa.getIdEmpresa()); if (existeNCB.isPresent()) { salida.put("mensaje",
+						 * "El Numero de cuenta bancaria ya existe"); return new
+						 * ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT); }
+						 */ else {
+						Optional<Empresa> existeRZ = empresaService.listExistexRazonSocial(empresa.getRazonSocial(),
+								empresa.getIdEmpresa());
+						if (existeRZ.isPresent()) {
+							salida.put("mensaje", "La razon social ya existe");
 							return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
-						}*/ else {
-							Optional<Empresa> existeRZ = empresaService.listExistexRazonSocial(empresa.getRazonSocial(),
-									empresa.getIdEmpresa());
-							if (existeRZ.isPresent()) {
-								salida.put("mensaje", "La razon social ya existe");
-								return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
+						} else {
+							Empresa empresaActu = existeEmp.get();
+							empresa.setFechRegistro(empresaActu.getFechRegistro());
+							empresa.setEnable(empresaActu.getEnable());
+							Empresa objEmpresa = empresaService.insertarActualizarEmpresa(empresa);
+							if (objEmpresa != null) {
+								salida.put("mensaje", "Empresa actualizada exitosamente");
+								salida.put("empresa", objEmpresa);
+								return ResponseEntity.ok(salida);
 							} else {
-								Empresa empresaActu = existeEmp.get();
-								empresa.setFechRegistro(empresaActu.getFechRegistro());
-								empresa.setEnable(empresaActu.getEnable());
-								Empresa objEmpresa = empresaService.insertarActualizarEmpresa(empresa);
-								if (objEmpresa != null) {
-									salida.put("mensaje", "Empresa actualizada exitosamente");
-									salida.put("empresa", objEmpresa);
-									return ResponseEntity.ok(salida);
-								} else {
-									salida.put("mensaje", "Error al registrar la empresa");
-									return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.BAD_REQUEST);
-								}
+								salida.put("mensaje", "Error al registrar la empresa");
+								return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.BAD_REQUEST);
 							}
 						}
 					}
 				}
-			/*}*/
+			}
+			/* } */
 		} catch (DataAccessException e) {
 			salida.put("mensaje", "Error al registrar empresa");
 			salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));

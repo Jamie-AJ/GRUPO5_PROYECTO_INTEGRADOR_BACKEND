@@ -9,6 +9,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -53,8 +55,8 @@ public class UsuarioController {
 	public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
 		HashMap<String, Object> response = new HashMap<>();
 		try {
-			Usuario usuario = usuarioService.buscarUsuarioPorId(id);
-			if (usuario == null) {
+			Optional<Usuario> usuario = usuarioService.buscarUsuarioPorId(id);
+			if (usuario.isEmpty()) {
 				response.put("mensaje", "El usuario con codigo " + id + " no existe");
 				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 			}
@@ -66,10 +68,10 @@ public class UsuarioController {
 	}
 
 	// lista usuarios activos
-	@GetMapping("active/listaUsuario")
+	@GetMapping("/active/listarUsuario")
 	@ResponseBody
-	public ResponseEntity<List<Usuario>> listaUsuarioAct() {
-		List<Usuario> lista = usuarioService.listaDiffNotEnable("No activo");
+	public ResponseEntity<Page<Usuario>> listaUsuarioActive(Pageable pageable) {
+		Page<Usuario> lista = usuarioService.listaDiffNotEnable("No activo",pageable);
 		return ResponseEntity.ok(lista);
 	}
 
@@ -83,10 +85,10 @@ public class UsuarioController {
 
 	// listado de usuarios
 
-	@GetMapping("/listarusuarios")
+	@GetMapping("/listarUsuario")
 	@ResponseBody
-	public ResponseEntity<List<Usuario>> listaUsuarios() {
-		List<Usuario> lista = usuarioService.listaUsuarios();
+	public ResponseEntity<Page<Usuario>> listaUsuarios(Pageable pageable) {
+		Page<Usuario> lista = usuarioService.listaUsuarios(pageable);
 		return ResponseEntity.ok(lista);
 	}
 
@@ -97,22 +99,21 @@ public class UsuarioController {
 		HashMap<String, Object> salida = new HashMap<>();
 		try {
 			// si el username ya esta en uso
-			int existeUsername = usuarioService.ExisteporUsuario(usuario.getUsername(),
-					usuario.getId());
-			if (existeUsername != 0) {
+			Optional<Usuario> existeUsername = usuarioService.buscarPorUsernameIdNot(usuario.getUsername(),usuario.getId());
+			if (existeUsername.isPresent()) {
 				salida.put("Mensaje", "Ese username ya existe");
 				return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
 			}
 			// si el email ya esta en uso
-			int existeCorreo = usuarioService.ExisteporCorreo(usuario.getCorreo(), usuario.getId());
-			if (existeCorreo != 0) {
+			Optional<Usuario> existeCorreo = usuarioService.buscarPorCorreoIdNot(usuario.getCorreo(), usuario.getId());
+			if (existeCorreo.isPresent()) {
 				salida.put("Mensaje", "Ese email de usuario ya existe");
 				return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
 			}
 			// si el dni ya esta en uso
-			int existeDni = usuarioService.ExisteporDni(usuario.getDni(), usuario.getId());
-			if (existeDni != 0) {
-				salida.put("Mensaje", "Ese email de usuario ya existe");
+			Optional<Usuario> existeDni = usuarioService.buscarPorDniIdNot(usuario.getDni(), usuario.getId());
+			if (existeDni.isPresent()) {
+				salida.put("Mensaje", "Ese dni de usuario ya existe");
 				return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
 			} else {
 				usuario.setFecha(new Date());
@@ -121,12 +122,9 @@ public class UsuarioController {
 				usuario.setId(0);
 				usuario.setPassword(bCryptPasswordEncoder.encode(usuario.getPassword()));
 				// Obtener el rol por id
-				Rol rol = rolService.buscarporId(usuario.getIdTipoUsu());
-				boolean esIgual = rol.getTipo().equals("ADMIN");
-				if(esIgual) {
-					usuario.setIdTipoUsu(1L);
-				}
+				Rol rol = rolService.buscarporId(AppSettings.ROL_USU_INVERSIONISTA);
 				usuario.setTiporol(rol);
+				usuario.setIdTipoUsu(rol.getIdTipoUsu());
 				Usuario objUsuario = usuarioService.insertaActualizaUsuario(usuario);
 				Cartera cartera = new Cartera();
 				cartera.setSaldo(0);
@@ -158,37 +156,38 @@ public class UsuarioController {
 		HashMap<String, Object> response = new HashMap<>();
 		try {
 			// Buscar el usuario por su id
-			Usuario usuarioExistente = usuarioService.buscarUsuarioPorId(usuarioActualizado.getId());
+			Optional<Usuario> usuarioExistente = usuarioService.buscarUsuarioPorId(usuarioActualizado.getId());
 			// Verificar si el usuario existe
-			if (usuarioExistente == null) {
+			if (usuarioExistente.isEmpty()) {
 				response.put("mensaje", "No se puede actualizar, el usuario no existe");
 				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 			}
 			// si el username ya esta en uso
-			int existeUsername = usuarioService.ExisteporUsuario(usuarioActualizado.getUsername(),
-					usuarioActualizado.getId());
-			if (existeUsername != 0) {
-				return new ResponseEntity<>("Ese usuario ya existe", HttpStatus.BAD_REQUEST);
+			Optional<Usuario> existeUsername = usuarioService.buscarPorUsernameIdNot(usuarioActualizado.getUsername(),usuarioActualizado.getId());
+			if (existeUsername.isPresent()) {
+				response.put("Mensaje", "Ese username ya existe");
+				return new ResponseEntity<HashMap<String, Object>>(response, HttpStatus.CONFLICT);
 			}
 			// si el email ya esta en uso
-			int existeCorreo = usuarioService.ExisteporCorreo(usuarioActualizado.getCorreo(),
-					usuarioActualizado.getId());
-			if (existeCorreo != 0) {
-				return new ResponseEntity<>("Ese email de usuario ya existe", HttpStatus.BAD_REQUEST);
+			Optional<Usuario> existeCorreo = usuarioService.buscarPorCorreoIdNot(usuarioActualizado.getCorreo(), usuarioActualizado.getId());
+			if (existeCorreo.isPresent()) {
+				response.put("Mensaje", "Ese email de usuario ya existe");
+				return new ResponseEntity<HashMap<String, Object>>(response, HttpStatus.CONFLICT);
 			}
 			// si el dni ya esta en uso
-			int existeDni = usuarioService.ExisteporDni(usuarioActualizado.getDni(), usuarioActualizado.getId());
-			if (existeDni != 0) {
-				return new ResponseEntity<>("El Dni de usuario ya existe", HttpStatus.BAD_REQUEST);
+			Optional<Usuario> existeDni = usuarioService.buscarPorDniIdNot(usuarioActualizado.getDni(), usuarioActualizado.getId());
+			if (existeDni.isPresent()) {
+				response.put("Mensaje", "Ese dni de usuario ya existe");
+				return new ResponseEntity<HashMap<String, Object>>(response, HttpStatus.CONFLICT);
 			}
-
+			Usuario usuario = usuarioExistente.get();
 			// Restricciones para actualizar
-			usuarioActualizado.setUsername(usuarioExistente.getUsername()); // No se puede actualizar el username
-			usuarioActualizado.setPassword(usuarioExistente.getPassword()); // No se puede actualizar el password
-			usuarioActualizado.setIdTipoUsu(usuarioExistente.getIdTipoUsu()); // No se puede actualizar el rol
-			usuarioActualizado.setFecha(usuarioExistente.getFecha()); // No se puede actualizar la fecha
-			usuarioActualizado.setEnable(usuarioExistente.getEnable());
-			usuarioActualizado.setFoto(usuarioExistente.getFoto());
+			usuarioActualizado.setUsername(usuario.getUsername()); // No se puede actualizar el username
+			usuarioActualizado.setPassword(usuario.getPassword()); // No se puede actualizar el password
+			usuarioActualizado.setIdTipoUsu(usuario.getIdTipoUsu()); // No se puede actualizar el rol
+			usuarioActualizado.setFecha(usuario.getFecha()); // No se puede actualizar la fecha
+			usuarioActualizado.setEnable(usuario.getEnable());
+			usuarioActualizado.setFoto(usuario.getFoto());
 
 			// Actualizar el usuario
 			usuarioService.insertaActualizaUsuario(usuarioActualizado);
@@ -207,9 +206,9 @@ public class UsuarioController {
 	public ResponseEntity<?> eliminarUsuario(@PathVariable Long id) {
 		HashMap<String, Object> response = new HashMap<>();
 		try {
-			Optional<Usuario> existeUsu = usuarioService.listaUsuarioPorId(id);
+			Optional<Usuario> existeUsu = usuarioService.buscarUsuarioPorId(id);
 			if (existeUsu.isEmpty()) {
-				response.put("mensaje", "Usuario eliminado exitosamente");
+				response.put("mensaje", "No existe el usario");
 				return new ResponseEntity<HashMap<String, Object>>(response, HttpStatus.CONFLICT);
 			} else {
 				Usuario elimUsuario = existeUsu.get();
@@ -226,9 +225,19 @@ public class UsuarioController {
 	}
 
 	@GetMapping("/{username}")
-	public Usuario obtenerUsuario(@PathVariable("username") String username) {
-
-		return usuarioService.obtenerUsuario(username);
+	public ResponseEntity<?> obtenerUsuario(@PathVariable("username") String username) {
+		HashMap<String, Object> response = new HashMap<>();
+		try {
+			Optional<Usuario> usuario = usuarioService.obtenerUsuario(username);
+			if (usuario.isEmpty()) {
+				response.put("mensaje", "No existe usuario con Username"+ username);
+				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+			}
+			return ResponseEntity.ok(usuario);
+		} catch (Exception e) {
+			response.put("mensaje", "Hubo un error al buscar al usuario: " + e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }
