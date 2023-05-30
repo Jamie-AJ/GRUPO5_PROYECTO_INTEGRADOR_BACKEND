@@ -1,5 +1,6 @@
 package com.proyecto.integrador.servicios;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,9 +15,15 @@ public interface FacturaService {
 
 	public abstract Optional<Factura> buscarxId(int id);
 	
+	public abstract Optional<Factura> buscarxCod(String codFactura);
+	
 	public abstract List<Factura> listaDifNotEnable(String noActivo);
 	
 	List<Factura> listarFacturasPorEmpresa(Empresa empresa);
 	
 	public abstract int obtenerUltimoNumeroFactura();
+	
+	List<Factura> listarFacturasPorRangoFechas(Date fechaInicio, Date fechaFin);
+	
+	
 }
