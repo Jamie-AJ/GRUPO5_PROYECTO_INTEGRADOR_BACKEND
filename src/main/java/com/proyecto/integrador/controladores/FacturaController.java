@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -36,7 +37,48 @@ public class FacturaController {
 	
 	@Autowired
 	private FacturaService facturaService;
-	//
+	
+	//buscar facturas por rango de fechas
+	 @GetMapping("/facturas/{fechaInicio}/{fechaFin}")
+	    @ResponseBody
+	    public ResponseEntity<?> listarFacturasPorRangoFechas(
+	            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaInicio,
+	            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaFin) {
+	        HashMap<String, Object> salida = new HashMap<>();
+	        try {
+	            List<Factura> facturas = facturaService.listarFacturasPorRangoFechas(fechaInicio, fechaFin);
+	            salida.put("facturas", facturas);
+	            return ResponseEntity.ok(salida);
+	        } catch (DataAccessException e) {
+	            salida.put("mensaje", "Error al listar las facturas por rango de fechas");
+	            salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+	            return new ResponseEntity<>(salida, HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    }
+	
+	
+	//buscar factura por codFactura
+	@GetMapping("/buscarfac/{codFactura}")
+	@ResponseBody
+	public ResponseEntity<?> buscarPorCod(@PathVariable String codFactura) {
+		HashMap<String, Object> response = new HashMap<>();
+		try {
+		 Optional<Factura> facturaOptional = facturaService.buscarxCod(codFactura);
+	        if (facturaOptional.isPresent()) {
+	            Factura factura = facturaOptional.get();
+	            response.put("factura", factura);
+	            return ResponseEntity.ok(response);
+	        } else {
+	            response.put("mensaje", "No se encontró la factura con el código: " + codFactura);
+	            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	        }
+	    } catch (Exception e) {
+	        response.put("mensaje", "Error al buscar la factura por código");
+	        response.put("error", e.getMessage());
+	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+
+}
 	
 	//listado de facturas x empresa
 	@GetMapping("/facturas/{idEmpresa}")

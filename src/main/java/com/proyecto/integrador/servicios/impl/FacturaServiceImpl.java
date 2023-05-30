@@ -1,5 +1,6 @@
 package com.proyecto.integrador.servicios.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,6 +64,21 @@ public class FacturaServiceImpl implements FacturaService {
 	        }
 	        return ultimoNumeroFactura;
 	}
+
+	@Override
+	public Optional<Factura> buscarxCod(String codFactura) {
+		// TODO Auto-generated method stub
+		return repositorio.findByCodFactura(codFactura);
+	}
+
+	@Override
+	public List<Factura> listarFacturasPorRangoFechas(Date fechaInicio, Date fechaFin) {
+		// TODO Auto-generated method stub
+		return repositorio.findByFechaEmisionBetween(fechaInicio, fechaFin);
+	}
+
+
+	
 
 
 
