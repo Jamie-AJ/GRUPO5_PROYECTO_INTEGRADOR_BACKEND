@@ -159,7 +159,7 @@ public class OportunidadInversionController {
 					for (Factura f : facturaList) {
 						OportunidadFactura oFactura = new OportunidadFactura();
 						oFactura.setIdFactura(f.getIdFactura());
-						oFactura.setIdOportunidadInversion(idOpInver);
+						oFactura.setIdOportunidad(idOpInver);
 						OportunidadFactura oFacturaSalida = oportunidadFacturanservice
 								.insertarOportunidaFactura(oFactura);
 						if (oFacturaSalida == null) {

@@ -135,9 +135,9 @@ public class FacturaController {
         factura.setFechaEmision(new Date()); // Asignar fecha actual
         factura.setEnable("Activo"); // Asignar estado activo
         // Obtener la empresa por id
-        Optional<Empresa> empresaOptional = empresaService.buscarxId(factura.getIdEmpresa());
+        Optional<Empresa> empresaOptional = empresaService.buscarxId(factura.getEmpresa().getIdEmpresa());
         if (empresaOptional.isEmpty()) {
-            salida.put("mensaje", "No se encontró la empresa con el id: " + factura.getIdEmpresa());
+            salida.put("mensaje", "No se encontró la empresa con el id: " + factura.getEmpresa().getIdEmpresa());
             return new ResponseEntity<>(salida, HttpStatus.NOT_FOUND);
         }
         // Obtener el último número de factura
@@ -147,7 +147,7 @@ public class FacturaController {
      
         
         Empresa empresa = empresaOptional.get();
-        factura.setEmpresas(empresa); // Establecer la empresa en la factura
+        factura.setEmpresa(empresa); // Establecer la empresa en la factura
 
         Factura facturaRegistrada = facturaService.insertarActualizarFactura(factura);
         
@@ -173,9 +173,9 @@ public class FacturaController {
 	    try {
 	    	
 	    	// Verificar si la factura existe en la base de datos
-	        Optional<Factura> existeFactura = facturaService.buscarxId(factura.getIdFactura());
+	        Optional<Factura> existeFactura = facturaService.buscarxId(factura.getEmpresa().getIdEmpresa());
 	        if (existeFactura.isEmpty()) {
-	            salida.put("mensaje", "No existe factura con id: " + factura.getIdFactura());
+	            salida.put("mensaje", "No existe factura con id: " + factura.getEmpresa().getIdEmpresa());
 	            return new ResponseEntity<>(salida, HttpStatus.CONFLICT);
 	        } else {
 	            // Realizar operaciones de actualización
