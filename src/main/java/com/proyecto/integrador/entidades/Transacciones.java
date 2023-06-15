@@ -31,16 +31,16 @@ public class Transacciones {
 	private TipoTransaccion tipoTransaccion;
 	private long idTipoTransaccion;
 	
-	@Temporal(TemporalType.DATE)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/Lima")
+	@Temporal(TemporalType.TIMESTAMP)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd MMMM yyy HH:mm:ss a", timezone = "America/Lima")
 	private Date fecha; 
 	
 	public Transacciones() {
 		super();
 	}
-	public Transacciones(long idTransaccion, double monto,
-			com.proyecto.integrador.entidades.CuentaBancaria cuentaBancaria, int idCuentaBancaria,
-			TipoTransaccion tipoTransaccion, long idTipoTransaccion,Date fecha) {
+	
+	public Transacciones(long idTransaccion, double monto, CuentaBancaria cuentaBancaria, int idCuentaBancaria,
+			TipoTransaccion tipoTransaccion, long idTipoTransaccion, Date fecha) {
 		super();
 		this.idTransaccion = idTransaccion;
 		this.monto = monto;
