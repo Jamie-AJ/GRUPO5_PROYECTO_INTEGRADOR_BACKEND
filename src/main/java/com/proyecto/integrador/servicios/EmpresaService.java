@@ -1,16 +1,14 @@
 package com.proyecto.integrador.servicios;
 
+import java.util.List;
 import java.util.Optional;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import com.proyecto.integrador.entidades.Empresa;
 
 public interface EmpresaService {
 	public abstract Empresa insertarActualizarEmpresa(Empresa obj);
 
-	public abstract Page<Empresa> listaEmpresa(Pageable page);
+	public abstract List<Empresa> listaEmpresa();
 
 	public abstract Optional<Empresa> buscarxId(int id);
 
@@ -22,8 +20,8 @@ public interface EmpresaService {
 	
 	public abstract Optional<Empresa> listExistexRazonSocial(String razonS, int idEmpresa);
 
-	public abstract Page<Empresa> listaDiffNotEnable(String noActivo,Pageable page);
+	public abstract List<Empresa> listaDiffNotEnable(String noActivo);
 	
-	public abstract Page<Empresa> buscarxRazonSocialContainsActive(String keyword, String noActivo,Pageable page);
+	public abstract List<Empresa> buscarxRazonSocialContainsActive(String keyword, String noActivo);
 
 }

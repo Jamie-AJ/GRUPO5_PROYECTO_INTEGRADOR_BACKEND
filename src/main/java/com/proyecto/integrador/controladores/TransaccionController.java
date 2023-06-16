@@ -8,8 +8,6 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -54,25 +52,26 @@ public class TransaccionController {
 
 	@GetMapping("/admin/listaTransacciones")
 	@ResponseBody
-	public ResponseEntity<Page<Transacciones>> listaTransacciones(Pageable pageable) {
-		Page<Transacciones> lista = transaccionService.listaTransaccionesTodos(pageable);
+	public ResponseEntity<List<Transacciones>> listaTransacciones() {
+		List<Transacciones> lista = transaccionService.listaTransaccionesTodos();
 		return ResponseEntity.ok(lista);
 	}
 
 	@GetMapping("/user/listaTransacciones")
 	@ResponseBody
-	public ResponseEntity<Page<Transacciones>> listaTransaccionesxUsuarioActual(HttpSession session,Pageable pageable) {
+	public ResponseEntity<List<Transacciones>> listaTransaccionesxUsuarioActual(HttpSession session) {
 		long idUsuAct = (long) session.getAttribute("idUsuActual");
-		Page<Transacciones> lista = transaccionService.listarTransaccionxIdUsuario(idUsuAct,pageable);
+		List<Transacciones> lista = transaccionService.listarTransaccionxIdUsuario(idUsuAct);
 		return ResponseEntity.ok(lista);
 	}
+
 	@GetMapping("/user/listaTransacciones/{id}")
 	@ResponseBody
-	public ResponseEntity<?> listaTransaccionesxIdCuentaBancaria(HttpSession session, @PathVariable long id,Pageable pageable) {
+	public ResponseEntity<?> listaTransaccionesxIdCuentaBancaria(HttpSession session, @PathVariable long id) {
 		HashMap<String, Object> response = new HashMap<>();
 		try {
 			long idUsuAct = (long) session.getAttribute("idUsuActual");
-			Page<Transacciones> lista = transaccionService.listarTransaccionxIdCuentaBancaria(idUsuAct, id,pageable);
+			List<Transacciones> lista = transaccionService.listarTransaccionxIdCuentaBancaria(idUsuAct, id);
 			return ResponseEntity.ok(lista);
 		} catch (Exception e) {
 			response.put("mensaje", "Hubo un error al listar: " + e.getMessage());
@@ -92,8 +91,7 @@ public class TransaccionController {
 			boolean existe = lista.stream().anyMatch(cuenta -> cuenta.getIdCuentaBancaria() == IdCuentaB);
 			if (existe) {
 				// Buscar cartera del usuario actual
-				Optional<Cartera> carteraExiste = carteraService.buscarCartera(idUsuAct);
-				Cartera cartera = carteraExiste.get();
+				Cartera cartera = carteraService.buscarCartera(idUsuAct);
 				double saldoActualCartera = cartera.getSaldo();
 				// Buscar cuenta bancaria
 				Optional<CuentaBancaria> optional = cuentaBancariaService.buscarxId(IdCuentaB);
@@ -139,8 +137,7 @@ public class TransaccionController {
 			boolean existe = lista.stream().anyMatch(cuenta -> cuenta.getIdCuentaBancaria() == IdCuentaB);
 			if (existe) {
 				// Buscar cartera del usuario actual
-				Optional<Cartera> carteraExiste = carteraService.buscarCartera(idUsuAct);
-				Cartera cartera = carteraExiste.get();
+				Cartera cartera = carteraService.buscarCartera(idUsuAct);
 				double saldoActualCartera = cartera.getSaldo();
 				// Buscar cuenta bancaria
 				Optional<CuentaBancaria> optional = cuentaBancariaService.buscarxId(IdCuentaB);

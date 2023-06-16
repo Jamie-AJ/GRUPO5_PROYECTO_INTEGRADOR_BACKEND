@@ -1,13 +1,11 @@
 package com.proyecto.integrador.controladores;
 
 import java.util.HashMap;
-import java.util.Optional;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,8 +31,8 @@ public class CarteraController {
 		HashMap<String, Object> response = new HashMap<>();
 		try {
 			long idUsuAct = (long) session.getAttribute("idUsuActual");
-			Optional<Cartera> cartera = carteraService.buscarCartera(idUsuAct);
-			if (cartera.isEmpty()) {
+			Cartera cartera = carteraService.buscarCartera(idUsuAct);
+			if (cartera == null) {
 				response.put("mensaje", "El no se encontro la cartera, contacta con un administrador");
 				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 			}
@@ -46,8 +44,8 @@ public class CarteraController {
 	}
 	@GetMapping("/admin/listarCarteras")
 	@ResponseBody
-	public ResponseEntity<Page<Cartera>> listarCarteras(Pageable pageable) {
-		Page<Cartera> lista = carteraService.listaCarteras(pageable);
+	public ResponseEntity<List<Cartera>> listarCarteras() {
+		List<Cartera> lista = carteraService.listaCarteras();
 		return ResponseEntity.ok(lista);
 	}
 }

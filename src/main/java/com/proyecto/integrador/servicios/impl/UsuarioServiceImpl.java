@@ -1,10 +1,9 @@
 package com.proyecto.integrador.servicios.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.proyecto.integrador.entidades.Usuario;
@@ -18,43 +17,57 @@ public class UsuarioServiceImpl implements UsuarioService{
 	private UsuarioRepository usuarioRepository;
 
 	@Override
-	public Optional<Usuario> obtenerUsuario(String username) {
+	public Usuario obtenerUsuario(String username) {
 		return usuarioRepository.findByUsername(username);
+	}
+	@Override
+	public void eliminarUsuario(Long usuarioId) {
+		usuarioRepository.deleteById(usuarioId);
+		
 	}
 
 	@Override
-	public Optional<Usuario> buscarUsuarioPorId(long id) {
+	public int ExisteporUsuario(String username,long idUsu) {
+		return usuarioRepository.existeUsername(username,idUsu);
+	}
+
+	@Override
+	public int ExisteporCorreo(String correo, long idUsu) {
+		return usuarioRepository.existeCorreo(correo, idUsu);
+	}
+
+	@Override
+	public Optional<Usuario> listaUsuarioPorId(long id) {
 		return usuarioRepository.findById(id);
 	}
 
-	@Override
-	public Optional<Usuario> buscarPorUsernameIdNot(String username, long idUsuAct) {
-		return usuarioRepository.findByUsernameAndIdNot(username, idUsuAct);
-	}
 
 	@Override
-	public Optional<Usuario> buscarPorDniIdNot(String dni, long idUsuAct) {
-		return usuarioRepository.findByDniAndIdNot(dni, idUsuAct);
+	public Usuario buscarUsuarioPorId(long idUsuario) {
+		return usuarioRepository.findById(idUsuario).orElse(null);
 	}
-
 	@Override
-	public Optional<Usuario> buscarPorCorreoIdNot(String correo, long idUsuAct) {
-		return usuarioRepository.findByCorreoAndIdNot(correo, idUsuAct);
+	public List<Usuario> listaUsuarios() {
+		return usuarioRepository.findAll();
 	}
-
-	@Override
-	public Page<Usuario> listaUsuarios(Pageable pageable) {
-		return usuarioRepository.findAll(pageable);
-	}
-
 	@Override
 	public Usuario insertaActualizaUsuario(Usuario obj) {
 		return usuarioRepository.save(obj);
 	}
-
 	@Override
-	public Page<Usuario> listaDiffNotEnable(String noActivo, Pageable pageable) {
-		return usuarioRepository.findByEnableNot(noActivo, pageable);
+	public int ExisteporDni(String dni, long idUsu) {
+		return usuarioRepository.existeDni(dni, idUsu);
 	}
-	
+	@Override
+	public Optional<Usuario> buscarPorDni(String dni) {
+		return usuarioRepository.findByDni(dni);
+	}
+	@Override
+	public Optional<Usuario> buscarPorCorreo(String correo) {
+		return usuarioRepository.findByCorreo(correo);
+	}
+	@Override
+	public List<Usuario> listaDiffNotEnable(String noActivo) {
+		return usuarioRepository.findByEnableNot(noActivo);
+	}
 }

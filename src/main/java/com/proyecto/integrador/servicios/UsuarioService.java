@@ -1,26 +1,33 @@
 package com.proyecto.integrador.servicios;
 
+import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import com.proyecto.integrador.entidades.Usuario;
 
 public interface UsuarioService {
-	public abstract Optional<Usuario> obtenerUsuario(String username);
+	public abstract Usuario obtenerUsuario(String username);
 
-	public abstract Optional<Usuario> buscarUsuarioPorId(long id);
+	public abstract Optional<Usuario> listaUsuarioPorId(long id);
 
-	public abstract Optional<Usuario> buscarPorUsernameIdNot(String username, long idUsuAct);
-	
-	public abstract Optional<Usuario> buscarPorDniIdNot(String dni, long idUsuAct);
+	public abstract void eliminarUsuario(Long usuarioId);
 
-	public abstract Optional<Usuario> buscarPorCorreoIdNot(String correo, long idUsuAct);
+	public abstract int ExisteporUsuario(String username, long idUsu);
 
-	public abstract Page<Usuario> listaUsuarios(Pageable pageable);
+	public abstract int ExisteporCorreo(String correo, long idUsu);
+
+	public abstract int ExisteporDni(String dni, long idUsu);
+
+	public abstract Optional<Usuario> buscarPorDni(String dni);
+
+	public abstract Optional<Usuario> buscarPorCorreo(String correo);
+
+	public abstract Usuario buscarUsuarioPorId(long idUsuario);
+
+	public abstract List<Usuario> listaUsuarios();
 
 	public abstract Usuario insertaActualizaUsuario(Usuario obj);
 	
-	public abstract Page<Usuario> listaDiffNotEnable(String noActivo,Pageable pageable);
+	public abstract List<Usuario> listaDiffNotEnable(String noActivo);
 }
