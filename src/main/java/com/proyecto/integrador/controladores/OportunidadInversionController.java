@@ -112,7 +112,26 @@ public class OportunidadInversionController {
 		List<OportunidadInversion> lista = oportunidadInversionservice.listaOportunidadInversionActivas("No Activo");
 		return ResponseEntity.ok(lista);
 	}
-
+	@GetMapping("/user/buscarOportunidades/{idOportunidadIn}")
+	@ResponseBody
+	public ResponseEntity<?> buscarPorId(@PathVariable int idOportunidadIn){
+		HashMap<String, Object> response = new HashMap<>();
+		try {
+			Optional<OportunidadInversion> oportunidad = oportunidadInversionservice.buscarxIdOportunidadInversion(idOportunidadIn);
+			if(oportunidad == null) {
+				response.put("mensaje", "No se encontro la Oportunidad con el ID " + idOportunidadIn +" en el Sistema");
+				return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+			}else {
+				
+				
+				response.put("mensaje", "Oportunidad de inversión encontrada");
+				return ResponseEntity.ok(oportunidad);
+			}
+		}catch(Exception e) {
+			response.put("mensaje", "Hubo un error al buscar al usuario: " + e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	@GetMapping("/listarOportunidadInversion")
 	@ResponseBody
 	public ResponseEntity<List<OportunidadInversion>> listaOportunidadInversion() {
