@@ -18,4 +18,6 @@ public interface FacturaRepository extends JpaRepository<Factura, Integer> {
 	 Optional<Factura> findByCodFactura(String codFactura);
 	 
 	 List<Factura> findByFechaEmisionBetween(Date fechaInicio, Date fechaFin);
+	 
+	 List<Factura> findByEmpresaAndEnable(Empresa empresa, String enable);
 }

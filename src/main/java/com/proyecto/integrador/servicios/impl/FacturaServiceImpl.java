@@ -77,6 +77,11 @@ public class FacturaServiceImpl implements FacturaService {
 		return repositorio.findByFechaEmisionBetween(fechaInicio, fechaFin);
 	}
 
+	@Override
+	public List<Factura> listarFacturasActivasPorEmpresa(Empresa empresa) {
+		 return repositorio.findByEmpresaAndEnable(empresa, "activo");
+	}
+
 
 	
 
