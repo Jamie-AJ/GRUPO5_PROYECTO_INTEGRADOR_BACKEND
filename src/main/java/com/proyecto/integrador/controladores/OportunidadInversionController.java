@@ -43,10 +43,20 @@ public class OportunidadInversionController {
 	@Autowired
 	private OportunidadFacturaService oportunidadFacturanservice;
 	@Autowired
+	private FacturaService facturaService;
+	@Autowired
 	private FacturaService facturanservice;
 	// Para almacenar las facturas
 	List<Factura> facturaList = new ArrayList<Factura>();
-
+	
+	@GetMapping("/refrescarListaFactura")
+	@ResponseBody
+	public ResponseEntity<?> refrescarFacturaList() {
+		HashMap<String, Object> salida = new HashMap<>();
+		facturaList.clear();
+		salida.put("Limpio lista Factura", facturaList);
+		return ResponseEntity.ok(salida);
+	}
 	@PostMapping("/addFactura")
 	@ResponseBody
 	public ResponseEntity<?> addFacturas(@RequestBody Map<String, Object> request) {
@@ -182,11 +192,19 @@ public class OportunidadInversionController {
 						OportunidadFactura oFacturaSalida = oportunidadFacturanservice
 								.insertarOportunidaFactura(oFactura);
 						if (oFacturaSalida == null) {
-							salida.put("mensaje", "Error al registrar facturas!");
+							salida.put("mensaje", "Error al registrar facturas en oportunidad!");
+							salida.put("ListaFacturas", facturaList);
+							return new ResponseEntity<>(salida, HttpStatus.CONFLICT);
+						}
+						f.setEnable("No Activo");
+						Factura facturaSalida = facturaService.insertarActualizarFactura(f);
+						if (facturaSalida == null) {
+							salida.put("mensaje", "Error deshabilitar las facturas!");
 							salida.put("ListaFacturas", facturaList);
 							return new ResponseEntity<>(salida, HttpStatus.CONFLICT);
 						}
 					}
+					facturaList.clear();
 					salida.put("mensaje", "La oportunidad de inversion se registro exitosamente!");
 					salida.put("OportunidadInversion", objsalida);
 					return ResponseEntity.ok(salida);
