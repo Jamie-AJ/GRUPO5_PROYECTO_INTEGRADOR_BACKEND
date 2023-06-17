@@ -4,6 +4,7 @@ package com.proyecto.integrador.entidades;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,6 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "factura")
@@ -34,14 +36,15 @@ public class Factura {
 	private String enable;
 	private String descripcion;
 	
-	@ManyToOne
-	@JoinColumn(name="idEmpresa", insertable = false, updatable = false)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="idEmpresa")
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	private Empresa empresa;
-	private int idEmpresa;
+	//private int idEmpresa;
 	
 	
 	public Factura(int idFactura,String codFactura, double monto, Date fechaEmision, Date fechaPago, String enable,
-			Empresa empresa, int idEmpresa, String descripcion) {
+			Empresa empresa, String descripcion) {
 		super();
 		this.idFactura = idFactura;
 		this.codFactura = codFactura;
@@ -50,7 +53,7 @@ public class Factura {
 		this.fechaPago = fechaPago;
 		this.enable = enable;
 		this.empresa = empresa;
-		this.idEmpresa = idEmpresa;
+		//this.idEmpresa = idEmpresa;
 		this.descripcion = descripcion;
 			
 	}
@@ -103,18 +106,26 @@ public class Factura {
 	public void setEnable(String enable) {
 		this.enable = enable;
 	}
-	public Empresa getEmpresas() {
+	
+	
+	public Empresa getEmpresa() {
 		return empresa;
 	}
-	public void setEmpresas(Empresa empresas) {
-		this.empresa = empresas;
+
+
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
 	}
-	public int getIdEmpresa() {
+
+
+
+	/*public int getIdEmpresa() {
 		return idEmpresa;
 	}
 	public void setIdEmpresa(int idEmpresa) {
 		this.idEmpresa = idEmpresa;
-	}
+	}*/
 	public String getDescripcion() {
 		return descripcion;
 	}

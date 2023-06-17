@@ -112,7 +112,7 @@ public class UsuarioController {
 			// si el dni ya esta en uso
 			int existeDni = usuarioService.ExisteporDni(usuario.getDni(), usuario.getId());
 			if (existeDni != 0) {
-				salida.put("Mensaje", "Ese email de usuario ya existe");
+				salida.put("Mensaje", "El DNI de usuario ya existe");
 				return new ResponseEntity<HashMap<String, Object>>(salida, HttpStatus.CONFLICT);
 			} else {
 				usuario.setFecha(new Date());

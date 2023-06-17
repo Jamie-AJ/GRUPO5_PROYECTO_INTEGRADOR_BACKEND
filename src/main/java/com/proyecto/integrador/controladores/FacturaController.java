@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -36,7 +37,48 @@ public class FacturaController {
 	
 	@Autowired
 	private FacturaService facturaService;
-	//
+	
+	//buscar facturas por rango de fechas
+	 @GetMapping("/facturas/{fechaInicio}/{fechaFin}")
+	    @ResponseBody
+	    public ResponseEntity<?> listarFacturasPorRangoFechas(
+	            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaInicio,
+	            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaFin) {
+	        HashMap<String, Object> salida = new HashMap<>();
+	        try {
+	            List<Factura> facturas = facturaService.listarFacturasPorRangoFechas(fechaInicio, fechaFin);
+	            salida.put("facturas", facturas);
+	            return ResponseEntity.ok(salida);
+	        } catch (DataAccessException e) {
+	            salida.put("mensaje", "Error al listar las facturas por rango de fechas");
+	            salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+	            return new ResponseEntity<>(salida, HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    }
+	
+	
+	//buscar factura por codFactura
+	@GetMapping("/buscarfac/{codFactura}")
+	@ResponseBody
+	public ResponseEntity<?> buscarPorCod(@PathVariable String codFactura) {
+		HashMap<String, Object> response = new HashMap<>();
+		try {
+		 Optional<Factura> facturaOptional = facturaService.buscarxCod(codFactura);
+	        if (facturaOptional.isPresent()) {
+	            Factura factura = facturaOptional.get();
+	            response.put("factura", factura);
+	            return ResponseEntity.ok(response);
+	        } else {
+	            response.put("mensaje", "No se encontró la factura con el código: " + codFactura);
+	            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	        }
+	    } catch (Exception e) {
+	        response.put("mensaje", "Error al buscar la factura por código");
+	        response.put("error", e.getMessage());
+	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+
+}
 	
 	//listado de facturas x empresa
 	@GetMapping("/facturas/{idEmpresa}")
@@ -64,7 +106,7 @@ public class FacturaController {
 	}
 
 	
-	@GetMapping("active/listaFactura")
+	@GetMapping("/active/listaFactura")
 	@ResponseBody
 	public ResponseEntity<List<Factura>> listaFacturasAct() {
 		List<Factura> lista = facturaService.listaDifNotEnable("No activo");
@@ -93,9 +135,9 @@ public class FacturaController {
         factura.setFechaEmision(new Date()); // Asignar fecha actual
         factura.setEnable("Activo"); // Asignar estado activo
         // Obtener la empresa por id
-        Optional<Empresa> empresaOptional = empresaService.buscarxId(factura.getIdEmpresa());
+        Optional<Empresa> empresaOptional = empresaService.buscarxId(factura.getEmpresa().getIdEmpresa());
         if (empresaOptional.isEmpty()) {
-            salida.put("mensaje", "No se encontró la empresa con el id: " + factura.getIdEmpresa());
+            salida.put("mensaje", "No se encontró la empresa con el id: " + factura.getEmpresa().getIdEmpresa());
             return new ResponseEntity<>(salida, HttpStatus.NOT_FOUND);
         }
         // Obtener el último número de factura
@@ -105,7 +147,7 @@ public class FacturaController {
      
         
         Empresa empresa = empresaOptional.get();
-        factura.setEmpresas(empresa); // Establecer la empresa en la factura
+        factura.setEmpresa(empresa); // Establecer la empresa en la factura
 
         Factura facturaRegistrada = facturaService.insertarActualizarFactura(factura);
         
@@ -131,9 +173,9 @@ public class FacturaController {
 	    try {
 	    	
 	    	// Verificar si la factura existe en la base de datos
-	        Optional<Factura> existeFactura = facturaService.buscarxId(factura.getIdFactura());
+	        Optional<Factura> existeFactura = facturaService.buscarxId(factura.getEmpresa().getIdEmpresa());
 	        if (existeFactura.isEmpty()) {
-	            salida.put("mensaje", "No existe factura con id: " + factura.getIdFactura());
+	            salida.put("mensaje", "No existe factura con id: " + factura.getEmpresa().getIdEmpresa());
 	            return new ResponseEntity<>(salida, HttpStatus.CONFLICT);
 	        } else {
 	            // Realizar operaciones de actualización

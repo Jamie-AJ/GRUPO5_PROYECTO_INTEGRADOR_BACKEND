@@ -46,7 +46,7 @@ public class SistemaFactoringBackendApplication implements CommandLineRunner {
 	public static void main(String[] args) {
 		SpringApplication.run(SistemaFactoringBackendApplication.class, args);
 	}
-
+//agregar admin
 	@Override
 	public void run(String... args) throws Exception {
 		try {
@@ -71,7 +71,7 @@ public class SistemaFactoringBackendApplication implements CommandLineRunner {
 				usuario.setTelefono("938311721");
 				usuario.setCorreo("apolaya@gmail.com");
 				usuario.setUsername("jamie");
-				usuario.setPassword(bCryptPasswordEncoder.encode("Admin123"));
+				usuario.setPassword(bCryptPasswordEncoder.encode("Admin12345"));
 				usuario.setFoto("foto.png");
 				usuario.setFecha(new Date());
 				usuario.setDni("77454558");
