@@ -104,7 +104,32 @@ public class FacturaController {
 	        return new ResponseEntity<>(salida, HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	}
-
+	
+	//listado de facturas activas por empresa
+	@GetMapping("/facturas/activas/{idEmpresa}")
+	@ResponseBody
+	public ResponseEntity<?> listarFacturasActivasPorEmpresa(@PathVariable int idEmpresa) {
+	    HashMap<String, Object> salida = new HashMap<>();
+	    try {
+	        Optional<Empresa> empresaOptional = empresaService.buscarxId(idEmpresa);
+	        if (empresaOptional.isEmpty()) {
+	            salida.put("mensaje", "No se encontró la empresa con el id: " + idEmpresa);
+	            return new ResponseEntity<>(salida, HttpStatus.NOT_FOUND);
+	        }
+	        
+	        Empresa empresa = empresaOptional.get();
+	        
+	        List<Factura> facturasActivas = facturaService.listarFacturasActivasPorEmpresa(empresa);
+	        salida.put("facturas", facturasActivas);
+	        
+	        return ResponseEntity.ok(salida);
+	    } catch (DataAccessException e) {
+	        salida.put("mensaje", "Error al listar las facturas activas");
+	        salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+	        return new ResponseEntity<>(salida, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
+	
 	
 	@GetMapping("/active/listaFactura")
 	@ResponseBody

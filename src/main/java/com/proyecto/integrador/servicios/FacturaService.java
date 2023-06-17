@@ -25,5 +25,7 @@ public interface FacturaService {
 	
 	List<Factura> listarFacturasPorRangoFechas(Date fechaInicio, Date fechaFin);
 	
+	List<Factura> listarFacturasActivasPorEmpresa(Empresa empresa);
+	
 	
 }
