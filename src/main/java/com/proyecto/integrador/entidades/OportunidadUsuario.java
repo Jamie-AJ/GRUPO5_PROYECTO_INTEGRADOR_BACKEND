@@ -28,6 +28,10 @@ public class OportunidadUsuario {
 	@JoinColumn(name="usuarioId", insertable = false, updatable = false)
 	private Usuario usuario;
 	private long usuarioId;
+	
+	public OportunidadUsuario() {
+		super();
+	}
 	public OportunidadUsuario(int idOportunidadUsuario, OportunidadInversion oportunidadInversion, int idOportunidad,
 			int montoInvertido, Usuario usuario, long usuarioId) {
 		super();
