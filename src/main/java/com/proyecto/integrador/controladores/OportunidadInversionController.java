@@ -25,10 +25,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.proyecto.integrador.entidades.Cartera;
 import com.proyecto.integrador.entidades.Factura;
 import com.proyecto.integrador.entidades.OportunidadFactura;
 import com.proyecto.integrador.entidades.OportunidadInversion;
 import com.proyecto.integrador.entidades.OportunidadUsuario;
+import com.proyecto.integrador.servicios.CarteraService;
 import com.proyecto.integrador.servicios.FacturaService;
 import com.proyecto.integrador.servicios.OportunidadFacturaService;
 import com.proyecto.integrador.servicios.OportunidadInversionService;
@@ -47,52 +49,73 @@ public class OportunidadInversionController {
 	@Autowired
 	private FacturaService facturaService;
 	@Autowired
-	private FacturaService facturanservice;
-	
-	
-	@Autowired
 	private OportunidadUsuarioService OportunidadUsuarioservice;
-	
+	@Autowired
+	private CarteraService carteraService;
+
 	// Para almacenar las facturas
 	List<Factura> facturaList = new ArrayList<Factura>();
-	
-	
+
 	@PostMapping("/registaInversionUsuario")
 	@ResponseBody
-	public ResponseEntity<?> RegistarInversionUsuario(@RequestBody OportunidadUsuario opusu, HttpSession session)  {
-		
+	public ResponseEntity<?> RegistarInversionUsuario(@RequestBody OportunidadUsuario objOpUsu, HttpSession session) {
+
 		HashMap<String, Object> salida = new HashMap<>();
-		
+
 		try {
-			Optional<OportunidadInversion> opoInver = oportunidadInversionservice.buscarxIdOportunidadInversion(opusu.getIdOportunidad());
-			if(opoInver.isEmpty()){
+			long idUsuAct = (long) session.getAttribute("idUsuActual");
+			Cartera cartera = carteraService.buscarCartera(idUsuAct);
+			if (cartera == null) {
+				salida.put("mensaje", "No se encontro la cartera del usuario");
+				return new ResponseEntity<>(salida, HttpStatus.CONFLICT);
+			}
+			double saldoCartera = cartera.getSaldo();
+			double montoInvertido = objOpUsu.getMontoInvertido();
+			boolean esMayorMontoInver = montoInvertido > saldoCartera;
+			if (esMayorMontoInver) {
+				salida.put("mensaje", "No cuenta con saldo suficiente en su cartera");
+				return new ResponseEntity<>(salida, HttpStatus.CONFLICT);
+			}
+			cartera.setSaldo(saldoCartera - montoInvertido);
+			Cartera carteraSalida = carteraService.insertaActualizaCartera(cartera);
+			if (carteraSalida == null) {
+				salida.put("mensaje", "No se pudo actualizar los datos de la cartera");
+				return new ResponseEntity<>(salida, HttpStatus.CONFLICT);
+			}
+			Optional<OportunidadInversion> existeOpInver = oportunidadInversionservice
+					.buscarxIdOportunidadInversion(objOpUsu.getIdOportunidad());
+			if (existeOpInver.isEmpty()) {
 				salida.put("mensaje", "No se encontro la oportunidad de inversion");
 				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
-			} 
-			OportunidadInversion oportuInver = opoInver.get();
-			double montoRecaudadoActual = oportuInver.getMontoRecaudado();
-			double montoRecaudadoActualizado = montoRecaudadoActual + opusu.getMontoInvertido();
-			boolean esMayorMonto =  (montoRecaudadoActualizado - oportuInver.getMonto()) < 0 ;
-			if(esMayorMonto) {
-				salida.put("mensaje", "La Inversion Excede El Monto Invertido");
+			}
+			OportunidadInversion opInver = existeOpInver.get();
+			double montoRecaudadoActual = opInver.getMontoRecaudado();
+			double montoRecaudadoActualizado = montoRecaudadoActual + montoInvertido;
+			double montoOpInversion = opInver.getMonto();
+			double restante = montoOpInversion - montoRecaudadoActual;
+			boolean esMayorMontoRecaudado = montoRecaudadoActualizado > montoOpInversion;
+			if (esMayorMontoRecaudado) {
+				salida.put("mensaje", "La Inversion Excede El Monto Invertido. " 
+						+"Ingrese un inversion menor o igual a: " + restante);
 				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
 			}
-			oportuInver.setMontoRecaudado(montoRecaudadoActualizado);
-			OportunidadInversion opISalida = oportunidadInversionservice.insertaActualizaOportunidadInversion(oportuInver);
-			if(opISalida == null) {
+			opInver.setMontoRecaudado(montoRecaudadoActualizado);
+			OportunidadInversion opInverSalida = oportunidadInversionservice
+					.insertaActualizaOportunidadInversion(opInver);
+			if (opInverSalida == null) {
 				salida.put("mensaje", "Error Al Actualizar El Monto Recaudado");
 				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
-			} 
-			long idUsuAct = (long) session.getAttribute("idUsuActual");
-			opusu.setUsuarioId(idUsuAct);
-			OportunidadUsuario obj = OportunidadUsuarioservice.RegistrarActualizarOportunidad(opusu);
-			if(obj == null) {
+			}
+
+			objOpUsu.setUsuarioId(idUsuAct);
+			OportunidadUsuario opUsuSalida = OportunidadUsuarioservice.RegistrarActualizarOportunidad(objOpUsu);
+			if (opUsuSalida == null) {
 				salida.put("mensaje", "No se registro la inversion");
 				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
-			} 
-			
+			}
+
 			salida.put("mensaje", "exitoso");
-			salida.put("oportunidadInversion", obj);
+			salida.put("oportunidadInversion", opUsuSalida);
 			return ResponseEntity.ok(salida);
 		} catch (DataAccessException e) {
 
@@ -100,10 +123,9 @@ public class OportunidadInversionController {
 			salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<>(salida, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+
 	}
-	
-	
+
 	@GetMapping("/refrescarListaFactura")
 	@ResponseBody
 	public ResponseEntity<?> refrescarFacturaList() {
@@ -112,13 +134,14 @@ public class OportunidadInversionController {
 		salida.put("Limpio lista Factura", facturaList);
 		return ResponseEntity.ok(salida);
 	}
+
 	@PostMapping("/addFactura")
 	@ResponseBody
 	public ResponseEntity<?> addFacturas(@RequestBody Map<String, Object> request) {
 		HashMap<String, Object> salida = new HashMap<>();
 		try {
 			int idFactura = (int) request.get("idFactura");
-			Optional<Factura> facturaExiste = facturanservice.buscarxId(idFactura);
+			Optional<Factura> facturaExiste = facturaService.buscarxId(idFactura);
 			if (facturaExiste.isEmpty()) {
 				salida.put("mensaje", "No existe Factura con id: " + idFactura);
 				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
@@ -142,26 +165,27 @@ public class OportunidadInversionController {
 			return new ResponseEntity<>(salida, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
 	@DeleteMapping("/deleteFacturalist/{id}")
 	@ResponseBody
 	public ResponseEntity<?> eliminarFacturaList(@PathVariable Integer id) {
 		HashMap<String, Object> salida = new HashMap<>();
 		try {
-			if(facturaList.isEmpty()) {
+			if (facturaList.isEmpty()) {
 				salida.put("mensaje", "La lista esta vacia!");
 				return new ResponseEntity<>(salida, HttpStatus.CONFLICT);
 			}
 			Boolean contiene = facturaList.stream().anyMatch(f -> f.getIdFactura() == id);
-			if(!contiene) {
-				salida.put("mensaje", "La lista de facturas no contiene un registro con id: "+id);
+			if (!contiene) {
+				salida.put("mensaje", "La lista de facturas no contiene un registro con id: " + id);
 				return new ResponseEntity<>(salida, HttpStatus.CONFLICT);
 			}
 			for (int i = 0; i < facturaList.size(); i++) {
-			    Factura f = facturaList.get(i);
-			    if (f.getIdFactura() == id) {
-			        facturaList.remove(i);
-			        break;
-			    }
+				Factura f = facturaList.get(i);
+				if (f.getIdFactura() == id) {
+					facturaList.remove(i);
+					break;
+				}
 			}
 			salida.put("Facturas", facturaList);
 			return ResponseEntity.ok(salida);
@@ -171,32 +195,36 @@ public class OportunidadInversionController {
 			return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
 		}
 	}
+
 	@GetMapping("/user/listarOportunidadInversion")
 	@ResponseBody
 	public ResponseEntity<List<OportunidadInversion>> listaOportunidadInversionActive() {
 		List<OportunidadInversion> lista = oportunidadInversionservice.listaOportunidadInversionActivas("No Activo");
 		return ResponseEntity.ok(lista);
 	}
+
 	@GetMapping("/user/buscarOportunidades/{idOportunidadIn}")
 	@ResponseBody
-	public ResponseEntity<?> buscarPorId(@PathVariable int idOportunidadIn){
+	public ResponseEntity<?> buscarPorId(@PathVariable int idOportunidadIn) {
 		HashMap<String, Object> response = new HashMap<>();
 		try {
-			Optional<OportunidadInversion> oportunidad = oportunidadInversionservice.buscarxIdOportunidadInversion(idOportunidadIn);
-			if(oportunidad == null) {
-				response.put("mensaje", "No se encontro la Oportunidad con el ID " + idOportunidadIn +" en el Sistema");
-				return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
-			}else {
-				
-				
+			Optional<OportunidadInversion> oportunidad = oportunidadInversionservice
+					.buscarxIdOportunidadInversion(idOportunidadIn);
+			if (oportunidad == null) {
+				response.put("mensaje",
+						"No se encontro la Oportunidad con el ID " + idOportunidadIn + " en el Sistema");
+				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+			} else {
+
 				response.put("mensaje", "Oportunidad de inversión encontrada");
 				return ResponseEntity.ok(oportunidad);
 			}
-		}catch(Exception e) {
+		} catch (Exception e) {
 			response.put("mensaje", "Hubo un error al buscar al usuario: " + e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
 	@GetMapping("/listarOportunidadInversion")
 	@ResponseBody
 	public ResponseEntity<List<OportunidadInversion>> listaOportunidadInversion() {
