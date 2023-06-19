@@ -28,9 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.proyecto.integrador.entidades.Factura;
 import com.proyecto.integrador.entidades.OportunidadFactura;
 import com.proyecto.integrador.entidades.OportunidadInversion;
+import com.proyecto.integrador.entidades.OportunidadUsuario;
 import com.proyecto.integrador.servicios.FacturaService;
 import com.proyecto.integrador.servicios.OportunidadFacturaService;
 import com.proyecto.integrador.servicios.OportunidadInversionService;
+import com.proyecto.integrador.servicios.OportunidadUsuarioService;
 import com.proyecto.integrador.utils.AppSettings;
 
 @RestController
@@ -46,8 +48,61 @@ public class OportunidadInversionController {
 	private FacturaService facturaService;
 	@Autowired
 	private FacturaService facturanservice;
+	
+	
+	@Autowired
+	private OportunidadUsuarioService OportunidadUsuarioservice;
+	
 	// Para almacenar las facturas
 	List<Factura> facturaList = new ArrayList<Factura>();
+	
+	
+	@PostMapping("/registaInversionUsuario")
+	@ResponseBody
+	public ResponseEntity<?> RegistarInversionUsuario(@RequestBody OportunidadUsuario opusu, HttpSession session)  {
+		
+		HashMap<String, Object> salida = new HashMap<>();
+		
+		try {
+			Optional<OportunidadInversion> opoInver = oportunidadInversionservice.buscarxIdOportunidadInversion(opusu.getIdOportunidad());
+			if(opoInver.isEmpty()){
+				salida.put("mensaje", "No se encontro la oportunidad de inversion");
+				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
+			} 
+			OportunidadInversion oportuInver = opoInver.get();
+			double montoRecaudadoActual = oportuInver.getMontoRecaudado();
+			double montoRecaudadoActualizado = montoRecaudadoActual + opusu.getMontoInvertido();
+			boolean esMayorMonto =  (montoRecaudadoActualizado - oportuInver.getMonto()) < 0 ;
+			if(esMayorMonto) {
+				salida.put("mensaje", "La Inversion Excede El Monto Invertido");
+				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
+			}
+			oportuInver.setMontoRecaudado(montoRecaudadoActualizado);
+			OportunidadInversion opISalida = oportunidadInversionservice.insertaActualizaOportunidadInversion(oportuInver);
+			if(opISalida == null) {
+				salida.put("mensaje", "Error Al Actualizar El Monto Recaudado");
+				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
+			} 
+			long idUsuAct = (long) session.getAttribute("idUsuActual");
+			opusu.setUsuarioId(idUsuAct);
+			OportunidadUsuario obj = OportunidadUsuarioservice.RegistrarActualizarOportunidad(opusu);
+			if(obj == null) {
+				salida.put("mensaje", "No se registro la inversion");
+				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
+			} 
+			
+			salida.put("mensaje", "exitoso");
+			salida.put("oportunidadInversion", obj);
+			return ResponseEntity.ok(salida);
+		} catch (DataAccessException e) {
+
+			salida.put("mensaje", "Error al registrar la Inversion");
+			salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<>(salida, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
 	
 	@GetMapping("/refrescarListaFactura")
 	@ResponseBody

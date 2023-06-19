@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.proyecto.integrador.entidades.OportunidadUsuario;
 import com.proyecto.integrador.repositorio.OportunidadUsuarioRepository;
-import com.proyecto.integrador.servicios.OportunidUsuarioService;
+import com.proyecto.integrador.servicios.OportunidadUsuarioService;
 
 @Service
-public class OportunidadUsuarioServiceImpl implements OportunidUsuarioService {
+public class OportunidadUsuarioServiceImpl implements OportunidadUsuarioService {
 	
 	@Autowired
 	OportunidadUsuarioRepository Repository;
@@ -21,6 +21,13 @@ public class OportunidadUsuarioServiceImpl implements OportunidUsuarioService {
 		return Repository.findAll();
 	}
 
+	@Override
+	public OportunidadUsuario RegistrarActualizarOportunidad(OportunidadUsuario opusu) {
+		// TODO Auto-generated method stub
+		return Repository.save(opusu);
+	}
+
+	
 	
 	
  
