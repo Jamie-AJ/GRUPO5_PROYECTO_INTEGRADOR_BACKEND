@@ -25,16 +25,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.proyecto.integrador.entidades.Cartera;
 import com.proyecto.integrador.entidades.Factura;
 import com.proyecto.integrador.entidades.OportunidadFactura;
 import com.proyecto.integrador.entidades.OportunidadInversion;
-import com.proyecto.integrador.entidades.OportunidadUsuario;
-import com.proyecto.integrador.servicios.CarteraService;
 import com.proyecto.integrador.servicios.FacturaService;
 import com.proyecto.integrador.servicios.OportunidadFacturaService;
 import com.proyecto.integrador.servicios.OportunidadInversionService;
-import com.proyecto.integrador.servicios.OportunidadUsuarioService;
 import com.proyecto.integrador.utils.AppSettings;
 
 @RestController
@@ -48,83 +44,9 @@ public class OportunidadInversionController {
 	private OportunidadFacturaService oportunidadFacturanservice;
 	@Autowired
 	private FacturaService facturaService;
-	@Autowired
-	private OportunidadUsuarioService OportunidadUsuarioservice;
-	@Autowired
-	private CarteraService carteraService;
 
 	// Para almacenar las facturas
 	List<Factura> facturaList = new ArrayList<Factura>();
-
-	@PostMapping("/registaInversionUsuario")
-	@ResponseBody
-	public ResponseEntity<?> RegistarInversionUsuario(@RequestBody OportunidadUsuario objOpUsu, HttpSession session) {
-
-		HashMap<String, Object> salida = new HashMap<>();
-
-		try {
-			long idUsuAct = (long) session.getAttribute("idUsuActual");
-			Cartera cartera = carteraService.buscarCartera(idUsuAct);
-			if (cartera == null) {
-				salida.put("mensaje", "No se encontro la cartera del usuario");
-				return new ResponseEntity<>(salida, HttpStatus.CONFLICT);
-			}
-			double saldoCartera = cartera.getSaldo();
-			double montoInvertido = objOpUsu.getMontoInvertido();
-			boolean esMayorMontoInver = montoInvertido > saldoCartera;
-			if (esMayorMontoInver) {
-				salida.put("mensaje", "No cuenta con saldo suficiente en su cartera");
-				return new ResponseEntity<>(salida, HttpStatus.CONFLICT);
-			}
-			cartera.setSaldo(saldoCartera - montoInvertido);
-			Cartera carteraSalida = carteraService.insertaActualizaCartera(cartera);
-			if (carteraSalida == null) {
-				salida.put("mensaje", "No se pudo actualizar los datos de la cartera");
-				return new ResponseEntity<>(salida, HttpStatus.CONFLICT);
-			}
-			Optional<OportunidadInversion> existeOpInver = oportunidadInversionservice
-					.buscarxIdOportunidadInversion(objOpUsu.getIdOportunidad());
-			if (existeOpInver.isEmpty()) {
-				salida.put("mensaje", "No se encontro la oportunidad de inversion");
-				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
-			}
-			OportunidadInversion opInver = existeOpInver.get();
-			double montoRecaudadoActual = opInver.getMontoRecaudado();
-			double montoRecaudadoActualizado = montoRecaudadoActual + montoInvertido;
-			double montoOpInversion = opInver.getMonto();
-			double restante = montoOpInversion - montoRecaudadoActual;
-			boolean esMayorMontoRecaudado = montoRecaudadoActualizado > montoOpInversion;
-			if (esMayorMontoRecaudado) {
-				salida.put("mensaje", "La Inversion Excede El Monto Invertido. " 
-						+"Ingrese un inversion menor o igual a: " + restante);
-				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
-			}
-			opInver.setMontoRecaudado(montoRecaudadoActualizado);
-			OportunidadInversion opInverSalida = oportunidadInversionservice
-					.insertaActualizaOportunidadInversion(opInver);
-			if (opInverSalida == null) {
-				salida.put("mensaje", "Error Al Actualizar El Monto Recaudado");
-				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
-			}
-
-			objOpUsu.setUsuarioId(idUsuAct);
-			OportunidadUsuario opUsuSalida = OportunidadUsuarioservice.RegistrarActualizarOportunidad(objOpUsu);
-			if (opUsuSalida == null) {
-				salida.put("mensaje", "No se registro la inversion");
-				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
-			}
-
-			salida.put("mensaje", "exitoso");
-			salida.put("oportunidadInversion", opUsuSalida);
-			return ResponseEntity.ok(salida);
-		} catch (DataAccessException e) {
-
-			salida.put("mensaje", "Error al registrar la Inversion");
-			salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<>(salida, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-	}
 
 	@GetMapping("/refrescarListaFactura")
 	@ResponseBody
