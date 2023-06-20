@@ -27,6 +27,19 @@ public class OportunidadUsuarioServiceImpl implements OportunidadUsuarioService 
 		return Repository.save(opusu);
 	}
 
+	@Override
+	public List<OportunidadUsuario> listarUsuarioxOpo(int idOpo) {
+		// TODO Auto-generated method stub
+		return Repository.findByIdOportunidad(idOpo);
+	}
+
+	@Override
+	public List<OportunidadUsuario> listarUsuarioOportunidadxID(long idUsu) {
+		// TODO Auto-generated method stub
+		return Repository.findByUsuarioId(idUsu);
+	}
+
+
 	
 	
 	
