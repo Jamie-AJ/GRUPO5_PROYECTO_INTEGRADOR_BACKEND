@@ -82,6 +82,7 @@ public class EmpresaController {
 						} else {
 							empresa.setFechRegistro(new Date());
 							empresa.setEnable("Activo");
+							empresa.setIdRiesgo(3);
 							Empresa objEmpresa = empresaService.insertarActualizarEmpresa(empresa);
 							if (objEmpresa != null) {
 								salida.put("mensaje", "Empresa registrada exitosamente");
