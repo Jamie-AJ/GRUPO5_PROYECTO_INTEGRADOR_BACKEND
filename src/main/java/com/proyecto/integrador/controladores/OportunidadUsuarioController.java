@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,10 +47,10 @@ public class OportunidadUsuarioController {
 		return ResponseEntity.ok(lista);
 	}
 
-	@GetMapping("/listarOpoUsuXOpo")
+	@GetMapping("/listarOpoUsuXOpo/{idOportunidad}")
 	@ResponseBody
-	public ResponseEntity<?> listadoOporUsunxInversion(@RequestBody OportunidadUsuario oportunidad) {
-		List<OportunidadUsuario> lista = OportunidadUsuarioservice.listarUsuarioxOpo(oportunidad.getIdOportunidad());
+	public ResponseEntity<?> listadoOporUsunxInversion(@PathVariable int idOportunidad) {
+		List<OportunidadUsuario> lista = OportunidadUsuarioservice.listarUsuarioxOpo(idOportunidad);
 		return ResponseEntity.ok(lista);
 	}
 
