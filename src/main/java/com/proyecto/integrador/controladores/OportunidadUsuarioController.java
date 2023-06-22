@@ -55,8 +55,9 @@ public class OportunidadUsuarioController {
 
 	@GetMapping("/listarOpoUsuXIdi")
 	@ResponseBody
-	public ResponseEntity<?> listadoOporxUsuario(@RequestBody OportunidadUsuario usuario) {
-		List<OportunidadUsuario> lista = OportunidadUsuarioservice.listarUsuarioOportunidadxID(usuario.getUsuarioId());
+	public ResponseEntity<List<OportunidadUsuario>> listadoOporxUsuario(HttpSession session) {
+		long idUsuAct = (long) session.getAttribute("idUsuActual");
+		List<OportunidadUsuario> lista = OportunidadUsuarioservice.listarUsuarioOportunidadxID(idUsuAct);
 		return ResponseEntity.ok(lista);
 	}
 
