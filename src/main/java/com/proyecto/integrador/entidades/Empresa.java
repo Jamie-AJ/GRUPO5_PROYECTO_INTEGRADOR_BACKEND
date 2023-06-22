@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -34,12 +36,17 @@ public class Empresa {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd" , timezone = "America/Lima")
 	private Date fechRegistro;
 	private String enable;
+	
+	@ManyToOne
+	@JoinColumn(name="idRiesgo", insertable = false, updatable = false)
+	private Riesgo riesgo;
+	private int idRiesgo;
 	public Empresa() {
 		super();
 	}
 	public Empresa(int idEmpresa, String representanteLegal, String nomEmpresa, String ruc, String razonSocial,
 			Date fechaDeInicioActv, String direccion, String telefono, String correo, String sector, Date fechRegistro,
-			String enable) {
+			String enable, Riesgo riesgo, int idRiesgo) {
 		super();
 		this.idEmpresa = idEmpresa;
 		this.representanteLegal = representanteLegal;
@@ -53,6 +60,8 @@ public class Empresa {
 		this.sector = sector;
 		this.fechRegistro = fechRegistro;
 		this.enable = enable;
+		this.riesgo = riesgo;
+		this.idRiesgo = idRiesgo;
 	}
 	public int getIdEmpresa() {
 		return idEmpresa;
@@ -126,7 +135,17 @@ public class Empresa {
 	public void setEnable(String enable) {
 		this.enable = enable;
 	}
-	
-	
+	public Riesgo getRiesgo() {
+		return riesgo;
+	}
+	public void setRiesgo(Riesgo riesgo) {
+		this.riesgo = riesgo;
+	}
+	public int getIdRiesgo() {
+		return idRiesgo;
+	}
+	public void setIdRiesgo(int idRiesgo) {
+		this.idRiesgo = idRiesgo;
+	}
 	
 }

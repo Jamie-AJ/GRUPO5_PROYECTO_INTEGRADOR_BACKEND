@@ -96,7 +96,7 @@ public class OportunidadUsuarioController {
 			double restante = montoOpInversion - montoRecaudadoActual;
 			boolean esMayorMontoRecaudado = montoRecaudadoActualizado > montoOpInversion;
 			if (esMayorMontoRecaudado) {
-				salida.put("mensaje", "La Inversion Excede El Monto Invertido. "
+				salida.put("mensaje", "La Inversion Excede El Monto Solicitado. "
 						+ "Ingrese un inversion menor o igual a: " + restante);
 				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
 			}
