@@ -13,6 +13,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "OportunidadInversion")
@@ -41,6 +42,7 @@ public class OportunidadInversion {
 
 	@ManyToOne
 	@JoinColumn(name = "idEmpresa", insertable = false, updatable = false)
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	private Empresa empresa;
 	private int idEmpresa;
 	@ManyToOne

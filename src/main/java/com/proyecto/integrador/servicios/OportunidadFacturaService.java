@@ -9,4 +9,6 @@ public interface OportunidadFacturaService {
 	public abstract List<OportunidadFactura> listaOportunidadFactura();
 
 	public abstract OportunidadFactura insertarOportunidaFactura(OportunidadFactura oFactrura);
+	
+	public abstract List<OportunidadFactura> listaOportunidadFacturaxIdOportunidad(int idOpo);
 }

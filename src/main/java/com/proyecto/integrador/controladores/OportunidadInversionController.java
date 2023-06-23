@@ -48,6 +48,13 @@ public class OportunidadInversionController {
 	// Para almacenar las facturas
 	List<Factura> facturaList = new ArrayList<Factura>();
 
+	@GetMapping("/listarFacXIdOpo/{idOportunidad}")
+	@ResponseBody
+	public ResponseEntity<?> listadoFacturasXIdOpo(@PathVariable int idOportunidad) {
+		List<OportunidadFactura> lista = oportunidadFacturanservice.listaOportunidadFacturaxIdOportunidad(idOportunidad);
+		return ResponseEntity.ok(lista);
+	}
+
 	@GetMapping("/refrescarListaFactura")
 	@ResponseBody
 	public ResponseEntity<?> refrescarFacturaList() {

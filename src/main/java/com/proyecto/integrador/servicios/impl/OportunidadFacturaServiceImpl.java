@@ -25,6 +25,11 @@ public class OportunidadFacturaServiceImpl implements OportunidadFacturaService{
 	public OportunidadFactura insertarOportunidaFactura(OportunidadFactura oFactrura) {
 		return repository.save(oFactrura);
 	}
+
+	@Override
+	public List<OportunidadFactura> listaOportunidadFacturaxIdOportunidad(int idOpo) {
+		return repository.findByIdOportunidad(idOpo);
+	}
 	
 	
 
