@@ -8,6 +8,9 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -63,6 +66,12 @@ public class TransaccionController {
 		long idUsuAct = (long) session.getAttribute("idUsuActual");
 		List<Transacciones> lista = transaccionService.listarTransaccionxIdUsuario(idUsuAct);
 		return ResponseEntity.ok(lista);
+	}
+	@GetMapping("/user/listTransacciones/page/{page}")
+	@ResponseBody
+	public Page<Transacciones> listarTransacionesPorPage(@PathVariable Integer page){
+		Pageable pageable = PageRequest.of(page, 8);
+		return transaccionService.listarTransaccionesTodosPage(pageable);
 	}
 
 	@GetMapping("/user/listaTransacciones/{id}")
