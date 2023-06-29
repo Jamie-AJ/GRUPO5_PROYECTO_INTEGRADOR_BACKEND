@@ -98,7 +98,9 @@ public class SistemaFactoringBackendApplication implements CommandLineRunner {
 			}
 			Optional<Bancos> existeBanco = bancosService.buscarxId(1);
 			if (existeBanco.isEmpty()) {
-				String[] nombresBancos = { "BBVA", "BCP", "Scotiabank" };
+				String[] nombresBancos = { "Banco continental BBVA ", "Banco de credito BCP", "Scotiabank",
+						"Interbank","Dinners Club",
+						"Banbif","American Express"};
 				for (int i = 0; i < nombresBancos.length; i++) {
 					Bancos banco = new Bancos();
 					banco.setNomBancos(nombresBancos[i]);

@@ -3,6 +3,9 @@ package com.proyecto.integrador.servicios;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.proyecto.integrador.entidades.Empresa;
 
 public interface EmpresaService {
@@ -23,5 +26,7 @@ public interface EmpresaService {
 	public abstract List<Empresa> listaDiffNotEnable(String noActivo);
 	
 	public abstract List<Empresa> buscarxRazonSocialContainsActive(String keyword, String noActivo);
+	
+	public Page<Empresa> buscarxRazonSocialContainsNoActivePaged(String keyword,String  noActivo,Pageable pageable);
 
 }

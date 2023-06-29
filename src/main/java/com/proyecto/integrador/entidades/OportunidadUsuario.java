@@ -34,8 +34,8 @@ public class OportunidadUsuario {
 	
 	private String estado;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd MMMM yyy HH:mm:ss a", timezone = "America/Lima")
+	@Temporal(TemporalType.DATE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd" , timezone = "America/Lima")
 	private Date fecha;
 	
 	@ManyToOne

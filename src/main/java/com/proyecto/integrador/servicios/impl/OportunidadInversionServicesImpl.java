@@ -6,6 +6,8 @@ import java.util.Optional;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.proyecto.integrador.entidades.OportunidadInversion;
@@ -28,7 +30,10 @@ public class OportunidadInversionServicesImpl implements OportunidadInversionSer
 	public List<OportunidadInversion> listaOportunidadInversionActivas(String noActivo) {
 		return repositorio.findByEnableNot(noActivo);
 	}
-
+	@Override
+	public Page<OportunidadInversion> listarOportunidadInversionesActivasPage(String noActivo, Pageable pageable) {
+		return repositorio.findByEnableNot(noActivo, pageable);
+	}
 	@Override
 	public Optional<OportunidadInversion> buscarxIdOportunidadInversion(int idOpoInv) {
 		return repositorio.findById(idOpoInv);
@@ -38,5 +43,8 @@ public class OportunidadInversionServicesImpl implements OportunidadInversionSer
 	public List<OportunidadInversion> listaOportunidadInversionTodos() {
 		return repositorio.findAll();
 	}
+
+	
+
 	
 }
