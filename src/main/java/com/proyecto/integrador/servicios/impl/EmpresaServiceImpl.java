@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import com.proyecto.integrador.entidades.Empresa;
 import com.proyecto.integrador.repositorio.EmpresaRepository;
 import com.proyecto.integrador.servicios.EmpresaService;
 @Service
+
 public class EmpresaServiceImpl implements EmpresaService{
 
 	@Autowired
@@ -63,8 +65,8 @@ public class EmpresaServiceImpl implements EmpresaService{
 	}
 
 	@Override
-	public Page<Empresa> buscarxRazonSocialContainsNoActivePaged(String keyword, String noActivo, Pageable pageable) {
-		return repo.findByRazonSocialContainingAndEnableNot(keyword, noActivo, pageable);
+	public Page<Empresa> listarEmpresaPage( Pageable pageable) {
+		return repo.findAll(pageable);
 	}
 	
 }
