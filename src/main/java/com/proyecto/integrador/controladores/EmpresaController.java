@@ -1,5 +1,6 @@
 package com.proyecto.integrador.controladores;
 
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,37 +23,34 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.integrador.entidades.Empresa;
 import com.proyecto.integrador.servicios.EmpresaService;
 import com.proyecto.integrador.utils.AppSettings;
 
-@Controller
+@RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = AppSettings.URL_CROSS_ORIGIN)
 public class EmpresaController {
 	@Autowired
 	private EmpresaService empresaService;
 
-	@GetMapping("active/buscarEmpresasContains/{keyWord}")
+	@GetMapping("/active/buscarEmpresasContains/{keyWord}")
 	@ResponseBody
 	public ResponseEntity<List<Empresa>> buscarEmpresasActContains(@PathVariable String keyWord) {
 		List<Empresa> lista = empresaService.buscarxRazonSocialContainsActive(keyWord,"No activo");
 		return ResponseEntity.ok(lista);
 	}
-	@GetMapping("/active/empresas")
+	@GetMapping("/buscarEmpresas/{page}")
 	@ResponseBody
-	public Page<Empresa> buscarEmpresasActContains(
-	        @RequestParam(defaultValue = ""  ) String keyword,
-	        @RequestParam(defaultValue = "0") int page,
-	        @RequestParam(defaultValue = "10") int size) {
-	    Pageable pageable = PageRequest.of(page, size);
-	
-	    return empresaService.buscarxRazonSocialContainsNoActivePaged(keyword, "No Activo", pageable);
+	public Page<Empresa> buscarEmpresas(@PathVariable int page){
+		Pageable pageable = PageRequest.of(page, 4);
+        return empresaService.listarEmpresaPage(pageable);
 	}
 	
 	
-	@GetMapping("active/listaEmpresas")
+	@GetMapping("/active/listaEmpresas")
 	@ResponseBody
 	public ResponseEntity<List<Empresa>> listaEmpresasAct() {
 		List<Empresa> lista = empresaService.listaDiffNotEnable("No activo");

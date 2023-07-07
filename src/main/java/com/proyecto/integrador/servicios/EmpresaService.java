@@ -27,6 +27,6 @@ public interface EmpresaService {
 	
 	public abstract List<Empresa> buscarxRazonSocialContainsActive(String keyword, String noActivo);
 	
-	public Page<Empresa> buscarxRazonSocialContainsNoActivePaged(String keyword,String  noActivo,Pageable pageable);
+	public Page<Empresa> listarEmpresaPage(Pageable pageable);
 
 }

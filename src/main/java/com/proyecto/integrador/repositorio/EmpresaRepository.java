@@ -21,7 +21,5 @@ public interface EmpresaRepository extends JpaRepository<Empresa, Integer> {
 
 	List<Empresa> findByEnableNot(String noActivo);
 	List<Empresa> findByRazonSocialContainingAndEnableNot(String keyword,String noActivo);
-	
-	Page<Empresa> findByRazonSocialContainingAndEnableNot(String keyword, String noActivo, Pageable pageable);
 	 
 }

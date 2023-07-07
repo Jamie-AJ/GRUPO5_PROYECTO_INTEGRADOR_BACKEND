@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.integrador.entidades.Empresa;
 import com.proyecto.integrador.entidades.Factura;
@@ -27,7 +28,7 @@ import com.proyecto.integrador.servicios.EmpresaService;
 import com.proyecto.integrador.servicios.FacturaService;
 import com.proyecto.integrador.utils.AppSettings;
 
-@Controller
+@RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = AppSettings.URL_CROSS_ORIGIN)
 public class FacturaController {
