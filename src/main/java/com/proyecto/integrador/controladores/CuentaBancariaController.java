@@ -82,6 +82,10 @@ public class CuentaBancariaController {
 	public ResponseEntity<?> insertaCuentaBancaria(@RequestBody CuentaBancaria obj, HttpSession session) {
 		HashMap<String, Object> salida = new HashMap<>();
 		try {
+			salida = validarNros(obj.getNroCuenta(), obj.getNroCuentaCci(), obj.getIdCuentaBancaria(), salida);
+			if (!(salida.isEmpty())) {
+				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
+			}
 			long idUsuAct = (long) session.getAttribute("idUsuActual");
 			obj.setUsuarioId(idUsuAct);
 			obj.setIdCuentaBancaria(0);
@@ -92,7 +96,7 @@ public class CuentaBancariaController {
 			if (objsalida == null) {
 				salida.put("mensaje", "No se registro");
 				salida.put("usuario", obj);
-				return new ResponseEntity<>(salida,HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
 			} else {
 				salida.put("mensaje", " Tú cuenta se registro exitosamente");
 				salida.put("cuentaBancaria", obj);
@@ -100,7 +104,7 @@ public class CuentaBancariaController {
 		} catch (DataAccessException e) {
 			salida.put("mensaje", "Error al registrar el cuenta bancaria");
 			salida.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<>(salida,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(salida, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return ResponseEntity.ok(salida);
 	}
@@ -109,8 +113,12 @@ public class CuentaBancariaController {
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> actualizaCuentaBancaria(@RequestBody CuentaBancaria obj,
 			HttpSession session) {
-		Map<String, Object> salida = new HashMap<>();
+		HashMap<String, Object> salida = new HashMap<>();
 		try {
+			salida = validarNros(obj.getNroCuenta(), obj.getNroCuentaCci(), obj.getIdCuentaBancaria(), salida);
+			if (!(salida.isEmpty())) {
+				return new ResponseEntity<>(salida, HttpStatus.BAD_REQUEST);
+			}
 			Optional<CuentaBancaria> optional = cuentabancariaService.listaCuentaBancariaxId(obj.getIdCuentaBancaria());
 			if (optional.isPresent()) {
 				long idUsuAct = (long) session.getAttribute("idUsuActual");
@@ -132,6 +140,7 @@ public class CuentaBancariaController {
 
 		return ResponseEntity.ok(salida);
 	}
+
 	@DeleteMapping("user/eliminarCuentaBancaria/{id}")
 	@ResponseBody
 	public ResponseEntity<?> eliminarUsuario(@PathVariable int id, HttpSession session) {
@@ -163,4 +172,32 @@ public class CuentaBancariaController {
 		return ResponseEntity.ok(response);
 	}
 
+	public HashMap<String, Object> validarNros(String nroCuenta, String nroCci, int idCuenta,
+			HashMap<String, Object> salida) {
+		Boolean existeNroCuenta = cuentabancariaService.existeNroCuentaBancaria(nroCuenta, idCuenta);
+		Boolean existeNroCuentaigualNroCci = cuentabancariaService.existeNroCuentaBancaria(nroCci, idCuenta);
+		Boolean existeNroCci = cuentabancariaService.existeNroCci(nroCci, idCuenta);
+		Boolean existeNroCciigualNroCuenta = cuentabancariaService.existeNroCci(nroCuenta, idCuenta);
+		if (existeNroCuenta) {
+			salida.put("mensaje", "El número de cuenta bancaria ya existe");
+			return salida;
+		}
+		if (existeNroCci) {
+			salida.put("mensaje", "El número CCI ya existe");
+			return salida;
+		}
+		if (existeNroCuentaigualNroCci) {
+			salida.put("mensaje", "El número de CCI ingresado pertenece a una cuenta bancaria existente");
+			return salida;
+		}
+		if (existeNroCciigualNroCuenta) {
+			salida.put("mensaje", "El número de cuenta bancaria ingresado pertenece a una CCI existente");
+			return salida;
+		}
+		if (nroCuenta.equals(nroCci)) {
+			salida.put("mensaje", "El número de cuenta bancaria no puede ser igual al número de CCI");
+			return salida;
+		}
+		return salida;
+	}
 }

@@ -11,4 +11,6 @@ import com.proyecto.integrador.entidades.CuentaBancaria;
 public interface CuentaBancariaRepository extends JpaRepository<CuentaBancaria, Integer> {
 	@Query(value ="SELECT c.* FROM  cuentasbancarias as c where usuario_id = :idUsu AND  c.enable = \"Activo\"",nativeQuery = true)
 	List<CuentaBancaria> listaCuentasBancariaXUsuAcT(@Param("idUsu") long idUsu);
+	Boolean existsByNroCuentaAndIdCuentaBancariaNot(String nroCuenta,int idCuenta);
+	Boolean existsByNroCuentaCciAndIdCuentaBancariaNot(String nroCci,int idCuenta);
 }
