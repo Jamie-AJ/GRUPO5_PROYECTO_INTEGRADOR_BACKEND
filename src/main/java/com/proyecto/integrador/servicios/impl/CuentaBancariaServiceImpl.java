@@ -37,10 +37,12 @@ public class CuentaBancariaServiceImpl implements CuentaBancariaService {
 	public List<CuentaBancaria> listaCuentaBancariaxIdUsuAct(long id) {
 		return repositorio.listaCuentasBancariaXUsuAcT(id);
 	}
-	
-	
-	
-	
-	
-
+	@Override
+	public Boolean existeNroCuentaBancaria(String nroCuenta, int idCuenta) {
+		return repositorio.existsByNroCuentaAndIdCuentaBancariaNot(nroCuenta, idCuenta);
+	}
+	@Override
+	public Boolean existeNroCci(String nroCci, int idCuenta) {
+		return repositorio.existsByNroCuentaCciAndIdCuentaBancariaNot(nroCci, idCuenta);
+	}
 }

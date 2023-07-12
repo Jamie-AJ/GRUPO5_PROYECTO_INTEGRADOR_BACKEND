@@ -11,6 +11,8 @@ public interface CuentaBancariaService {
 	public abstract CuentaBancaria insertaActualizaCuentaBancaria(CuentaBancaria obj);
 	public abstract List<CuentaBancaria> listaCuentaBancariaTodos();
 	public abstract Optional<CuentaBancaria> listaCuentaBancariaxId(int idCuentabancaria);
-	public Optional<CuentaBancaria> buscarxId(int id);
+	public abstract Optional<CuentaBancaria> buscarxId(int id);
 	public abstract List<CuentaBancaria> listaCuentaBancariaxIdUsuAct(long id);
+	public abstract Boolean existeNroCuentaBancaria(String nroCuenta,int idCuenta);
+	public abstract Boolean existeNroCci(String nroCci,int idCuenta);
 }
