@@ -31,6 +31,7 @@ public class CuentaBancaria implements Serializable {
 	private String cvv;
 	private String mes;
 	private String year;
+	private String nombreCompleto;
 	private Double saldo;
 	private String enable;
 	
@@ -58,7 +59,7 @@ public class CuentaBancaria implements Serializable {
 
 	}
 
-	public CuentaBancaria(int idCuentaBancaria, String nroCuenta, String nroCuentaCci, String cvv, String mes, String year,
+	public CuentaBancaria(int idCuentaBancaria, String nroCuenta, String nroCuentaCci, String cvv, String mes, String year, String nombreCompleto,
 			Double saldo, String enable, Date fechaRegistro, Bancos bancos, Monedas monedas,
 			Usuario usuario, long usuarioId) {
 		super();
@@ -68,6 +69,7 @@ public class CuentaBancaria implements Serializable {
 		this.cvv = cvv;
 		this.mes = mes;
 		this.year = year;
+		this.nombreCompleto = nombreCompleto;
 		this.saldo = saldo;
 		this.enable = enable;
 		this.fechaRegistro = fechaRegistro;
@@ -123,6 +125,14 @@ public class CuentaBancaria implements Serializable {
 
 	public void setYear(String year) {
 		this.year = year;
+	}
+
+	public String getNombreCompleto() {
+		return nombreCompleto;
+	}
+
+	public void setNombreCompleto(String nombreCompleto) {
+		this.nombreCompleto = nombreCompleto;
 	}
 
 	public Double getSaldo() {
