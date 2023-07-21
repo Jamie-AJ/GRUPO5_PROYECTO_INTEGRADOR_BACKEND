@@ -44,7 +44,7 @@ public class EmpresaController {
 	@GetMapping("/buscarEmpresas/{page}")
 	@ResponseBody
 	public Page<Empresa> buscarEmpresas(@PathVariable int page){
-		Pageable pageable = PageRequest.of(page, 4);
+		Pageable pageable = PageRequest.of(page, 6);
         return empresaService.listarEmpresaPage(pageable);
 	}
 	

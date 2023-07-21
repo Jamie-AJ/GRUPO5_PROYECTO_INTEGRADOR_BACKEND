@@ -3,6 +3,8 @@ package com.proyecto.integrador.servicios.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.proyecto.integrador.entidades.OportunidadUsuario;
@@ -37,6 +39,11 @@ public class OportunidadUsuarioServiceImpl implements OportunidadUsuarioService 
 	public List<OportunidadUsuario> listarUsuarioOportunidadxID(long idUsu) {
 		// TODO Auto-generated method stub
 		return Repository.findByUsuarioId(idUsu);
+	}
+
+	@Override
+	public Page<OportunidadUsuario> listarUsuarioOportunidadxIDPage(Pageable pageable, long idUsu) {
+		return Repository.findByUsuarioId(pageable, idUsu);
 	}
 
 

@@ -9,6 +9,9 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -61,7 +64,14 @@ public class OportunidadUsuarioController {
 		List<OportunidadUsuario> lista = OportunidadUsuarioservice.listarUsuarioOportunidadxID(idUsuAct);
 		return ResponseEntity.ok(lista);
 	}
-
+	@GetMapping("/listarOpoUsuXIdi/{page}")
+	@ResponseBody
+	public Page<OportunidadUsuario> listadoOporxUsuarioPage(@PathVariable int page, HttpSession session){
+		long idUsuAct = (long) session.getAttribute("idUsuActual");
+		Pageable pageable = PageRequest.of(page, 6);
+		return OportunidadUsuarioservice.listarUsuarioOportunidadxIDPage(pageable,idUsuAct);
+	}
+	
 	@PostMapping("/registaInversionUsuario")
 	@ResponseBody
 	public ResponseEntity<?> RegistarInversionUsuario(@RequestBody OportunidadUsuario objOpUsu, HttpSession session) {
