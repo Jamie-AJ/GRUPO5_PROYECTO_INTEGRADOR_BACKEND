@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.proyecto.integrador.entidades.Empresa;
 import com.proyecto.integrador.entidades.Factura;
 
@@ -27,5 +30,5 @@ public interface FacturaService {
 	
 	List<Factura> listarFacturasActivasPorEmpresa(Empresa empresa);
 	
-	
+	Page<Factura> listarFacturaPage(Pageable Pageable);
 }
