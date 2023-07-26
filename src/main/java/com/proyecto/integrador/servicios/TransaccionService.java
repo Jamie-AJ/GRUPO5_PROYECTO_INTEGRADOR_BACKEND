@@ -13,5 +13,6 @@ public interface TransaccionService {
 	public abstract List<Transacciones> listarTransaccionxIdCuentaBancaria(long idUsu,long idCuenta);
 	public abstract List<Transacciones> listarTransaccionxIdUsuario(long idUsu); 
 	
-	public abstract Page<Transacciones> listarTransaccionesTodosPage(Pageable pageable);
+	Page<Transacciones> listarTransaccionesTodosPage(Pageable pageable, long idUsu);
+	
 }

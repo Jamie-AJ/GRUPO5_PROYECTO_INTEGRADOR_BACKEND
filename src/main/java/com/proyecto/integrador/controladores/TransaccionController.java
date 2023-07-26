@@ -69,9 +69,10 @@ public class TransaccionController {
 	}
 	@GetMapping("/user/listTransacciones/page/{page}")
 	@ResponseBody
-	public Page<Transacciones> listarTransacionesPorPage(@PathVariable Integer page){
+	public Page<Transacciones> listarTransacionesPorPage(@PathVariable int page,HttpSession session){
+		long idUsuAct = (long) session.getAttribute("idUsuActual");
 		Pageable pageable = PageRequest.of(page, 8);
-		return transaccionService.listarTransaccionesTodosPage(pageable);
+		return transaccionService.listarTransaccionesTodosPage(pageable,idUsuAct);
 	}
 
 	@GetMapping("/user/listaTransacciones/{id}")

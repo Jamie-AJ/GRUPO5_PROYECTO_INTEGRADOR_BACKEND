@@ -136,6 +136,12 @@ public class OportunidadInversionController {
 		List<OportunidadInversion> lista = oportunidadInversionservice.listaOportunidadInversionActivas("No Activo");
 		return ResponseEntity.ok(lista);
 	}
+	@GetMapping("/admin/listarOportunidadInversion")
+	@ResponseBody
+	public ResponseEntity<List<OportunidadInversion>> listaOportunidadInversionActiveAdmin() {
+		List<OportunidadInversion> lista = oportunidadInversionservice.listaOportunidadInversionActivas("No Activo");
+		return ResponseEntity.ok(lista);
+	}
 	@GetMapping("/user/listarOportunidadInversion/page/{page}")
 	@ResponseBody
 	public Page<OportunidadInversion> listaOportunidadInversionActive(@PathVariable Integer page) {
