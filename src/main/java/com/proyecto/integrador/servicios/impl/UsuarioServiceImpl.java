@@ -41,7 +41,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 		return usuarioRepository.findById(id);
 	}
 
-
+	
 	@Override
 	public Usuario buscarUsuarioPorId(long idUsuario) {
 		return usuarioRepository.findById(idUsuario).orElse(null);

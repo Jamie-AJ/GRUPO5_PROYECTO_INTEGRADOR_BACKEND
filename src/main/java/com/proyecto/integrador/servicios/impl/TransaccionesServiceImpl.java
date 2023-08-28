@@ -37,8 +37,8 @@ public class TransaccionesServiceImpl implements TransaccionService {
 	}
 
 	@Override
-	public Page<Transacciones> listarTransaccionesTodosPage(Pageable pageable) {
-		return transaccionRepositorio.findAll(pageable);
+	public Page<Transacciones> listarTransaccionesTodosPage(Pageable pageable,long idUsu) {
+		return transaccionRepositorio.listarTransaccionxIdUsuarioPage(pageable,idUsu);
 	}
 
 }

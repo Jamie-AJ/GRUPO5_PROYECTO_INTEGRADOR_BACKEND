@@ -189,7 +189,7 @@ public class UsuarioController {
 			usuarioActualizado.setFecha(usuarioExistente.getFecha()); // No se puede actualizar la fecha
 			usuarioActualizado.setEnable(usuarioExistente.getEnable());
 			usuarioActualizado.setFoto(usuarioExistente.getFoto());
-
+			
 			// Actualizar el usuario
 			usuarioService.insertaActualizaUsuario(usuarioActualizado);
 

@@ -153,7 +153,7 @@ public class FacturaController {
 	@GetMapping("/listaFacturas/page/{page}")
 	@ResponseBody
 	public Page<Factura> listarFacturasPage(@PathVariable int page){
-		Pageable pageable = PageRequest.of(page, 3);
+		Pageable pageable = PageRequest.of(page, 8);
 		return facturaService.listarFacturaPage(pageable);
 	}
 	
