@@ -86,7 +86,6 @@ public class Usuario implements UserDetails{
 
 	
 
-
 	public Rol getTiporol() {
 		return tiporol;
 	}
@@ -204,8 +203,8 @@ public class Usuario implements UserDetails{
 		this.password = password;
 	}
 
-
-
+	
+	
 	public String getFoto() {
 		return foto;
 	}
@@ -216,8 +215,7 @@ public class Usuario implements UserDetails{
 		this.foto = foto;
 	}
 
-
-
+	
 	public Date getFecha() {
 		return fecha;
 	}
