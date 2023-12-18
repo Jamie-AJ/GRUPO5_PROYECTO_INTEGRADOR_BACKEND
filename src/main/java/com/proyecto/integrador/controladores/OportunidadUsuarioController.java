@@ -85,7 +85,7 @@ public class OportunidadUsuarioController {
 			double montoInvertido = objOpUsu.getMontoInvertido();
 			boolean esMayorMontoInver = montoInvertido > saldoCartera;
 			if (esMayorMontoInver) {
-				salida.put("mensaje", "No cuenta con saldo suficiente en su cartera");
+				salida.put("mensaje", "No cuenta con saldo suficiente en su cartera, ¿Desea depositar?.");
 				return new ResponseEntity<>(salida, HttpStatus.CONFLICT);
 			}
 			cartera.setSaldo(saldoCartera - montoInvertido);
